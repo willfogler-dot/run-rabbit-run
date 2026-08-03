@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RRR100 · Race Plan</title>
+<meta name="description" content="Run Rabbit Run 100 — 2026 race plan, crew instructions and course guide.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0B0F14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RRR100">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<style>
+/* ============================================================
+   RRR100 — instrument panel for a 36-hour night
+   Palette derived from the course: Routt night sky, aspen gold
+   (the "Flash of Gold" section), granite slate, cutoff red.
+   ============================================================ */
+:root{
+  --ink:#0B0F14;        /* night over Buffalo Pass */
+  --ink-2:#10161E;
+  --panel:#151D27;
+  --panel-2:#1B2531;
+  --line:#26333F;
+  --line-hi:#33455A;
+  --paper:#E9E5DA;      /* aspen bark — softer than white at 2am */
+  --paper-2:#B9C3CD;
+  --dim:#78899A;
+  --dim-2:#54646F;
+  --gold:#E0A32E;       /* Flash of Gold */
+  --gold-2:#F2C25E;
+  --sky:#4B9FD6;        /* race blue */
+  --alarm:#DC4B3C;
+  --ok:#5FBF8B;
+  --r:10px;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --night:#182231;
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-t:env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--ink);color:var(--paper);
+  font-family:var(--sans);font-size:15px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:calc(66px + var(--safe-b));
+  overscroll-behavior-y:contain;
+}
+body.light{
+  --ink:#F3F1EA;--ink-2:#EBE8DE;--panel:#FFFFFF;--panel-2:#F7F5EF;
+  --line:#DCD7C9;--line-hi:#C4BCA8;--paper:#181C21;--paper-2:#3E4750;
+  --dim:#6B7681;--dim-2:#8A939C;--gold:#B67C10;--gold-2:#8C5E06;
+  --sky:#1F6FA9;--alarm:#B5342A;--ok:#2E7D53;--night:#D6D1C2;
+}
+a{color:var(--sky)}
+h1,h2,h3,h4{margin:0;font-weight:800;letter-spacing:-.015em;line-height:1.15}
+p{margin:0 0 .7em}
+p:last-child{margin-bottom:0}
+b,strong{font-weight:700;color:var(--paper)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.eyebrow{
+  font-family:var(--mono);font-size:10px;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--dim);
+}
+
+/* ---------- status head ---------- */
+.head{
+  position:sticky;top:0;z-index:40;background:var(--ink-2);
+  border-bottom:1px solid var(--line);padding:calc(8px + var(--safe-t)) 14px 10px;
+}
+.head-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.clock{font-family:var(--mono);font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.clock.pre{color:var(--sky)}
+.clock.live{color:var(--gold)}
+.clock.done{color:var(--ok)}
+.clock-sub{font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;margin-top:5px}
+.head-right{text-align:right;flex:0 0 auto}
+.head-right .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim-2)}
+.head-right .val{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--paper-2);margin-top:2px}
+
+/* ---------- layout ---------- */
+.wrap{max-width:760px;margin:0 auto;padding:14px}
+.view{display:none;animation:fade .18s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.view{animation:none}*{transition:none!important}}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.card.flush{padding:0;overflow:hidden}
+.card-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.card-hd h3{font-size:14px;letter-spacing:.01em}
+.sect-title{margin:22px 0 10px;display:flex;align-items:baseline;gap:10px}
+.sect-title h2{font-size:19px}
+.sect-title .rule{flex:1;height:1px;background:var(--line)}
+
+/* ---------- elevation profile ---------- */
+.profile-wrap{position:relative;background:var(--ink-2);border-bottom:1px solid var(--line)}
+#profile{display:block;width:100%;height:auto;touch-action:pan-y}
+.prof-legend{display:flex;flex-wrap:wrap;gap:12px;padding:9px 12px;background:var(--panel)}
+.lg{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+.lg i{width:11px;height:11px;border-radius:2px;display:block}
+
+/* ---------- tables ---------- */
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums}
+th{
+  text-align:left;font-weight:600;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--dim);padding:8px 7px;border-bottom:1px solid var(--line-hi);white-space:nowrap;
+  position:sticky;top:0;background:var(--panel);z-index:2;
+}
+td{padding:8px 7px;border-bottom:1px solid var(--line);white-space:nowrap;color:var(--paper-2)}
+tr:last-child td{border-bottom:0}
+td.nm{white-space:normal;min-width:120px;color:var(--paper);font-family:var(--sans);font-size:13px}
+tr.major td.nm{font-weight:700}
+tr.major{background:rgba(224,163,46,.05)}
+tr.logged{background:rgba(95,191,139,.07)}
+tr.risk{background:rgba(220,75,60,.1)}
+tr.tap{cursor:pointer}
+tr.tap:active{background:var(--panel-2)}
+.flagset{display:flex;gap:3px}
+.flag{
+  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.04em;
+  padding:2px 4px;border-radius:3px;background:var(--line);color:var(--dim);
+}
+.flag.on{background:var(--gold);color:#12161B}
+.flag.on.p{background:var(--sky);color:#08131B}
+.flag.on.b{background:var(--paper-2);color:#12161B}
+.cut{color:var(--alarm);font-weight:600}
+.tgt{color:var(--gold-2);font-weight:600}
+
+/* ---------- pills / buttons ---------- */
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.05em;
+  padding:7px 11px;border-radius:999px;border:1px solid var(--line-hi);
+  background:transparent;color:var(--dim);cursor:pointer;transition:.12s;
+}
+.pill.on{background:var(--gold);border-color:var(--gold);color:#12161B}
+.pill:focus-visible,.tab:focus-visible,.btn:focus-visible,button:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.btn{
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.04em;
+  padding:10px 14px;border-radius:8px;border:1px solid var(--line-hi);
+  background:var(--panel-2);color:var(--paper-2);cursor:pointer;
+}
+.btn.pri{background:var(--gold);border-color:var(--gold);color:#12161B}
+.btn.ghost{background:transparent}
+.btn:active{transform:translateY(1px)}
+
+/* ---------- stat strip ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:1px;background:var(--line);border-radius:var(--r);overflow:hidden}
+.stat{background:var(--panel);padding:11px 9px}
+.stat .k{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim-2)}
+.stat .v{font-family:var(--mono);font-size:17px;font-weight:700;margin-top:3px;letter-spacing:-.02em}
+
+/* ---------- next-stop card ---------- */
+.next{border-left:3px solid var(--gold)}
+.next .mi{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.08em}
+.next h3{font-size:20px;margin:3px 0 8px}
+.next-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line);border-radius:8px;overflow:hidden;margin-top:10px}
+.next-grid div{background:var(--panel-2);padding:9px}
+.next-grid .k{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim-2)}
+.next-grid .v{font-family:var(--mono);font-size:14px;font-weight:700;margin-top:2px}
+
+/* ---------- bar charts ---------- */
+.bars{display:flex;flex-direction:column;gap:7px}
+.bar-row{display:grid;grid-template-columns:96px 1fr 52px;align-items:center;gap:9px}
+.bar-lbl{font-family:var(--mono);font-size:10px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{height:16px;background:var(--ink-2);border-radius:3px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:3px;transition:width .4s ease}
+.bar-val{font-family:var(--mono);font-size:11px;font-weight:600;text-align:right}
+.bar-mid{position:relative;height:18px;background:var(--ink-2);border-radius:3px;overflow:hidden}
+.bar-mid .zero{position:absolute;top:0;bottom:0;width:1px;background:var(--line-hi);left:50%}
+.bar-mid .seg{position:absolute;top:2px;bottom:2px;border-radius:2px}
+
+/* ---------- accordion ---------- */
+.acc{border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;background:var(--panel);overflow:hidden}
+.acc-hd{display:flex;align-items:center;gap:11px;padding:12px 13px;cursor:pointer;width:100%;background:none;border:0;text-align:left;color:inherit;font:inherit}
+.acc-hd:active{background:var(--panel-2)}
+.acc-n{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--gold);flex:0 0 auto;width:22px}
+.acc-t{flex:1;min-width:0}
+.acc-t .t{font-weight:700;font-size:14px;letter-spacing:-.01em}
+.acc-t .s{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:2px;letter-spacing:.03em}
+.acc-chev{color:var(--dim-2);font-size:13px;transition:transform .18s;flex:0 0 auto}
+.acc.open .acc-chev{transform:rotate(90deg)}
+.acc-bd{display:none;padding:0 13px 14px;border-top:1px solid var(--line);font-size:14px;color:var(--paper-2);line-height:1.62}
+.acc.open .acc-bd{display:block;padding-top:12px}
+.acc-bd h4{font-size:11px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:14px 0 6px}
+.acc-bd ul{margin:0;padding-left:17px}
+.acc-bd li{margin-bottom:6px}
+.quote{border-left:2px solid var(--line-hi);padding:2px 0 2px 11px;margin:10px 0;font-style:italic;color:var(--dim)}
+.warn{background:rgba(220,75,60,.1);border:1px solid rgba(220,75,60,.3);border-radius:7px;padding:10px 12px;margin:10px 0;font-size:13.5px}
+.warn b{color:var(--alarm)}
+.note{background:var(--panel-2);border-radius:7px;padding:10px 12px;margin:10px 0;font-size:13.5px}
+
+/* ---------- checklist ---------- */
+.chk{display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.chk:last-child{border-bottom:0}
+.chk input{appearance:none;width:20px;height:20px;flex:0 0 auto;margin:1px 0 0;border:1.5px solid var(--line-hi);border-radius:5px;background:transparent;cursor:pointer;position:relative}
+.chk input:checked{background:var(--gold);border-color:var(--gold)}
+.chk input:checked::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;border:solid #12161B;border-width:0 2.2px 2.2px 0;transform:rotate(42deg)}
+.chk span{font-size:14px;line-height:1.45}
+.chk input:checked+span{color:var(--dim-2);text-decoration:line-through}
+
+/* ---------- tab bar ---------- */
+.tabs{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;
+  background:rgba(16,22,30,.94);backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);padding-bottom:var(--safe-b);
+}
+body.light .tabs{background:rgba(255,255,255,.94)}
+.tab{
+  flex:1;background:none;border:0;padding:9px 2px 8px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--dim-2);
+}
+.tab svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tab span{font-family:var(--mono);font-size:8.5px;letter-spacing:.09em;text-transform:uppercase}
+.tab.on{color:var(--gold)}
+
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;z-index:60;display:none;align-items:flex-end;justify-content:center;background:rgba(4,7,10,.72)}
+.modal.on{display:flex}
+.sheet{background:var(--panel);border-radius:16px 16px 0 0;width:100%;max-width:760px;max-height:88vh;overflow-y:auto;padding:18px 16px calc(22px + var(--safe-b));border-top:1px solid var(--line-hi)}
+.sheet-grip{width:36px;height:4px;border-radius:2px;background:var(--line-hi);margin:0 auto 14px}
+.fld{margin:14px 0}
+.fld label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.fld input,.fld select{
+  width:100%;padding:12px;border-radius:8px;border:1px solid var(--line-hi);
+  background:var(--ink-2);color:var(--paper);font-family:var(--mono);font-size:16px;
+}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13.5px}
+.kv dt{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding-top:3px}
+.kv dd{margin:0;color:var(--paper-2)}
+.foot{padding:20px 14px calc(28px + var(--safe-b));text-align:center;font-family:var(--mono);font-size:10px;color:var(--dim-2);line-height:1.7}
+.badge{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.08em;padding:3px 6px;border-radius:4px;text-transform:uppercase}
+.badge.g{background:rgba(224,163,46,.16);color:var(--gold)}
+.badge.r{background:rgba(220,75,60,.16);color:var(--alarm)}
+.badge.b{background:rgba(75,159,214,.16);color:var(--sky)}
+.badge.k{background:rgba(95,191,139,.16);color:var(--ok)}
+</style>
+</head>
+<body>
+
+<header class="head">
+  <div class="head-row">
+    <div>
+      <div id="clock" class="clock pre num">--:--:--</div>
+      <div id="clockSub" class="clock-sub">loading</div>
+    </div>
+    <div class="head-right">
+      <div class="lbl" id="hrLbl">Next gate</div>
+      <div class="val num" id="hrVal">—</div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ══════════════════ NOW ══════════════════ -->
+<section id="v-now" class="view on">
+
+  <div class="card flush">
+    <div class="profile-wrap"><svg id="profile" viewBox="0 0 760 250" preserveAspectRatio="none" role="img" aria-label="Course elevation profile"></svg></div>
+    <div class="prof-legend">
+      <div class="lg"><i style="background:var(--gold)"></i>Aid station</div>
+      <div class="lg"><i style="background:#1a2430;border:1px solid #2b3947"></i>Darkness</div>
+      <div class="lg"><i style="background:var(--sky)"></i>Projected position</div>
+      <div class="lg"><i style="background:var(--alarm)"></i>Hard cutoff</div>
+      <div class="lg" style="color:var(--gold);margin-left:auto">Tap the profile for section notes</div>
+    </div>
+  </div>
+
+  <div class="pills" style="margin-bottom:12px">
+    <button class="pill" data-plan="p30">30:00 plan</button>
+    <button class="pill on" data-plan="tgt">33:30 target</button>
+    <button class="pill" data-plan="p36">36:00 plan</button>
+  </div>
+
+  <div class="card next" id="nextCard"></div>
+
+  <div class="stats" style="margin-bottom:12px">
+    <div class="stat"><div class="k">Distance</div><div class="v num">101.8<span style="font-size:11px;color:var(--dim)">mi</span></div></div>
+    <div class="stat"><div class="k">Ascent</div><div class="v num">20,391<span style="font-size:11px;color:var(--dim)">ft</span></div></div>
+    <div class="stat"><div class="k">High pt</div><div class="v num">10,557<span style="font-size:11px;color:var(--dim)">ft</span></div></div>
+    <div class="stat"><div class="k">Limit</div><div class="v num">36:00</div></div>
+  </div>
+
+  <div class="sect-title"><h2>Buffer at each gate</h2><div class="rule"></div></div>
+  <div class="card">
+    <p style="font-size:13px;color:var(--dim);margin-bottom:12px">Hours of margin between the current projection and the hard cutoff. Under one hour is red — at that point a single bad segment ends the race.</p>
+    <div class="bars" id="bufferBars"></div>
+  </div>
+
+  <div class="sect-title"><h2>Segment steepness</h2><div class="rule"></div></div>
+  <div class="card">
+    <p style="font-size:13px;color:var(--dim);margin-bottom:12px">Average vertical change per mile. Right of centre is climb, left is descent. It shows you which segments are hikes and which are runs.</p>
+    <div class="bars" id="gradeBars"></div>
+  </div>
+
+  <div class="sect-title"><h2>The two numbers that matter</h2><div class="rule"></div></div>
+  <div class="card">
+    <p><b>Olympian Hall, mile 51.2, 2:30 AM.</b> The tightest cumulative gate on the course. 17h30 for 51.2 miles is a 20:31/mi average — <i>faster</i> than the 21:14/mi needed to finish in 36:00. It is the only cutoff where a runner capable of finishing can still get pulled. Aim for midnight to 1:00 AM.</p>
+    <p><b>Long Lake, mile 89.0, by about 5:00 PM Saturday.</b> The posted 6:30 PM cutoff is not survivable. From there on the line you would need 6.8 uphill miles in 90 minutes and then 6 downhill miles in 60 minutes, at miles 92 and 99 of a 36-hour race. The late cutoffs are formalities that let the sweeps pull you.</p>
+  </div>
+
+</section>
+
+<!-- ══════════════════ PLAN ══════════════════ -->
+<section id="v-plan" class="view">
+  <div class="sect-title"><h2>Aid stations</h2><div class="rule"></div></div>
+  <div class="card flush">
+    <div class="tbl-scroll"><table id="asTable"></table></div>
+  </div>
+  <p style="font-size:12.5px;color:var(--dim);margin:-4px 0 16px">Tap any row to log an actual arrival time. Everything downstream re-projects from your observed pace, and any station you would miss turns red.</p>
+  <div class="pills" style="margin-bottom:18px">
+    <button class="btn ghost" id="clearSplits">Clear logged splits</button>
+  </div>
+
+  <div class="sect-title"><h2>Section by section</h2><div class="rule"></div></div>
+  <div id="sections"></div>
+</section>
+
+<!-- ══════════════════ CREW ══════════════════ -->
+<section id="v-crew" class="view">
+  <div class="card" style="border-left:3px solid var(--alarm)">
+    <div class="eyebrow" style="color:var(--alarm)">Three ways to get Will disqualified</div>
+    <ol style="margin:10px 0 0;padding-left:19px;font-size:14px;line-height:1.6">
+      <li><b>Do not drive to Fish Creek Falls Trailhead.</b> Foot or bike only, 4 mi from Olympian Hall.</li>
+      <li><b>Do not crew or drive above Dry Lake on Buffalo Pass Road.</b> Summit Lake is the 2-hour route around, every time.</li>
+      <li><b>Do not park at Dry Lake.</b> Drop off, turn around, leave. The sheriff tickets and tows.</li>
+    </ol>
+  </div>
+
+  <div class="sect-title"><h2>Rotation</h2><div class="rule"></div></div>
+  <div id="crewRota"></div>
+
+  <div class="sect-title"><h2>Driving</h2><div class="rule"></div></div>
+  <div id="crewDrive"></div>
+
+  <div class="card">
+    <div class="eyebrow">Why Summit at mile 30 is skipped</div>
+    <p style="margin-top:8px">The drop bag covers it, and a four-hour round trip at mile 30 wrecks the crew before the stops that matter. Note the split: <b>Dry Lake has crew but no drop bag</b>, so those two visits are the crew's highest-value work. Summit has a drop bag, so it can absorb a miss.</p>
+  </div>
+</section>
+
+<!-- ══════════════════ PACERS ══════════════════ -->
+<section id="v-pace" class="view">
+  <div class="card">
+    <div class="eyebrow">Rules</div>
+    <p style="margin-top:8px">Pacers may join or leave <b>only</b> at Dry Lake 44.5, Olympian 51.2, Olympian 63.9, Dry Lake 70.8, and Summit 80.8. One pacer at a time. Unlimited family for the last ~4 miles from the top of the gondola — they may have to hike up. Pacers get themselves to and from aid stations. <b>No headphones</b> between Spring Creek Trailhead and Olympian Hall in either direction.</p>
+    <div class="warn"><b>Confirm at Thursday's briefing.</b> The manual contradicts itself on the first pickup: §5 and the aid station table say Dry Lake 44.5; §14 prose says Spring Creek Trailhead. Two sources to one, so this plan uses 44.5.</div>
+  </div>
+  <div id="pacerLegs"></div>
+  <div class="card">
+    <div class="eyebrow">Simpler alternative — one vehicle</div>
+    <p style="margin-top:8px">Pacer 1 runs 44.5 → 70.8 (26.3 mi). Pacer 2 runs 70.8 → finish (31.0 mi). This eliminates both two-hour Summit drives entirely. It costs Pacer 2 a very long night.</p>
+  </div>
+</section>
+
+<!-- ══════════════════ KIT ══════════════════ -->
+<section id="v-kit" class="view">
+  <div class="card" style="border-left:3px solid var(--gold)">
+    <div class="card-hd"><h3>Mandatory gear — new for 2026</h3><span class="badge g" id="mgCount">0/5</span></div>
+    <p style="font-size:13px;color:var(--dim)">Checked on the way out of Olympian Hall. Olympian is mile 51.2 <i>and</i> 63.9 — you carry all five for the final 50.6 miles.</p>
+    <div id="mandatory" style="margin-top:6px"></div>
+  </div>
+
+  <div class="sect-title"><h2>Drop bags</h2><div class="rule"></div></div>
+  <div class="card">
+    <div class="warn"><b>Collected Thursday 3–6 PM, before the briefing.</b> Both bags are sealed roughly 15 hours before the start. You cannot adjust them to Friday's forecast. Pack for the bad version.</div>
+    <p style="font-size:13px;color:var(--dim)">No hard-sided bags. Nothing bigger than a shoebox. Label with bib, name, station. Bring a bright colour — you will be finding it in a sea of identical bags.</p>
+  </div>
+  <div id="dropBags"></div>
+
+  <div class="sect-title"><h2>Water carries</h2><div class="rule"></div></div>
+  <div class="card"><div id="carries"></div></div>
+
+  <div class="sect-title"><h2>Aid station menu</h2><div class="rule"></div></div>
+  <div class="card">
+    <p>Water · Tailwind (Dauwaltermelon, Mandarin) · Honey Stinger bars, waffles, chews · <b style="color:var(--alarm)">no gels provided</b> · Coke, 7-Up, ginger ale · coffee, hot chocolate · soups, ramen, broth (night) · mashed potatoes and butter · PB&amp;J · turkey and cheese tortilla sliders · bean burritos, pickle juice, avocados (night) · pancakes, eggs, bacon, sausage (night) · fruit · chips · candy · pastries · some gluten-free.</p>
+    <div class="note"><b>Minimal aid only:</b> Billy's Rabbit Hole (34.3, 76.6) and Lane of Pain (54.4, 58.1). Treat Billy's as water plus whatever you carried.</div>
+  </div>
+
+  <div class="sect-title"><h2>Schedule</h2><div class="rule"></div></div>
+  <div class="card"><dl class="kv" id="schedule"></dl></div>
+
+  <div class="sect-title"><h2>Weather &amp; light</h2><div class="rule"></div></div>
+  <div class="card">
+    <dl class="kv">
+      <dt>Sept 18 avg</dt><dd>High 71°F / low 42°F <i>in town</i>. Much colder up high — expect below freezing at 10,300 ft overnight.</dd>
+      <dt>Sunrise</dt><dd>6:51 AM · civil dawn 6:25 AM</dd>
+      <dt>Sunset</dt><dd>7:14 PM · civil twilight ends 7:40 PM</dd>
+      <dt>History</dt><dd>2011 hail, rain, 40 mph winds, snow. 2022 snow, wind, fog, mud. 2025 blizzard, rain, snow, lightning.</dd>
+    </dl>
+    <div class="warn"><b>Carry a light from the start.</b> On the 36:00 plan you reach Summit Lake — your first drop bag — at 8:30 PM, over an hour after dark, and Long Lake at 24.3 has neither crew nor a bag. Even on the 30:00 plan the margin is about 75 minutes. It weighs four ounces.</div>
+    <p style="font-size:13px;color:var(--dim)">Per the race director: more 100-mile DNFs come from unexpected overnight cold than any other cause.</p>
+  </div>
+
+  <div class="sect-title"><h2>Rules that end your race</h2><div class="rule"></div></div>
+  <div class="card"><div id="rules"></div></div>
+
+  <div class="sect-title"><h2>Ask the RDs on Thursday</h2><div class="rule"></div></div>
+  <div class="card"><ol style="margin:0;padding-left:19px;font-size:14px;line-height:1.6" id="questions"></ol></div>
+
+  <div class="sect-title"><h2>Reference</h2><div class="rule"></div></div>
+  <div class="card">
+    <p style="margin-bottom:12px"><a href="2026-RRR-Manual.pdf" target="_blank" rel="noopener">Open the official runner's manual (PDF)</a> — v1.1, last updated 29 July 2026.</p>
+    <button class="btn" id="cacheManual">Save manual for offline (8 MB)</button>
+    <div id="cacheMsg" style="font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:9px"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><h3>App</h3><span class="badge b" id="swState">checking</span></div>
+    <div class="pills">
+      <button class="btn ghost" id="themeBtn">Switch to day mode</button>
+      <button class="btn ghost" id="wakeBtn">Keep screen awake: off</button>
+    </div>
+    <p style="font-size:12.5px;color:var(--dim);margin-top:11px">Logged splits and checklists live on this device only — they do not sync between crew phones. Add to your home screen for full-screen offline use.</p>
+  </div>
+</section>
+
+</main>
+
+<div class="foot">
+  Run Rabbit Run 100 · Steamboat Springs, CO · 18–19 September 2026<br>
+  Built from the 2026 Runner's Manual v1.1 and published finisher reports.<br>
+  Elevation profile is schematic — official aid station elevations, interpolated between.
+</div>
+
+<nav class="tabs">
+  <button class="tab on" data-view="now"><svg viewBox="0 0 24 24"><path d="M2 17l5-7 4 4 4-8 7 11"/></svg><span>Now</span></button>
+  <button class="tab" data-view="plan"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/><circle cx="8" cy="5" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="11" cy="19" r="1.6"/></svg><span>Plan</span></button>
+  <button class="tab" data-view="crew"><svg viewBox="0 0 24 24"><path d="M5 17h14M6 17l1-5h10l1 5M8 12V9a4 4 0 018 0v3"/><circle cx="7.5" cy="19" r="1.6"/><circle cx="16.5" cy="19" r="1.6"/></svg><span>Crew</span></button>
+  <button class="tab" data-view="pace"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.2"/><path d="M9 21l2-6-2.5-3 1-4 3.5 1 2.5 2.5M13 15l3 6M6 10l3-2"/></svg><span>Pacers</span></button>
+  <button class="tab" data-view="kit"><svg viewBox="0 0 24 24"><path d="M4 8h16v12H4zM9 8V5a3 3 0 016 0v3M9 13h6"/></svg><span>Kit</span></button>
+</nav>
+
+<div class="modal" id="modal">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
