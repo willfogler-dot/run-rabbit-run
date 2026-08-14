@@ -1,6 +1,6 @@
 /* RRR100 — offline shell.
    Bump SHELL version to force clients to pick up an update. */
-const SHELL = 'rrr-shell-v47';
+const SHELL = 'rrr-shell-v48';
 const DOCS  = 'rrr-docs-v1';
 const TILES = 'rrr-tiles-v1';
 const FILES = [
