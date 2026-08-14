@@ -395,6 +395,14 @@ blockquote{margin:13px 0;padding:2px 0 2px 14px;border-left:2.5px solid var(--ha
 .maphost .tiles{position:absolute;inset:0}
 .maphost .tiles img{position:absolute;user-select:none;-webkit-user-drag:none}
 .maphost .mapsvg{position:absolute;left:0;top:0}
+
+/* the runner dot at rest, and the current/selected station ring, breathe
+   gently rather than sitting dead still — a small cue that the map is a
+   live thing and not a static screenshot */
+.pv-pulse{transform-box:fill-box;transform-origin:center;animation:pvPulse 2.2s ease-in-out infinite}
+@keyframes pvPulse{0%,100%{opacity:.22;transform:scale(1)}50%{opacity:.36;transform:scale(1.18)}}
+circle.pv-pulse[fill="none"]{animation-name:pvRingPulse}
+@keyframes pvRingPulse{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:.34;transform:scale(1.12)}}
 .mapcredit{padding:6px 12px;font-size:11px;color:var(--text-3);background:var(--sunken);
   border-top:1px solid var(--hair);text-align:right}
 
@@ -3232,11 +3240,23 @@ var AIDX = [
     });
     return {x0:x0,x1:x1,y0:y0,y1:y1};
   }
-  function fitView(W,H,pad,pts){
+  /* biasFrac: fraction of H that a bottom sheet covers on phones, where the
+     sheet overlays the canvas instead of sitting beside it. Without this the
+     "whole course" fit centres the route in the full canvas height and most
+     of it lands under the sheet, invisible until you pan — the map opened
+     to what looked like a blank screen. Fitting against the visible slice
+     and shifting the centre up so the route lands there instead. */
+  function fitView(W,H,pad,pts,biasFrac){
     var b=boundsOf(pts);
     var dx=Math.max(1e-9,b.x1-b.x0), dy=Math.max(1e-9,b.y1-b.y0);
-    var z=Math.log2(Math.min((W-pad*2)/dx,(H-pad*2)/dy)/256);
-    return { lat:ilat((b.y0+b.y1)/2), lon:ilon((b.x0+b.x1)/2), z:Math.max(1,Math.min(17,z)) };
+    var Hv=biasFrac?Math.max(60,H*(1-biasFrac)):H;
+    var z=Math.max(1,Math.min(17,Math.log2(Math.min((W-pad*2)/dx,(Hv-pad*2)/dy)/256)));
+    var midY=(b.y0+b.y1)/2, lat=ilat(midY);
+    if(biasFrac && Hv<H){
+      var n=256*Math.pow(2,z);
+      lat=ilat(midY + (H-Hv)/(2*n));
+    }
+    return { lat:lat, lon:ilon((b.x0+b.x1)/2), z:z };
   }
   function projector(W,H,v){
     var n=256*Math.pow(2,v.z);
@@ -3267,9 +3287,58 @@ var AIDX = [
     var b=BASES[base]; if(!b||!b.url) return null;
     return b.url.replace('{z}',z).replace('{x}',x).replace('{y}',y);
   }
+  /* Reconcile the tile layer against the DOM instead of tearing it down and
+     rebuilding it on every pan, zoom and preview recentre. A tile keyed by
+     z/x/y that is already on screen keeps its <img> element — and its
+     already-decoded bitmap — and just gets repositioned; only tiles that
+     scrolled out of the overscan area are removed. That is what stopped
+     panning and the preview follow-cam flashing blank on every redraw. */
+  function paintTiles(container,tiles,base,ox,oy){
+    if(container.dataset.base!==base){ container.innerHTML=''; container.dataset.base=base; }
+    var existing={};
+    Array.prototype.forEach.call(container.children,function(img){ existing[img.dataset.tk]=img; });
+    var want={};
+    tiles.forEach(function(t){
+      var k=t.z+'/'+t.x+'/'+t.y; want[k]=1;
+      var img=existing[k];
+      if(!img){
+        img=document.createElement('img');
+        img.dataset.tk=k; img.decoding='async';
+        img.style.position='absolute'; img.style.opacity='0'; img.style.transition='opacity .2s ease';
+        img.onload=function(){ img.style.opacity='1'; };
+        img.onerror=function(){ img.style.visibility='hidden'; };
+        img.src=tileURL(base,t.z,t.x,t.y);
+        container.appendChild(img);
+        existing[k]=img;
+      }
+      img.style.left=(t.left+ox).toFixed(2)+'px'; img.style.top=(t.top+oy).toFixed(2)+'px';
+      img.style.width=t.size.toFixed(2)+'px'; img.style.height=t.size.toFixed(2)+'px';
+    });
+    Object.keys(existing).forEach(function(k){ if(!want[k]){ container.removeChild(existing[k]); } });
+  }
   function routeSlice(a,b){ return ROUTE.filter(function(p){ return p[0]>=a-0.06 && p[0]<=b+0.06; }); }
+  /* Quadratic-bezier smoothing: each original GPX point becomes a control
+     point and the curve passes through the midpoints between consecutive
+     points. One pass, no matrix solve, and it never moves the line more
+     than half a segment (route points sit ~0.12 mi apart) off the actual
+     GPX — it just rounds off the faceted look raw polylines get on tight
+     switchbacks like the Grouse and Fish Creek Falls climbs. */
+  function smoothD(px){
+    if(px.length<2) return '';
+    if(px.length===2) return 'M'+px[0][0].toFixed(1)+','+px[0][1].toFixed(1)+'L'+px[1][0].toFixed(1)+','+px[1][1].toFixed(1);
+    var d='M'+px[0][0].toFixed(1)+','+px[0][1].toFixed(1);
+    for(var i=1;i<px.length-1;i++){
+      var xc=(px[i][0]+px[i+1][0])/2, yc=(px[i][1]+px[i+1][1])/2;
+      d+='Q'+px[i][0].toFixed(1)+','+px[i][1].toFixed(1)+' '+xc.toFixed(1)+','+yc.toFixed(1);
+    }
+    var last=px[px.length-1];
+    d+='L'+last[0].toFixed(1)+','+last[1].toFixed(1);
+    return d;
+  }
+  function projPts(pts,X,Y){ return pts.map(function(p){ return [X(p[2]),Y(p[1])]; }); }
   function pathOf(pts,P){
-    return pts.map(function(p,i){ return (i?'L':'M')+P.X(p[2]).toFixed(1)+','+P.Y(p[1]).toFixed(1); }).join('');
+    if(!pts.length) return '';
+    return smoothD(projPts(pts,P.X,P.Y));
   }
   /* ROUTE points sit about 0.12 mi apart; snapping to the nearest one makes
      the dot tick along in visible steps. Interpolate instead. */
@@ -3317,8 +3386,9 @@ var AIDX = [
     /* full screen frames the selected leg; inline keeps the whole course */
     /* No auto-zoom on selection: the highlight tells you which leg it is and
        the wider view keeps you oriented. Zoom stays under your control. */
-    var v=MAPV.view || fitView(W,H,full?34:16,null);
-    if(full) MAPV.fitZ=fitView(W,H,34,null).z;
+    var sheetBias = (full && typeof window!=='undefined' && window.innerWidth<820) ? 0.5 : 0;
+    var v=MAPV.view || fitView(W,H,full?34:16,null,sheetBias);
+    if(full) MAPV.fitZ=fitView(W,H,34,null,sheetBias).z;
     var P=projector(W,H,v);
     MAPV.P=P; MAPV.W=W; MAPV.H=H; MAPV.host=host.id;
 
@@ -3326,14 +3396,10 @@ var AIDX = [
        the preview can translate a long way before anything is re-rendered.
        Re-rendering is what made it jump, and refetching tiles is what left
        blank patches. */
-    var OX = full ? Math.round(W*0.55) : 0, OY = full ? Math.round(H*0.55) : 0;
+    var OX = full ? Math.round(W*0.75) : 0, OY = full ? Math.round(H*0.75) : 0;
     MAPV.OX=OX; MAPV.OY=OY;
     var b=BASES[MAPV.base], onDark=!!b.dark;
-    var tiles=tilesForBox(P,-OX,-OY,W+OX,H+OY,MAPV.base).map(function(t){
-      return '<img src="'+tileURL(MAPV.base,t.z,t.x,t.y)+'" decoding="async" style="position:absolute;left:'+
-        (t.left+OX).toFixed(2)+'px;top:'+(t.top+OY).toFixed(2)+'px;width:'+t.size.toFixed(2)+'px;height:'+
-        t.size.toFixed(2)+'px" onerror="this.style.visibility=\'hidden\'">';
-    }).join('');
+    var tiles=tilesForBox(P,-OX,-OY,W+OX,H+OY,MAPV.base);
 
     var C={ green:cv('--green','#1B5340'), gold:cv('--gold-solid','#B5801E'), red:cv('--red','#8E2F1D'),
             dim:cv('--text-3','#879289'), card:cv('--card','#fff'), ink:cv('--text','#13201A') };
@@ -3388,15 +3454,16 @@ var AIDX = [
       if(!big && MAPV.lens!=='aid' && !on){
         o.push('<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3.5" fill="'+col+'" opacity=".5" stroke="'+halo+'" stroke-width="2"/>');
       } else {
+        o.push('<ellipse cx="'+x.toFixed(1)+'" cy="'+(y+r*0.55).toFixed(1)+'" rx="'+(r*0.85).toFixed(1)+'" ry="'+(r*0.32).toFixed(1)+'" fill="rgba(0,0,0,.22)"/>');
         o.push('<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(r+3)+'" fill="'+halo+'"/>');
         o.push('<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r+'" fill="'+col+'"'+
           (on?' stroke="'+C.ink+'" stroke-width="2"':'')+'/>');
         if(g.idx.length>1) o.push('<circle cx="'+(x+r+2).toFixed(1)+'" cy="'+(y-r-1).toFixed(1)+
-          '" r="5.5" fill="'+C.card+'" stroke="'+col+'" stroke-width="1.6"/>'+
-          '<text x="'+(x+r+2).toFixed(1)+'" y="'+(y-r+2.2).toFixed(1)+'" font-size="8" font-weight="700" '+
+          '" r="6" fill="'+C.card+'" stroke="'+col+'" stroke-width="1.6"/>'+
+          '<text x="'+(x+r+2).toFixed(1)+'" y="'+(y-r+2.4).toFixed(1)+'" font-size="8.5" font-weight="750" '+
           'text-anchor="middle" font-family="'+FF+'" fill="'+col+'">2</text>');
       }
-      if(on) o.push('<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="17" fill="none" stroke="'+C.gold+'" stroke-width="2" opacity=".7"/>');
+      if(on) o.push('<circle class="pv-pulse" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="17" fill="none" stroke="'+C.gold+'" stroke-width="2" opacity=".7"/>');
       if(big||on) labels.push([x,y,g.name.replace(' \u2014 Ski Basin','').replace(' Hall',''),col]);
       /* tapping cycles through the visits to this place */
       var nextIdx = on ? g.idx[(g.idx.indexOf(step)+1)%g.idx.length] : g.idx[0];
@@ -3421,8 +3488,17 @@ var AIDX = [
     if(mark!=null){
       var mp=routeLerp(mark);
       if(mp){
-        o.push('<circle id="pvHalo" cx="'+P.X(mp[1]).toFixed(2)+'" cy="'+P.Y(mp[0]).toFixed(2)+'" r="17" fill="'+C.red+'" opacity=".22"/>');
-        o.push('<circle id="pvDot" cx="'+P.X(mp[1]).toFixed(2)+'" cy="'+P.Y(mp[0]).toFixed(2)+'" r="7.5" fill="'+C.red+
+        var mkx=P.X(mp[1]), mky=P.Y(mp[0]);
+        /* heading: bearing between a point a little behind and a little
+           ahead on the route, in screen space, so it rotates correctly
+           under any projection. */
+        var ahd=routeLerp(Math.min(101.8,mark+0.15)), bhd=routeLerp(Math.max(0,mark-0.15));
+        var heading=0;
+        if(ahd&&bhd) heading=Math.atan2(P.Y(ahd[0])-P.Y(bhd[0]), P.X(ahd[1])-P.X(bhd[1]))*180/Math.PI;
+        o.push('<circle id="pvHalo" class="pv-pulse" cx="'+mkx.toFixed(2)+'" cy="'+mky.toFixed(2)+'" r="16" fill="'+C.red+'" opacity=".22"/>');
+        o.push('<g id="pvHead" transform="translate('+mkx.toFixed(2)+','+mky.toFixed(2)+') rotate('+heading.toFixed(1)+')">'+
+          '<path d="M14,0 L3,-6 L3,6 Z" fill="'+C.red+'" opacity=".85" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/></g>');
+        o.push('<circle id="pvDot" cx="'+mkx.toFixed(2)+'" cy="'+mky.toFixed(2)+'" r="7.5" fill="'+C.red+
           '" stroke="#fff" stroke-width="3"/>');
       }
     }
@@ -3435,10 +3511,18 @@ var AIDX = [
         '" stroke-width="3" paint-order="stroke" fill="'+(onDark?'#fff':C.ink)+'">1 mile</text></g>');
 
     var CW=W+OX*2, CH=H+OY*2;
-    host.innerHTML='<div class="mapworld" style="left:'+(-OX)+'px;top:'+(-OY)+'px;width:'+CW+'px;height:'+CH+'px">'+
-      '<div class="tiles" style="position:absolute;inset:0">'+tiles+'</div>'+
-      '<svg class="mapsvg" viewBox="'+(-OX)+' '+(-OY)+' '+CW+' '+CH+'" width="'+CW+'" height="'+CH+'"'+
-      ' style="position:absolute;left:0;top:0">'+o.join('')+'</svg></div>';
+    var world=host.querySelector('.mapworld');
+    if(!world){
+      host.innerHTML='<div class="mapworld"><div class="tiles" style="position:absolute;inset:0"></div>'+
+        '<svg class="mapsvg" style="position:absolute;left:0;top:0"></svg></div>';
+      world=host.querySelector('.mapworld');
+    }
+    world.style.left=(-OX)+'px'; world.style.top=(-OY)+'px'; world.style.width=CW+'px'; world.style.height=CH+'px';
+    paintTiles(world.querySelector('.tiles'), tiles, MAPV.base, OX, OY);
+    var svgEl=world.querySelector('.mapsvg');
+    svgEl.setAttribute('viewBox',(-OX)+' '+(-OY)+' '+CW+' '+CH);
+    svgEl.setAttribute('width',CW); svgEl.setAttribute('height',CH);
+    svgEl.innerHTML=o.join('');
     bindMapGestures(host, full);
   }
 
@@ -3863,8 +3947,17 @@ var AIDX = [
       if(pt){
         var x=MAPV.P.X(pt[2]), y=MAPV.P.Y(pt[1]);
         var m=70;
-        if(x<m||x>MAPV.W-m||y<m||y>MAPV.H-m)
-          MAPV.view={ lat:pt[1], lon:pt[2], z:MAPV.P.z };   // pan only, same zoom
+        /* on a phone the bottom sheet covers the lower half of the canvas —
+           a station that is technically on-screen but under the sheet still
+           needs a pan, or tapping through the list would silently scroll
+           the detail panel over stations you can no longer see. */
+        var sheetBias=(typeof window!=='undefined' && window.innerWidth<820) ? 0.5 : 0;
+        var visBottom=MAPV.H*(1-sheetBias);
+        if(x<m||x>MAPV.W-m||y<m||y>visBottom-m){
+          var zz=MAPV.P.z, lat=pt[1];
+          if(sheetBias){ var nn=256*Math.pow(2,zz); lat=ilat(my(pt[1])+(MAPV.H-visBottom)/(2*nn)); }
+          MAPV.view={ lat:lat, lon:pt[2], z:zz };   // pan only, same zoom
+        }
       }
     }
     drawMap('mapHostF'); fullMapSheet(); fmBarPaint();
@@ -4037,14 +4130,25 @@ var AIDX = [
       var P=PV.baseP, x=P.X(pt[1]), y=P.Y(pt[0]);
       var dx=MAPV.W/2-x, dy=MAPV.H/2-y;
       var host=document.getElementById('mapHostF');
-      /* only re-render when the world layer is about to run out of canvas */
-      if(Math.abs(dx)>(MAPV.OX||0)*0.72||Math.abs(dy)>(MAPV.OY||0)*0.72){ pvRecenter(false); }
+      /* only re-render when the world layer is about to run out of canvas.
+         0.85 rather than 0.72: the tile layer now survives a redraw (see
+         paintTiles), so a recentre is cheap, but every one still means an
+         SVG rebuild and it is worth avoiding when the extra overscan margin
+         already covers it. */
+      if(Math.abs(dx)>(MAPV.OX||0)*0.85||Math.abs(dy)>(MAPV.OY||0)*0.85){ pvRecenter(false); }
       else if(host){
         var world=host.querySelector('.mapworld');
         if(world) world.style.transform='translate3d('+dx.toFixed(2)+'px,'+dy.toFixed(2)+'px,0)';
-        var d1=host.querySelector('#pvDot'), d2=host.querySelector('#pvHalo');
+        var d1=host.querySelector('#pvDot'), d2=host.querySelector('#pvHalo'), d3=host.querySelector('#pvHead');
         if(d1){ d1.setAttribute('cx',x.toFixed(2)); d1.setAttribute('cy',y.toFixed(2)); }
         if(d2){ d2.setAttribute('cx',x.toFixed(2)); d2.setAttribute('cy',y.toFixed(2)); }
+        if(d3){
+          var ahd2=routeLerp(Math.min(101.8,PV.mi+0.15)), bhd2=routeLerp(Math.max(0,PV.mi-0.15));
+          if(ahd2&&bhd2){
+            var heading2=Math.atan2(P.Y(ahd2[0])-P.Y(bhd2[0]), P.X(ahd2[1])-P.X(bhd2[1]))*180/Math.PI;
+            d3.setAttribute('transform','translate('+x.toFixed(2)+','+y.toFixed(2)+') rotate('+heading2.toFixed(1)+')');
+          }
+        }
       }
     }
     pvSheetUpdate(false); fmBarLive();
@@ -4431,7 +4535,7 @@ var AIDX = [
     var s=Math.min((W-pad*2)/dx,(H-pad*2)/dy);
     var ox=(W-dx*s)/2-x0*s, oy=(H-dy*s)/2-y0*s;
     var PX=function(lon){ return mx(lon)*s+ox; }, PY=function(lat){ return my(lat)*s+oy; };
-    var d=pts.map(function(p,k){ return (k?'L':'M')+PX(p[2]).toFixed(1)+','+PY(p[1]).toFixed(1); }).join('');
+    var d=smoothD(projPts(pts,PX,PY));
     var a0=pts[0], b0=pts[pts.length-1];
     return '<svg class="legsvg" viewBox="0 0 '+W+' '+H+'">'+
       '<path d="'+d+'" fill="none" stroke="var(--hair-2)" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>'+
@@ -4461,7 +4565,7 @@ var AIDX = [
         t.left.toFixed(2)+'px;top:'+t.top.toFixed(2)+'px;width:'+t.size.toFixed(2)+'px;height:'+
         t.size.toFixed(2)+'px" onerror="this.style.visibility=\'hidden\'">';
     }).join('');
-    var d=pts.map(function(p,k){ return (k?'L':'M')+P.X(p[2]).toFixed(1)+','+P.Y(p[1]).toFixed(1); }).join('');
+    var d=pathOf(pts,P);
     var a0=pts[0], b0=pts[pts.length-1];
     host.innerHTML='<div class="tiles" style="position:absolute;inset:0">'+tiles+'</div>'+
       '<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" style="position:absolute;left:0;top:0">'+
