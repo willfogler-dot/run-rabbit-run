@@ -1,95 +1,50 @@
-/* The Rabbit Hole — service worker
-   ═══════════════════════════════════════════════════════════════
-   Goal: the dashboard itself (this app shell) opens even with no
-   signal. Your actual data — Supabase, Garmin sync, the Jarvis API
-   call — still needs a real connection; this only makes sure the
-   page isn't blank when you don't have one.
-
-   Bump CACHE_VERSION whenever you want to force every device to pick
-   up a fresh shell right away instead of waiting for the natural
-   network-first refresh below.
-   ═══════════════════════════════════════════════════════════════ */
-const CACHE_VERSION = 'v92';
-const SHELL_CACHE = 'rabbithole-shell-' + CACHE_VERSION;
-const RUNTIME_CACHE = 'rabbithole-runtime-' + CACHE_VERSION;
-
-/* Live data, not app shell — never serve these from cache. Stale data
-   pretending to be fresh (a "readiness score" from three hours ago,
-   served silently) is worse than a clear network error. */
-const NEVER_CACHE_HOSTS = [
-  'supabase.co',
-  'generativelanguage.googleapis.com',
+/* RRR100 — offline shell.
+   Bump SHELL version to force clients to pick up an update. */
+const SHELL = 'rrr-shell-v56';
+const DOCS  = 'rrr-docs-v1';
+const TILES = 'rrr-tiles-v1';
+const FILES = [
+  './', './index.html',
+  // data and app are inlined into index.html
+  './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-180.png'
 ];
 
-self.addEventListener('install', function(event){
-  self.skipWaiting();
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(SHELL).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
 
-self.addEventListener('activate', function(event){
-  event.waitUntil(
+self.addEventListener('activate', e => {
+  e.waitUntil(
     caches.keys()
-      .then(function(keys){
-        return Promise.all(
-          keys.filter(function(k){ return k !== SHELL_CACHE && k !== RUNTIME_CACHE; })
-              .map(function(k){ return caches.delete(k); })
-        );
-      })
-      .then(function(){ return self.clients.claim(); })
+      .then(ks => Promise.all(ks.filter(k => k !== SHELL && k !== DOCS && k !== TILES).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
 });
 
-function isNeverCache(url){
-  return NEVER_CACHE_HOSTS.some(function(host){ return url.indexOf(host) >= 0; });
-}
+self.addEventListener('fetch', e => {
+  const req = e.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
 
-self.addEventListener('fetch', function(event){
-  const req = event.request;
-  if (req.method !== 'GET') return;               // never intercept writes
-  if (isNeverCache(req.url)) return;                // let live data pass straight through
-
-  /* The page itself: CACHE-FIRST, then refresh in the background.
-   *
-   * This was network-first, which meant every single launch waited on a 1.3 MB
-   * download before painting anything — on a phone, on mobile data, that is the
-   * whole of the cold-start delay. And it waited to fetch a file that is
-   * byte-identical to the cached one on all but the handful of launches
-   * following a deploy.
-   *
-   * Serving the cached shell immediately makes the app open at local-storage
-   * speed. The new version still downloads, just underneath, and is picked up
-   * on the next launch — which is exactly how native apps behave: you never
-   * wait for an update, you get it next time.
-   */
-  if (req.mode === 'navigate'){
-    event.respondWith(
-      caches.match(req).then(function(cached){
-        const fresh = fetch(req).then(function(res){
-          if (res && res.ok){
-            const copy = res.clone();
-            caches.open(SHELL_CACHE).then(function(c){ c.put(req, copy); });
-          }
-          return res;
-        }).catch(function(){ return cached || caches.match('./'); });
-        return cached || fresh;
-      })
+  // Map tiles: serve from cache first so a saved map works with no signal.
+  if (/arcgisonline\.com|nationalmap\.gov|opentopomap\.org/.test(url.host)) {
+    e.respondWith(
+      caches.match(req).then(hit => hit || fetch(req).catch(() => new Response('', { status: 504 })))
     );
     return;
   }
 
-  /* Everything else — the icon, Google Fonts, the Leaflet map bundle for
-     Routes: stale-while-revalidate. Show whatever's cached instantly,
-     quietly refresh it in the background for next time. */
-  event.respondWith(
-    caches.open(RUNTIME_CACHE).then(function(cache){
-      return cache.match(req).then(function(cached){
-        const network = fetch(req)
-          .then(function(res){
-            if (res && res.status === 200) cache.put(req, res.clone());
-            return res;
-          })
-          .catch(function(){ return cached; });
-        return cached || network;
-      });
-    })
+  if (url.origin !== location.origin) return;
+
+  // Network-first for the shell so updates land, cache fallback when there is no signal.
+  e.respondWith(
+    fetch(req)
+      .then(res => {
+        const copy = res.clone();
+        caches.open(SHELL).then(c => c.put(req, copy)).catch(() => {});
+        return res;
+      })
+      .catch(() => caches.match(req, { ignoreSearch: true })
+        .then(hit => hit || caches.match('./index.html')))
   );
 });
