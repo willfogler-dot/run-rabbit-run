@@ -109,7 +109,7 @@ b,strong{font-weight:650}
 a{color:var(--green-ink);text-decoration:none}
 button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;letter-spacing:inherit}
 .num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;letter-spacing:-.02em}
-.sec{color:var(--text-2);font-size:15.5px}
+.sec{color:var(--text-2);font-size:14.5px;line-height:1.45}
 .cap{color:var(--text-3);font-size:13.5px;line-height:1.45}
 .wrap{max-width:700px;margin:0 auto;padding:14px 16px 4px}
 .view{display:none}
@@ -120,7 +120,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;letter
 
 /* ── nav ─────────────────────────────────────────────────────── */
 .nav{position:sticky;top:0;z-index:40;
-  background:color-mix(in srgb, var(--bg) 78%, transparent);
+  background:color-mix(in srgb, var(--bg) 90%, transparent);
   -webkit-backdrop-filter:saturate(180%) blur(22px);backdrop-filter:saturate(180%) blur(22px);
   border-bottom:1px solid transparent;transition:border-color .25s, background .25s}
 .nav.stuck{border-bottom-color:var(--hair)}
@@ -137,10 +137,16 @@ button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;letter
   color:var(--green-ink);font-size:16px;font-weight:600;margin-left:-4px}
 .nav .back svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 .nav .back:active{opacity:.5}
+/* the detail title is a duplicate of the H1 until the H1 has scrolled away,
+   so it stays hidden until then and slides up into place */
+.nav .dt-ttl{flex:1;text-align:right;color:var(--text-2);
+  opacity:0;transform:translateY(5px);pointer-events:none;
+  transition:opacity .22s var(--ease), transform .22s var(--ease)}
+.nav.titled .dt-ttl{opacity:1;transform:none}
 
 .phead{padding:8px 0 16px}
 .phead h1{margin-bottom:5px}
-.phead .sec{font-size:16px}
+.phead .sec{font-size:15px;max-width:34em}
 
 /* ── cards: resting elevation ────────────────────────────────── */
 .card{background:linear-gradient(180deg, var(--card) 0%, var(--card-2) 100%);
@@ -204,8 +210,8 @@ button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;letter
   box-shadow:inset 0 1px 0 rgba(255,255,255,.09)}
 .stats .k{font-size:12.5px;font-weight:500;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hero .stats .k,.idcard .stats .k{color:rgba(237,244,239,.62)}
-.stats .v{font-size:17px;font-weight:650;letter-spacing:-.024em;margin-top:2px;
-  font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stats .v{font-size:15.5px;font-weight:650;letter-spacing:-.026em;margin-top:2px;
+  font-variant-numeric:tabular-nums;line-height:1.22;overflow-wrap:break-word}
 .hero .stats .v,.idcard .stats .v{color:#fff}
 .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:2px 0 16px}
 .metrics.two{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -249,7 +255,9 @@ button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;letter
 .seg button{flex:1;min-width:0;border:0;background:transparent;border-radius:var(--r-sm);padding:8px 3px;
   font-size:13.5px;font-weight:600;color:var(--text-2);
   transition:background .22s var(--ease), color .22s, box-shadow .22s, transform .15s var(--spring)}
-.seg button small{display:block;font-size:11.5px;font-weight:500;opacity:.7;margin-top:1px;font-variant-numeric:tabular-nums}
+.seg button small{display:block;font-size:10.5px;font-weight:500;opacity:.7;margin-top:2px;
+  font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg button{align-self:stretch}
 .seg button.on{background:var(--card);color:var(--text);box-shadow:var(--e1), var(--e0)}
 .seg button:active{transform:scale(.97)}
 .seg.compact button small{display:none}
@@ -271,14 +279,29 @@ button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;letter
 .item.current{background:var(--gold-tint)}
 .item.current .lead{background:var(--gold-solid);color:#fff}
 .item .mid{flex:1;min-width:0}
-.item .nm{font-size:16.5px;font-weight:600;letter-spacing:-.018em;line-height:1.3}
-.item .dt{font-size:14.5px;color:var(--text-3);margin-top:2px;line-height:1.35}
+.item .nm{font-size:16px;font-weight:600;letter-spacing:-.018em;line-height:1.3}
+.item .dt{font-size:13.5px;color:var(--text-3);margin-top:2px;line-height:1.35}
+/* the aid list is the one place a wrapped meta line looked broken, because
+   it wrapped underneath the mile badge. One line, clipped if it must be. */
+#aidList .item .dt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .item .rt{flex:0 0 auto;text-align:right}
 .item .rt .a{font-size:16px;font-weight:650;font-variant-numeric:tabular-nums;letter-spacing:-.024em}
 .item .rt .b{font-size:13px;color:var(--text-3);margin-top:1px}
 .item .ico{flex:0 0 31px;height:31px;border-radius:var(--r-sm);background:var(--green-tint);
   display:flex;align-items:center;justify-content:center}
 .item .ico svg{width:17px;height:17px;stroke:var(--green-ink);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+/* press feedback: every tappable row now acknowledges the tap */
+.item{transition:background .12s var(--ease), transform .12s var(--ease)}
+.item:active{background:var(--fill);transform:scale(.994)}
+.acc-hd{transition:background .12s var(--ease)}
+.acc-hd:active{background:var(--fill)}
+.planCard{transition:box-shadow .18s var(--ease)}
+/* the dots that replaced the C / P / B letter codes */
+.tgs{display:inline-flex;gap:3px;vertical-align:middle;margin-left:5px}
+.tg{width:6px;height:6px;border-radius:4px;display:inline-block}
+.tg.c{background:var(--green)}
+.tg.p{background:var(--gold-solid)}
+.tg.b{background:var(--text-3)}
 .item .ico.g{background:var(--gold-tint)} .item .ico.g svg{stroke:var(--gold)}
 .item .ico.r{background:var(--red-tint)} .item .ico.r svg{stroke:var(--red)}
 .item .count{flex:0 0 auto;font-size:14.5px;color:var(--text-3);font-variant-numeric:tabular-nums}
@@ -307,7 +330,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;letter
   font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums}
 .acc-t{flex:1;min-width:0}
 .acc-t .t{display:block;font-size:16.5px;font-weight:650;letter-spacing:-.018em;line-height:1.3}
-.acc-t .s{display:block;font-size:14.5px;color:var(--text-3);margin-top:2px;line-height:1.35}
+.acc-t .s{display:block;font-size:13.5px;color:var(--text-3);margin-top:2px;line-height:1.35}
 .acc-bd{display:none;padding:2px 16px 18px}
 .acc.open .acc-bd{display:block;animation:viewIn .3s var(--ease)}
 .acc.open .chev{transform:rotate(90deg)}
@@ -316,7 +339,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;letter
 .acc-bd p,.sh p{line-height:1.52}
 
 /* ── callouts & quotes ───────────────────────────────────────── */
-.callout{border-radius:var(--r-md);padding:13px 15px;margin:13px 0;font-size:15.5px;line-height:1.48;
+.callout{border-radius:var(--r-md);padding:12px 14px;margin:12px 0;font-size:14.5px;line-height:1.45;
   box-shadow:var(--e0)}
 .callout.w{background:var(--red-tint);color:color-mix(in srgb, var(--red) 82%, var(--text))}
 .callout.w b{color:var(--red)}
@@ -337,10 +360,67 @@ blockquote{margin:13px 0;padding:2px 0 2px 14px;border-left:2.5px solid var(--ha
   box-shadow:0 2px 5px -1px color-mix(in srgb, var(--green) 45%, transparent)}
 .chk input:checked::after{content:"";position:absolute;left:7.5px;top:3.5px;width:5px;height:11px;
   border:solid #fff;border-width:0 2.4px 2.4px 0;transform:rotate(42deg)}
-.chk span{font-size:16.5px;line-height:1.4;padding-top:1px}
-.chk span em{display:block;font-size:14px;color:var(--text-3);font-style:normal;margin-top:1px}
+.chk span{font-size:15.5px;line-height:1.4;padding-top:1px}
+.chk span em{display:block;font-size:13px;color:var(--text-3);font-style:normal;margin-top:1px}
 .chk input:checked+span{color:var(--text-3)}
 .chk input:checked+span em{opacity:.7}
+
+/* ── race day planner: a card per check-in ───────────────────────
+   Read-only by default. The edit grid only appears behind the Edit
+   button, so nothing can be nudged with a thumb at mile 70. */
+.planCard{background:var(--card);border:1px solid var(--hair);border-radius:var(--r-lg);
+  padding:13px 14px;margin-bottom:10px;box-shadow:var(--e1)}
+.planCard.tight{border-color:color-mix(in srgb, var(--gold) 45%, var(--hair))}
+.planCard.bad{border-color:color-mix(in srgb, var(--red) 55%, var(--hair));background:var(--red-tint)}
+.planHd{display:flex;align-items:flex-start;gap:11px}
+.planNo{flex:0 0 26px;height:26px;border-radius:8px;background:var(--green-tint);color:var(--green-ink);
+  font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  font-variant-numeric:tabular-nums}
+.planCard.bad .planNo{background:var(--red);color:#fff}
+.planTo{flex:1;min-width:0}
+.planTo b{display:block;font-size:16.5px;font-weight:700;letter-spacing:-.015em;line-height:1.2}
+.planTo span{display:block;font-size:12.5px;color:var(--text-3);margin-top:2px}
+.planAt{flex:0 0 auto;text-align:right}
+.planAt b{display:block;font-size:16.5px;font-weight:700;font-variant-numeric:tabular-nums;
+  letter-spacing:-.02em;white-space:nowrap}
+.planAt span{display:block;font-size:11.5px;color:var(--text-3);margin-top:1px}
+.planChips{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.planChips span{font-size:12px;font-weight:550;color:var(--text-2);background:var(--fill);
+  border-radius:7px;padding:3px 8px;font-variant-numeric:tabular-nums}
+.planChips span.ok{background:var(--green-tint);color:var(--green-ink)}
+.planChips span.warn{background:var(--gold-tint);color:var(--gold)}
+.planChips span.no{background:var(--red-tint);color:var(--red)}
+.planChips.fuel{margin-top:8px}
+.planNote{margin-top:10px;background:var(--gold-tint);color:var(--gold);border-radius:8px;
+  padding:6px 10px;font-size:13px;font-weight:650}
+.planFuel{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.planFuel>div{background:var(--sunken);border:1px solid var(--hair);border-radius:var(--r-md);padding:8px 10px;min-width:0}
+.planFuel span{display:block;font-size:10.5px;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--text-3)}
+.planFuel b{display:block;font-size:13.5px;font-weight:600;line-height:1.3;margin-top:2px}
+@media (max-width:430px){ .planFuel{grid-template-columns:1fr} }
+.planEditGrid{margin-top:11px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.planEditGrid label{display:block;font-size:11px;font-weight:700;letter-spacing:.03em;
+  text-transform:uppercase;color:var(--text-3);min-width:0}
+.planEditGrid label.wide{grid-column:1/-1}
+.planEditGrid input{width:100%;margin-top:3px;border:1px solid var(--hair-2);border-radius:var(--r-sm);
+  background:var(--card);color:var(--text);font-size:15px;font-weight:600;padding:8px 9px;
+  font-family:inherit;text-transform:none;letter-spacing:normal}
+.planEditGrid input:focus{border-color:var(--green);outline:0;
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--green) 12%, transparent)}
+
+/* the printed sheet exists only on paper */
+.plan-print{display:none}
+/* .bmeta is a single right-aligned stat in the crew brief; the planner puts
+   six across, so it needs its own row layout rather than stacking them */
+.plan-print .bmeta{display:flex;flex-wrap:wrap;gap:20px;text-align:left;
+  border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+  padding:8px 0;margin:10px 0 12px}
+.plan-print .bmeta>div{min-width:0}
+.plan-print .bmeta span{display:block;font-size:9px;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--text-3)}
+.plan-print .bmeta b{display:block;font-size:16px;color:var(--green-ink);
+  font-variant-numeric:tabular-nums;margin-top:1px}
 
 /* ── pace editor: leg, time allowed, resulting arrival ───────────
    Three columns so the numbers line up down the page and a mistyped leg is
@@ -402,7 +482,7 @@ blockquote{margin:13px 0;padding:2px 0 2px 14px;border-left:2.5px solid var(--ha
 
 /* ── tab bar ─────────────────────────────────────────────────── */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;
-  background:color-mix(in srgb, var(--card) 80%, transparent);
+  background:color-mix(in srgb, var(--card) 92%, transparent);
   -webkit-backdrop-filter:saturate(180%) blur(24px);backdrop-filter:saturate(180%) blur(24px);
   border-top:1px solid var(--hair);padding-bottom:var(--sb);
   box-shadow:0 -1px 0 rgba(255,255,255,.4) inset}
@@ -464,7 +544,7 @@ blockquote{margin:13px 0;padding:2px 0 2px 14px;border-left:2.5px solid var(--ha
   box-shadow:var(--e1), inset 3px 0 0 var(--red)}
 .card.live .stats>div{background:var(--sunken)}
 /* station names are long; wrap rather than truncate to "Lane of ..." */
-.card.live .stats .v{white-space:normal;font-size:15.5px;line-height:1.22;overflow:visible;text-overflow:clip}
+
 
 .maphost{position:relative;overflow:hidden;background:var(--sunken)}
 .maphost .tiles{position:absolute;inset:0}
@@ -987,10 +1067,15 @@ body.raceday .nav .dot{background:var(--red);box-shadow:0 0 0 3px color-mix(in s
 .empty{text-align:center;padding:30px 20px;color:var(--text-3);font-size:15.5px}
 table.an{width:100%;border-collapse:collapse;font-size:14.5px;font-variant-numeric:tabular-nums}
 table.an th{text-align:right;font-weight:600;font-size:12.5px;color:var(--text-3);
-  padding:0 7px 9px;border-bottom:1px solid var(--hair-2);white-space:nowrap}
+  padding:0 5px 9px;border-bottom:1px solid var(--hair-2);white-space:nowrap}
+table.an th:last-child,table.an td:last-child{padding-right:0}
 table.an th:first-child{text-align:left}
-table.an td{padding:11px 7px;border-bottom:1px solid var(--hair);text-align:right;white-space:nowrap}
-table.an td:first-child{text-align:left;font-weight:550;min-width:158px}
+table.an td{padding:11px 5px;border-bottom:1px solid var(--hair);text-align:right;white-space:nowrap}
+/* the name wraps so the four columns worth reading at a glance -- station,
+   mile, clock, elapsed -- clear the fold; Leg, Avg and Cutoff scroll */
+table.an td:first-child{text-align:left;font-weight:550;min-width:126px;max-width:150px;
+  white-space:normal;line-height:1.28;padding-left:0}
+table.an th:first-child{padding-left:0}
 table.an tr:last-child td{border-bottom:0}
 .scrollx{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px}
 
@@ -1075,6 +1160,15 @@ table.an tr:last-child td{border-bottom:0}
   .btable tr.key td{background:#faf0da!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .bcols{grid-template-columns:1fr 1fr;gap:6pt}
   .bcard p{font-size:8pt}
+  /* the race day planner prints its own sheet, not the screen cards */
+  .plan-print{display:block!important}
+  .planCard,.paceList{display:none!important}
+  .plan-print .bmeta{gap:14pt;padding:5pt 0;margin:6pt 0 8pt}
+  .plan-print .bmeta b{font-size:12pt}
+  .plan-print .bmeta span{font-size:6.5pt}
+  .plan-print .btable{font-size:7.6pt}
+  .plan-print .btable td{padding:3pt 4pt 3pt 0;vertical-align:top}
+  @page{ size:A4 landscape; margin:10mm; }
 }
 </style>
 </head>
@@ -1272,7 +1366,7 @@ var RACE = { startISO:'2026-09-18T09:00:00-06:00', tz:'America/Denver', dark:[[6
 
 var PLANS = [
   { k:'goal',   name:'Goal',        sub:'29:38' },
-  { k:'field',  name:'2025 field',  sub:'30:11 avg' },
+  { k:'field',  name:'2025 field',  sub:'30:11' },
   { k:'steady', name:'Steady',      sub:'32:00' },
   { k:'slow',   name:'Cutoff',      sub:'36:00' }
 ];
@@ -2367,23 +2461,72 @@ var PACERS = [
 
 var MANDATORY = ['Headlamp, waist lamp or torch — plus a backup in case one fails','Warm jacket','Space blanket or equivalent','Raincoat or equivalent','Gloves'];
 
+/* Gear, matching the Gear Checklist tab of RRR Printables.xlsx. Notes are
+   free text and editable in the app; the lists themselves come from there. */
 var GEAR = [
   { name:'Running gear', items:[
-    ['Altra Lone Peaks','need a fresh pair'],['Altra Timps',''],['4 pairs of socks','need more'],
-    ['Gloves','need to order — mandatory'],['Headlamp and backup',''],['Space blanket','need to buy — mandatory'],
-    ['Rain jacket','need a real one — mandatory'],['Norrøna jacket','warm layer — mandatory'],
-    ['Sunglasses',''],['Poles','for the finish descent'],['Running vest',''],
-    ['3 × 0.5 L soft flasks',''],['1 × 1 L bladder','']
+    ['Altra Lone Peaks',''],['Altra Timps',''],['Mount to Coast H1',''],
+    ['4 pairs of socks',''],['Gloves','mandatory'],['Headlamp x2','mandatory'],
+    ['Flashlight — backup',''],['Space blanket / bivy','mandatory'],
+    ['Salomon rain jacket','mandatory'],['Norrona jacket','warm layer — mandatory'],
+    ['Leggings / tights',''],['Long sleeve T-shirt',''],['Sunglasses',''],
+    ['Poles','for the finish descent'],['Quiver',''],['Running vest',''],
+    ['0.5L bladder (x3)',''],['1L bladder (x1)',''],['Water filter attachment',''],
+    ['Reusable cup',''],['Beanie',''],['Neck gaiter','']
   ]},
-  { name:'Aid station items', items:[
-    ['Tums','buy'],['Chapstick','buy'],['Eye drops','not Rohto'],['Squirrel Nut Butter','anti-chafe'],
-    ['Beef tallow','restock'],['Sunscreen','restock'],['Big camping chair','buy — for Olympian']
+  { name:'Aid stations / with crew', items:[
+    ['Sunscreen',''],['Chapstick',''],['Tums',''],['Eye drops',''],['Lube',''],
+    ['Large camping chair','for Olympian'],['Massage gun',''],['Portable charger x2',''],
+    ['Watch charger',''],['Salt sticks',''],['Dude wipes',''],['First aid kit',''],
+    ['Blister cushions','']
   ]},
-  { name:'Food to buy race week', items:[
-    ['Beef sticks',''],['Smucker\'s',''],['Coke',''],['Ramen cups','needs hot water — sort this out'],
-    ['Ritz crackers',''],['Goldfish',''],['Swedish Fish',''],['Bacon','']
+  { name:'Night ops', items:[
+    ['Headlamp',''],['Norrona jacket',''],['Leggings / tights',''],['Gloves',''],
+    ['Stance night socks',''],['Altra Timps',''],['Space blanket / bivy',''],
+    ['Beanie',''],['Neck gaiter',''],['Night ops (back up)','into the Summit Lake bag'],
+    ['Flashlight',''],['Oakley jacket',''],['Backup midlayer',''],['Backup gloves','']
+  ]},
+  { name:'Food', items:[
+    ['Beef sticks',''],['Salami',''],['Smuckers',''],['Coca Cola',''],
+    ['Ramen noodles','needs hot water'],['Ritz crackers',''],['Goldfish',''],
+    ['Swedish Fish',''],['Bacon',''],['Homemade sandwich',''],
+    ['Precision Fuel 90g carb gels',''],['Mashed potatoes',''],['Ginger chews','']
   ]}
 ];
+
+/* The race-day plan, leg by leg, from RRR Printables.xlsx.
+   Index n is the leg ARRIVING at STATIONS[n+1].
+     aid   what he eats on arriving at that aid station
+     seg   what he eats during the leg itself
+     ac    carbs (g) taken at the aid station
+     sc    carbs (g) taken during the segment
+     caps  salt capsules over the leg
+     water litres carried over the leg
+     caf   caffeine (mg)
+     note  crew and pacer plan for that stop
+   Everything here is a starting point; all of it is editable in the app and
+   the edits ride along in the shared plan so the crew see the same thing. */
+var FUELPLAN = [
+  { aid:'Fruit', seg:'90g Carbs', ac:30, sc:90, caps:4, water:1, caf:150, note:'' },
+  { aid:'Schmucker + Goldfish + Fruit', seg:'90g Carbs', ac:75, sc:90, caps:1, water:1, caf:0, note:'' },
+  { aid:'Fruit', seg:'90g Carbs', ac:30, sc:90, caps:4, water:1, caf:0, note:'' },
+  { aid:'Fruit', seg:'90g Carbs', ac:30, sc:90, caps:3, water:1, caf:0, note:'Back up night ops in the drop bag' },
+  { aid:'Fruit', seg:'Swedish Fish (30g Carbs)', ac:30, sc:30, caps:3, water:0.5, caf:0, note:'' },
+  { aid:'Schmucker + Goldfish + Cookies', seg:'Swedish Fish (60g Carbs)', ac:70, sc:60, caps:1, water:1, caf:0, note:'Meet Megan and pick up Emma' },
+  { aid:'Sandwich + Salami + Mashed Potatoes + Cookies', seg:'—', ac:100, sc:0, caps:0, water:1, caf:25, note:'Emma pacing' },
+  { aid:'Fruit', seg:'—', ac:30, sc:0, caps:2, water:0.5, caf:0, note:'Chris pacing' },
+  { aid:'Fruit', seg:'—', ac:30, sc:0, caps:2, water:0.5, caf:0, note:'Chris pacing' },
+  { aid:'Ramen + Mashed Potatoes + Cheese', seg:'Swedish Fish (60g Carbs)', ac:125, sc:60, caps:0, water:1, caf:150, note:'Chris pacing' },
+  { aid:'Fruit + Cookies', seg:'90g Carbs + Swedish Fish (30g Carbs)', ac:60, sc:120, caps:5, water:1.5, caf:150, note:'Chris pacing' },
+  { aid:'Fruit', seg:'90g Carbs + Swedish Fish (30g Carbs)', ac:30, sc:120, caps:6, water:1.5, caf:50, note:'Drop Chris at Dry Lake' },
+  { aid:'Fruit + Cookies', seg:'90g Carbs', ac:60, sc:90, caps:2, water:1, caf:50, note:'' },
+  { aid:'Fruit', seg:'90g Carbs', ac:30, sc:90, caps:5, water:1.5, caf:50, note:'' },
+  { aid:'As much as possible', seg:'Swedish Fish (90g Carbs)', ac:60, sc:90, caps:4, water:1, caf:0, note:'' },
+  { aid:'—', seg:'—', ac:0, sc:0, caps:2, water:0.5, caf:0, note:'' }
+];
+
+/* Sodium per salt capsule, from the label. Drives every mg/hr figure. */
+var NA_PER_CAP = 215;
 
 var TOBUY = ['Space blanket','Big camping chair','Rain jacket','Gloves','Socks','Fresh Lone Peaks'];
 
@@ -2510,7 +2653,7 @@ var AIDX = [
 (function () {
   'use strict';
   var START = new Date(RACE.startISO).getTime(), MIN = 60000;
-  var S = { mode:null, plan:'goal', proj:'pace', theme:'light', gps:false, atomWho:{}, checks:{}, custom:[], people:[], notes:{}, splits:{}, aidOv:{}, bib:'', me:null, hidePast:false, gearAdd:{}, gearRemoved:{}, gearOverride:{}, paceOv:{} };
+  var S = { mode:null, plan:'goal', proj:'pace', theme:'light', gps:false, atomWho:{}, checks:{}, custom:[], people:[], notes:{}, splits:{}, aidOv:{}, bib:'', me:null, hidePast:false, gearAdd:{}, gearRemoved:{}, gearOverride:{}, paceOv:{}, fuelOv:{} };
 
   /* Where a map link is safe. Fish Creek has no vehicle access at all, and a
      map to Summit Lake routes up Buffalo Pass Road, which is a disqualification. */
@@ -2539,7 +2682,8 @@ var AIDX = [
     ls('rrr.gps',S.gps?'1':''); ls('rrr.atomwho',JSON.stringify(S.atomWho||{}));
     ls('rrr.gearadd',JSON.stringify(S.gearAdd||{})); ls('rrr.gearrm',JSON.stringify(S.gearRemoved||{}));
     ls('rrr.gearov',JSON.stringify(S.gearOverride||{}));
-    ls('rrr.paceov',JSON.stringify(S.paceOv||{})); }
+    ls('rrr.paceov',JSON.stringify(S.paceOv||{}));
+    ls('rrr.fuelov',JSON.stringify(S.fuelOv||{})); }
 
   var fT = new Intl.DateTimeFormat('en-US',{timeZone:RACE.tz,hour:'numeric',minute:'2-digit'});
   var fD = new Intl.DateTimeFormat('en-US',{timeZone:RACE.tz,weekday:'short'});
@@ -3118,12 +3262,15 @@ var AIDX = [
         '<div class="rt"><div class="a" style="color:'+(b<0?'var(--red)':b<180?'var(--gold)':'var(--green)')+'">'+dur(b)+'</div>'+
         '<div class="b">'+(b<0?'past cutoff':'to spare')+'</div></div></div>';
     }).join('');
-    var h='<thead><tr><th>Aid station</th><th>Mi</th><th>'+esc(planName)+'</th><th>Leg</th><th>Avg</th><th>Cutoff</th></tr></thead><tbody>';
+    var h='<thead><tr><th>Aid station</th><th>Mi</th><th>'+esc(planName)+'</th><th>Elapsed</th>'+
+      '<th>Leg</th><th>Avg</th><th>Cutoff</th></tr></thead><tbody>';
     STATIONS.forEach(function(x){
       var lg=splitVal(x.__i)!=null;
       h+='<tr'+(lg?' style="background:var(--green-tint)"':x.major?' style="background:var(--surface-2)"':'')+
         '><td>'+x.name+(lg?' \u2713':'')+'</td><td>'+x.mi.toFixed(1)+'</td>'+
-        '<td><b>'+clk(T(x))+'</b></td><td>'+(x.__i>0?legPace(x.__i):'\u2014')+'</td><td>'+
+        '<td><b>'+clk(T(x))+'</b></td>'+
+        '<td style="color:var(--text-2)">'+(x.__i>0?dur(T(x)):'\u2014')+'</td>'+
+        '<td>'+(x.__i>0?legPace(x.__i):'\u2014')+'</td><td>'+
         (x.__i>0?cumPace(x.__i):'\u2014')+'</td>'+
         '<td style="color:'+(x.cut!=null?'var(--red)':'var(--text-3)')+'">'+(x.cut!=null?clk(x.cut):'—')+'</td></tr>';
     });
@@ -3268,7 +3415,7 @@ var AIDX = [
   function noteCount(){ return Object.keys(S.notes).length; }
 
   var DETAILS = {
-    pace:   {t:'Pace and splits',  b:buildPace},
+    pace:   {t:'Race day planner', b:buildPace},
     gear:   {t:'Gear checklist',   b:buildGear},
     bags:   {t:'Drop bags',        b:buildBags},
     carries:{t:'Long carries',     b:buildCarries},
@@ -3301,7 +3448,7 @@ var AIDX = [
       '<div><div class="k">Team</div><div class="v num">'+((pc+pp)||'\u2014')+'</div></div></div></div>'+
 
       '<div class="grp"><div class="grp-t">Race kit</div><div class="list">'+
-      row('pace','clock','g','Goal pace and splits','Your target times and crew ETAs',dur(planFinish()))+
+      row('pace','clock','g','Race day planner','Splits, fuel and who is with you',dur(planFinish()))+
       row('gear','gear','g','Gear checklist','Mandatory five plus your own lists',g[0]+'/'+g[1])+
       row('bags','bag','','Drop bags','Two bags, four visits',bg[0]+'/'+bg[1])+
       row('carries','water','','Long carries','Where there is no water')+
@@ -3346,7 +3493,7 @@ var AIDX = [
     if(!noPush){ try{ history.pushState({detail:k},''); }catch(e){} }
   }
   function closeDetail(){
-    detailKey=null;
+    detailKey=null; PLANEDIT=false;
     document.querySelectorAll('.view').forEach(function(x){x.classList.remove('on');});
     document.getElementById('r-profile').classList.add('on');
     setNav(false); renderProfile(); window.scrollTo(0,0);
@@ -3363,8 +3510,9 @@ var AIDX = [
     var el=document.querySelector('.nav-in'); if(!el) return;
     if(inDetail){
       el.innerHTML='<button class="back" id="dBack"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Profile</button>'+
-        '<span class="t" style="flex:1;text-align:right;color:var(--text-2)">'+esc(title)+'</span>';
+        '<span class="t dt-ttl">'+esc(title)+'</span>';
       document.getElementById('dBack').onclick=function(){ history.back(); };
+      if(window.navScroll) window.navScroll();
     } else {
       el.innerHTML='<div class="who"><span class="dot"></span><span class="t" id="navT">'+esc(NAVT)+'</span></div>'+
         '<span class="rclock" id="navClock" style="display:none"></span>'+
@@ -3497,76 +3645,219 @@ var AIDX = [
     if(/^\d+(\.\d+)?$/.test(str)) return Math.round(parseFloat(str));   // bare minutes
     return null;
   }
+  /* ═══════════════ RACE DAY PLANNER ═══════════════
+     The screen he actually stands at an aid station and reads. Splits,
+     fuel and the crew/pacer plan for every leg in one place, read-only by
+     default so nothing gets nudged with a thumb, and printable.
+
+     Fuel and notes layer over FUELPLAN the same way splits layer over the
+     station table: defaults in data.js, edits in S.fuelOv, and the whole
+     lot rides in the shared plan so the crew see what he plans to eat at
+     their station. */
+  var PLANEDIT = false;
+  function fuelBase(i){ return FUELPLAN[i-1] || {aid:'',seg:'',ac:0,sc:0,caps:0,water:0,caf:0,note:''}; }
+  function fuelFor(i){
+    var b=fuelBase(i), o=(S.fuelOv&&S.fuelOv[i])||{}, r={};
+    ['aid','seg','note'].forEach(function(k){ r[k]=(o[k]!=null?o[k]:b[k])||''; });
+    ['ac','sc','caps','water','caf'].forEach(function(k){
+      var v=(o[k]!=null?o[k]:b[k]); r[k]=isFinite(v)?+v:0;
+    });
+    return r;
+  }
+  function setFuel(i, patch){
+    S.fuelOv=S.fuelOv||{};
+    var cur=S.fuelOv[i]||{};
+    for(var k in patch) cur[k]=patch[k];
+    S.fuelOv[i]=cur;
+    save(); markDirty(); render();
+  }
+  function fuelEdited(){
+    var o=S.fuelOv||{};
+    for(var k in o){ for(var f in o[k]) return true; }
+    return false;
+  }
+  function resetFuel(){ S.fuelOv={}; save(); markDirty(); render(); }
+  function fuelTotals(){
+    var mins=paceNow(), t={ac:0,sc:0,caps:0,water:0,caf:0,mins:mins[STATIONS.length-1]};
+    for(var i=1;i<STATIONS.length;i++){
+      var f=fuelFor(i);
+      t.ac+=f.ac; t.sc+=f.sc; t.caps+=f.caps; t.water+=f.water; t.caf+=f.caf;
+    }
+    var h=t.mins/60;
+    t.carbs=t.ac+t.sc;
+    t.carbsHr = h>0 ? t.carbs/h : 0;
+    t.naHr    = h>0 ? t.caps*NA_PER_CAP/h : 0;
+    t.waterHr = h>0 ? t.water/h : 0;
+    return t;
+  }
+  function num1(n){ return (Math.round(n*10)/10).toFixed(1); }
+
   function buildPace(){
     var fin=STATIONS[STATIONS.length-1];
     var mins=paceNow(), finMins=mins[STATIONS.length-1];
-    var edited=paceEdited();
-    var planName=(PLANS.filter(function(p){return p.k===S.plan;})[0]||{}).name||'Plan';
+    var T=fuelTotals(), ed=PLANEDIT;
     var busts=0;
     for(var q=1;q<STATIONS.length;q++)
       if(STATIONS[q].cut!=null && mins[q]>STATIONS[q].cut) busts++;
 
-    var out='<div class="card">'+
+    var out='<div class="card no-print">'+
       '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:2px">'+
-        '<h3>'+esc(planName)+'</h3>'+
-        (edited?'<span class="pill gold">Edited</span>':'<span class="pill grey">Built-in</span>')+'</div>'+
-      '<p class="sec">What you actually expect to run. Every arrival time, cutoff margin and crew ETA follows this — including the ones on your crew and pacers’ phones.</p>'+
+        '<h3>Race day</h3>'+
+        (ed?'<span class="pill gold">Editing</span>':'')+'</div>'+
+      '<p class="sec">Your splits, your fuel and who is with you, leg by leg. This is the page to open at an aid station. Everything here is on your crew and pacers’ phones too.</p>'+
       '<div class="metrics" style="margin-top:12px">'+
         '<div><div class="k">Finish</div><div class="v num">'+dur(finMins)+'</div></div>'+
         '<div><div class="k">Average</div><div class="v num">'+pace(fin.mi,finMins)+'/mi</div></div>'+
         '<div><div class="k">Margin</div><div class="v num" style="color:'+
           (RACE.limit-finMins<0?'var(--red)':'var(--text)')+'">'+dur(RACE.limit-finMins)+'</div></div>'+
       '</div>'+
+      '<div class="metrics" style="margin-top:8px">'+
+        '<div><div class="k">Carbs</div><div class="v num">'+Math.round(T.carbsHr)+' g/hr</div></div>'+
+        '<div><div class="k">Sodium</div><div class="v num">'+Math.round(T.naHr)+' mg/hr</div></div>'+
+        '<div><div class="k">Water</div><div class="v num">'+num1(T.water)+' L</div></div>'+
+      '</div>'+
       (busts?'<div class="callout w" style="margin-top:12px"><b>'+busts+
-        (busts===1?' stop is':' stops are')+' past the cutoff on this plan.</b> They are marked in red below.</div>':'')+
-      '<div class="fld" style="margin-top:14px"><label>Target finish</label>'+
-        '<input id="paceFin" type="text" inputmode="numeric" value="'+hm(finMins)+'" placeholder="29:38"></div>'+
-      '<button class="btn" id="paceApply">Stretch the whole plan to that finish</button>'+
-      '<p class="cap" style="margin-top:9px">Scales every leg by the same amount. To change one leg on its own, edit it below.</p>'+
-      (edited?'<button class="btn ghost sm" id="paceReset" style="margin-top:10px">Reset to the built-in '+esc(planName)+' plan</button>':'')+
+        (busts===1?' stop is':' stops are')+' past the cutoff.</b> Marked in red below.</div>':'')+
+      '<div class="btn-row" style="margin-top:14px">'+
+        '<button class="btn'+(ed?'':' tint')+'" id="planEdit">'+(ed?'Done editing':'Edit the plan')+'</button>'+
+        '<button class="btn tint" id="planPrint">Print / save as PDF</button>'+
+      '</div>'+
+      (ed?'<div class="fld" style="margin-top:12px"><label>Stretch every leg to a target finish</label>'+
+          '<input id="paceFin" type="text" inputmode="numeric" value="'+hm(finMins)+'" placeholder="29:38"></div>'+
+          '<button class="btn tint sm" id="paceApply">Apply that finish</button>':'')+
+      ((ed&&(paceEdited()||fuelEdited()))?'<button class="btn ghost sm" id="planReset" style="margin-top:10px">Reset splits and fuel to the built-in plan</button>':'')+
     '</div>';
 
-    out+='<div class="card"><h3>Leg by leg</h3>'+
-      '<p class="sec">Time allowed for each leg. Change one and every stop after it moves by the same amount.</p>'+
-      '<div class="paceList">';
+    /* one card per check-in: when you arrive, what you do there, what you
+       carry out, and who is with you */
+    out+='<div class="no-print">';
     for(var i=1;i<STATIONS.length;i++){
-      var A=STATIONS[i-1], B=STATIONS[i];
+      var A=STATIONS[i-1], B=STATIONS[i], f=fuelFor(i);
       var legm=mins[i]-mins[i-1], d=+(B.mi-A.mi).toFixed(1);
       var cut=B.cut, late=(cut!=null && mins[i]>cut), tight=(cut!=null && !late && (cut-mins[i])<180);
-      out+='<div class="paceRow'+(late?' bad':(tight?' tight':''))+'">'+
-        '<div class="paceNm"><b>'+esc(B.name)+'</b>'+
-          '<span>'+d.toFixed(1)+' mi · '+pace(d,legm)+'/mi</span></div>'+
-        '<div class="paceIn"><input type="text" inputmode="numeric" data-leg="'+i+'" value="'+hm(legm)+'"></div>'+
-        '<div class="paceArr"><b>'+clk(mins[i])+'</b><span>'+
-          (late?'past cutoff':(cut!=null?dur(cut-mins[i])+' spare':dyOf(mins[i])))+'</span></div>'+
-      '</div>';
+      var carbs=f.ac+f.sc, hrs=legm/60;
+      out+='<div class="planCard'+(late?' bad':(tight?' tight':''))+'">'+
+        '<div class="planHd">'+
+          '<div class="planNo">'+i+'</div>'+
+          '<div class="planTo"><b>'+esc(B.name)+'</b>'+
+            '<span>'+d.toFixed(1)+' mi from '+esc(A.name)+' · '+ft(B.gain||0)+' ft up</span></div>'+
+          '<div class="planAt"><b>'+clk(mins[i])+'</b><span>'+dyOf(mins[i])+'</span></div>'+
+        '</div>'+
+        '<div class="planChips">'+
+          '<span>'+hm(legm)+' leg</span>'+
+          '<span>'+pace(d,legm)+'/mi</span>'+
+          '<span>'+dur(mins[i])+' in</span>'+
+          (cut!=null?'<span class="'+(late?'no':(tight?'warn':'ok'))+'">'+
+            (late?'past cutoff '+clk(cut):dur(cut-mins[i])+' spare')+'</span>':'')+
+          (B.bag?'<span class="ok">Drop bag</span>':'')+
+        '</div>';
+      if(ed){
+        out+='<div class="planEditGrid">'+
+          '<label>Leg time<input type="text" inputmode="numeric" data-leg="'+i+'" value="'+hm(legm)+'"></label>'+
+          '<label>Crew / pacer<input type="text" data-fx="note" data-fi="'+i+'" value="'+esc(f.note)+'" placeholder="who is here"></label>'+
+          '<label class="wide">At the aid station<input type="text" data-fx="aid" data-fi="'+i+'" value="'+esc(f.aid)+'"></label>'+
+          '<label class="wide">During the segment<input type="text" data-fx="seg" data-fi="'+i+'" value="'+esc(f.seg)+'"></label>'+
+          '<label>Aid carbs g<input type="text" inputmode="numeric" data-fx="ac" data-fi="'+i+'" value="'+f.ac+'"></label>'+
+          '<label>Segment carbs g<input type="text" inputmode="numeric" data-fx="sc" data-fi="'+i+'" value="'+f.sc+'"></label>'+
+          '<label>Salt caps<input type="text" inputmode="numeric" data-fx="caps" data-fi="'+i+'" value="'+f.caps+'"></label>'+
+          '<label>Water L<input type="text" inputmode="decimal" data-fx="water" data-fi="'+i+'" value="'+f.water+'"></label>'+
+          '<label>Caffeine mg<input type="text" inputmode="numeric" data-fx="caf" data-fi="'+i+'" value="'+f.caf+'"></label>'+
+        '</div>';
+      } else {
+        if(f.note) out+='<div class="planNote">'+esc(f.note)+'</div>';
+        out+='<div class="planFuel">'+
+          '<div><span>At the stop</span><b>'+esc(f.aid||'—')+'</b></div>'+
+          '<div><span>On the way</span><b>'+esc(f.seg||'—')+'</b></div>'+
+        '</div>'+
+        '<div class="planChips fuel">'+
+          '<span>'+carbs+' g carbs'+(hrs>0?' · '+Math.round(carbs/hrs)+'/hr':'')+'</span>'+
+          '<span>'+f.caps+' salt cap'+(f.caps===1?'':'s')+'</span>'+
+          '<span>'+num1(f.water)+' L</span>'+
+          (f.caf?'<span>'+f.caf+' mg caffeine</span>':'')+
+        '</div>';
+      }
+      out+='</div>';
     }
-    return out+'</div></div>';
+    out+='</div>';
+    return out + plannerPrintHTML();
   }
+
+  /* The printed sheet is its own rendering, not the screen squeezed down:
+     one table, the numbers he needs at a stop, and nothing interactive. */
+  function plannerPrintHTML(){
+    var mins=paceNow(), T=fuelTotals(), fin=STATIONS[STATIONS.length-1];
+    var h='<div class="brief plan-print"><div class="bhead">'+
+      '<h2>Run Rabbit Run 100 — race day plan</h2>'+
+      '<div class="bsub">Will · Tortoise · 9:00 am Friday 18 September 2026 · 36-hour limit</div></div>'+
+      '<div class="bmeta">'+
+        '<div><span>Finish</span><b>'+dur(mins[STATIONS.length-1])+'</b></div>'+
+        '<div><span>Average</span><b>'+pace(fin.mi,mins[STATIONS.length-1])+'/mi</b></div>'+
+        '<div><span>Carbs</span><b>'+Math.round(T.carbsHr)+' g/hr</b></div>'+
+        '<div><span>Sodium</span><b>'+Math.round(T.naHr)+' mg/hr</b></div>'+
+        '<div><span>Water</span><b>'+num1(T.water)+' L</b></div>'+
+        '<div><span>Caffeine</span><b>'+T.caf+' mg</b></div>'+
+      '</div>'+
+      '<table class="btable"><thead><tr><th>#</th><th>Aid station</th><th>Mi</th>'+
+      '<th>Leg</th><th>Arrive</th><th>Cutoff</th><th>Spare</th>'+
+      '<th>At the stop</th><th>On the way</th><th>Carbs</th><th>Caps</th><th>Water</th><th>Crew / pacer</th></tr></thead><tbody>';
+    for(var i=1;i<STATIONS.length;i++){
+      var A=STATIONS[i-1], B=STATIONS[i], f=fuelFor(i);
+      var legm=mins[i]-mins[i-1], cut=B.cut;
+      var late=(cut!=null && mins[i]>cut);
+      h+='<tr'+(B.crew?' class="key"':'')+'><td>'+i+'</td><td><b>'+esc(B.name)+'</b></td>'+
+        '<td>'+B.mi.toFixed(1)+'</td><td>'+hm(legm)+'</td>'+
+        '<td><b>'+clkDay(mins[i])+'</b></td>'+
+        '<td>'+(cut!=null?clkDay(cut):'—')+'</td>'+
+        '<td'+(late?' style="color:#8E2F1D;font-weight:700"':'')+'>'+(cut!=null?(late?'past':dur(cut-mins[i])):'—')+'</td>'+
+        '<td>'+esc(f.aid||'—')+'</td><td>'+esc(f.seg||'—')+'</td>'+
+        '<td>'+(f.ac+f.sc)+' g</td><td>'+f.caps+'</td><td>'+num1(f.water)+'</td>'+
+        '<td>'+esc(f.note||'')+'</td></tr>';
+    }
+    h+='</tbody></table>'+
+      '<div class="brule">Never drive to Fish Creek Falls · never drive Buffalo Pass Road above Dry Lake · never park at Dry Lake. '+
+      'Cutoffs are the times he must <i>leave</i> by. Official times from the 2026 Runner’s Manual v1.1.</div></div>';
+    return h;
+  }
+
   function bindPace(){
     var root=shEl0();
+    var eb=root.querySelector('#planEdit');
+    if(eb) eb.onclick=function(){ PLANEDIT=!PLANEDIT; refreshDetail(); };
+    var pb=root.querySelector('#planPrint');
+    if(pb) pb.onclick=function(){ window.print(); };
     var fin=root.querySelector('#paceFin');
     var apply=root.querySelector('#paceApply');
     if(apply) apply.onclick=function(){
       var want=parseHM(fin&&fin.value);
       if(want==null || want<=0){ if(fin){ fin.focus(); fin.select&&fin.select(); } return; }
       var mins=paceNow(), cur=mins[STATIONS.length-1];
-      if(!cur){ return; }
-      var r=want/cur, next=mins.map(function(m){ return m*r; });
-      setPace(next); refreshDetail();
+      if(!cur) return;
+      var r=want/cur;
+      setPace(mins.map(function(m){ return m*r; })); refreshDetail();
     };
-    var rst=root.querySelector('#paceReset');
-    if(rst) rst.onclick=function(){ resetPace(); refreshDetail(); };
+    var rst=root.querySelector('#planReset');
+    if(rst) rst.onclick=function(){ resetPace(); resetFuel(); refreshDetail(); };
     root.querySelectorAll('[data-leg]').forEach(function(inp){
       inp.onchange=function(){
-        var i=+inp.dataset.leg, v=parseHM(inp.value);
-        var mins=paceNow();
+        var i=+inp.dataset.leg, v=parseHM(inp.value), mins=paceNow();
         if(v==null || v<0){ inp.value=hm(mins[i]-mins[i-1]); return; }
-        /* shift, do not rescale: the legs after this one were not what was
-           wrong, so their durations should survive unchanged */
+        /* shift, do not rescale: the legs after this one were not the ones
+           that were wrong, so their durations should survive unchanged */
         var delta=(mins[i-1]+v)-mins[i];
         for(var j=i;j<mins.length;j++) mins[j]+=delta;
         setPace(mins); refreshDetail();
+      };
+    });
+    root.querySelectorAll('[data-fx]').forEach(function(inp){
+      inp.onchange=function(){
+        var i=+inp.dataset.fi, k=inp.dataset.fx, raw=inp.value, patch={};
+        if(k==='aid'||k==='seg'||k==='note'){ patch[k]=raw.trim(); }
+        else {
+          var v=parseFloat(raw);
+          if(!isFinite(v)||v<0){ inp.value=fuelFor(i)[k]; return; }
+          patch[k]= k==='water' ? Math.round(v*10)/10 : Math.round(v);
+        }
+        setFuel(i, patch); refreshDetail();
       };
     });
   }
@@ -3880,7 +4171,7 @@ var AIDX = [
           '<button class="btn tint" id="rNo">Keep it</button>');
         document.getElementById('rYes').onclick=function(){
           S.checks={}; S.notes={}; S.people=[]; S.custom=[]; S.splits={}; S.aidOv={}; S.me=null;
-          S.gearAdd={}; S.gearRemoved={}; S.gearOverride={}; S.paceOv={};
+          S.gearAdd={}; S.gearRemoved={}; S.gearOverride={}; S.paceOv={}; S.fuelOv={};
           save(); reproject(); closeSheet(); closeDetail(); };
         document.getElementById('rNo').onclick=closeSheet;
       };
@@ -4250,10 +4541,10 @@ var AIDX = [
     satellite: { label:'Satellite',
                  url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                  credit:'Esri, Maxar, Earthstar Geographics', dark:true, max:19 },
-    imgtopo:   { label:'Imagery + topo',
+    imgtopo:   { label:'Hybrid',
                  url:'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}',
                  credit:'USGS The National Map', dark:true, max:16 },
-    trails:    { label:'Trails',
+    trails:    { label:'Terrain',
                  url:'https://tile.opentopomap.org/{z}/{x}/{y}.png',
                  credit:'OpenTopoMap, OpenStreetMap contributors (CC-BY-SA)', max:15 },
     none:      { label:'Plain', url:null }
@@ -4560,8 +4851,8 @@ var AIDX = [
     });
     labels.forEach(function(L){
       var tx=Math.min(Math.max(L[0],34),W-34);
-      o.push('<text x="'+tx.toFixed(1)+'" y="'+(L[1]-14).toFixed(1)+'" font-size="11.5" font-weight="700" '+
-        'text-anchor="middle" font-family="'+FF+'" stroke="'+halo+'" stroke-width="3.5" paint-order="stroke" fill="'+
+      o.push('<text x="'+tx.toFixed(1)+'" y="'+(L[1]-18).toFixed(1)+'" font-size="11.5" font-weight="700" '+
+        'text-anchor="middle" font-family="'+FF+'" stroke="'+halo+'" stroke-width="2.6" paint-order="stroke" fill="'+
         (onDark?'#fff':C.ink)+'">'+esc(L[2])+'</text>');
     });
 
@@ -4601,7 +4892,7 @@ var AIDX = [
       o.push('<g><line x1="14" y1="'+scaleY+'" x2="'+(14+mile).toFixed(1)+'" y2="'+scaleY+'" stroke="'+
         (onDark?'#fff':C.ink)+'" stroke-width="3" stroke-linecap="round" opacity=".8"/>'+
         '<text x="'+(18+mile).toFixed(1)+'" y="'+(scaleY-4)+'" font-size="11" font-family="'+FF+'" stroke="'+halo+
-        '" stroke-width="3" paint-order="stroke" fill="'+(onDark?'#fff':C.ink)+'">1 mile</text></g>');
+        '" stroke-width="2.4" paint-order="stroke" fill="'+(onDark?'#fff':C.ink)+'">1 mile</text></g>');
 
     var CW=W+OX*2, CH=H+OY*2;
     var world=host.querySelector('.mapworld');
@@ -5961,8 +6252,10 @@ var AIDX = [
     var here=lastSplitIdx();
     var atStation = here>=0 && splitOf(here) && splitOf(here).out==null;
     el.innerHTML='<div class="list">'+STATIONS.map(function(s,i){
-      var tags=[];
-      if(s.crew) tags.push('C'); if(s.pacer) tags.push('P'); if(s.bag) tags.push('B');
+      var tags='';
+      if(s.crew) tags+='<i class="tg c" title="Crew"></i>';
+      if(s.pacer) tags+='<i class="tg p" title="Pacer swap"></i>';
+      if(s.bag) tags+='<i class="tg b" title="Drop bag"></i>';
       var sp=splitOf(i), gone=sp&&sp.out!=null;
       var cur=(i===here&&atStation)||(here>=0&&!atStation&&i===here+1);
       var miss=s.cut!=null&&T(s)>s.cut;
@@ -5970,10 +6263,10 @@ var AIDX = [
         '<div class="lead num">'+(gone?'\u2713':s.mi.toFixed(0))+'</div>'+
         '<div class="mid"><div class="nm">'+s.name+
         (cur?' <span class="pill nowpill">'+(atStation?'here now':'next')+'</span>':'')+
-        (aidHasAny(i)?' <span class="ndot" title="You have written something here"></span>':'')+'</div>'+
-        '<div class="dt">mile '+s.mi.toFixed(1)+' · '+ft(s.elev)+' ft'+
-        (i>0?' · '+dur(T(s))+' in · '+cumPace(i)+'/mi':'')+
-        (tags.length?' · '+tags.join(' '):'')+'</div></div>'+
+        (aidHasAny(i)?' <span class="ndot" title="You have written something here"></span>':'')+
+        (tags?' <span class="tgs">'+tags+'</span>':'')+'</div>'+
+        '<div class="dt">'+s.mi.toFixed(1)+' mi'+
+        (i>0?' · '+dur(T(s))+' in':'')+'</div></div>'+
         '<div class="rt"><div class="a num" style="color:'+(gone?'var(--green)':miss?'var(--red)':'inherit')+'">'+clk(T(s))+'</div>'+
         '<div class="b">'+(gone?'logged':miss?'misses cutoff':fD.format(new Date(START+T(s)*MIN)))+'</div></div>'+
         CHEV+'</button>';
@@ -6149,7 +6442,7 @@ var AIDX = [
      and identity is per-device by definition. */
   function sharedOut(){
     return { people:S.people, aidOv:S.aidOv, notes:S.notes, custom:S.custom, atomWho:S.atomWho,
-             bib:S.bib||'', plan:S.plan, paceOv:S.paceOv||{} };
+             bib:S.bib||'', plan:S.plan, paceOv:S.paceOv||{}, fuelOv:S.fuelOv||{} };
   }
   function sharedIn(o){
     if(!o||typeof o!=='object') return false;
@@ -6161,6 +6454,7 @@ var AIDX = [
     if(o.atomWho&&typeof o.atomWho==='object') S.atomWho=o.atomWho;
     if(o.plan&&PLANS.some(function(p){return p.k===o.plan;})) S.plan=o.plan;
     if(o.paceOv&&typeof o.paceOv==='object') S.paceOv=o.paceOv;
+    if(o.fuelOv&&typeof o.fuelOv==='object') S.fuelOv=o.fuelOv;
     return true;
   }
   function whoAmI(){
@@ -6378,7 +6672,7 @@ var AIDX = [
   /* ── boot ── */
   S.checks=jget('rrr.checks',{}); S.custom=jget('rrr.custom',[]); S.people=jget('rrr.people',[]);
   S.gearAdd=jget('rrr.gearadd',{}); S.gearRemoved=jget('rrr.gearrm',{}); S.gearOverride=jget('rrr.gearov',{});
-  S.paceOv=jget('rrr.paceov',{});
+  S.paceOv=jget('rrr.paceov',{}); S.fuelOv=jget('rrr.fuelov',{});
   S.notes=jget('rrr.notes',{}); S.splits=jget('rrr.splits',{}); S.aidOv=jget('rrr.aidov',{});
   /* earlier builds kept one note per station under notes['aid<N>']; move it
      into the new three-field shape so nothing written so far is lost */
@@ -6413,7 +6707,18 @@ var AIDX = [
   initProfile('profile'); initProfile('profileC');
 
   var nav=document.getElementById('nav');
-  window.addEventListener('scroll',function(){ nav.classList.toggle('stuck', window.scrollY>4); }, {passive:true});
+  /* Two thresholds, not one. The hairline appears as soon as anything moves;
+     the title only slides in once the H1 it duplicates is actually gone. */
+  window.navScroll=function navScroll(){
+    var y=window.scrollY||window.pageYOffset||0;
+    nav.classList.toggle('stuck', y>4);
+    /* several .phead h1 exist at once, one per page, and all but the visible
+       one are display:none with a zero rect. Take the one that is on screen. */
+    var h1=null, hs=document.querySelectorAll('.phead h1');
+    for(var q=0;q<hs.length;q++){ if(hs[q].offsetParent){ h1=hs[q]; break; } }
+    nav.classList.toggle('titled', !!h1 && h1.getBoundingClientRect().bottom < 44);
+  };
+  window.addEventListener('scroll',window.navScroll,{passive:true});
 
   if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
     navigator.serviceWorker.register('sw.js').then(function(){ SWOK=true; swBadge(); })
