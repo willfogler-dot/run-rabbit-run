@@ -342,6 +342,38 @@ blockquote{margin:13px 0;padding:2px 0 2px 14px;border-left:2.5px solid var(--ha
 .chk input:checked+span{color:var(--text-3)}
 .chk input:checked+span em{opacity:.7}
 
+/* ── pace editor: leg, time allowed, resulting arrival ───────────
+   Three columns so the numbers line up down the page and a mistyped leg is
+   obvious. The input is the only thing that looks editable. */
+.planedit-row{display:flex;justify-content:flex-end;margin:-6px 0 12px}
+.paceList{margin-top:10px}
+.paceRow{display:grid;grid-template-columns:minmax(0,1fr) 84px 96px;gap:10px;
+  align-items:center;padding:11px 0;position:relative}
+.paceRow+.paceRow::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--hair)}
+.paceNm{min-width:0}
+.paceNm b{display:block;font-size:15px;font-weight:650;letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.paceNm span{display:block;font-size:12px;color:var(--text-3);margin-top:1px;
+  font-variant-numeric:tabular-nums}
+.paceIn input{width:100%;text-align:center;font-size:15.5px;font-weight:650;
+  font-variant-numeric:tabular-nums;padding:9px 6px;border:1px solid var(--hair-2);
+  border-radius:var(--r-sm);background:var(--card);color:var(--text)}
+.paceIn input:focus{border-color:var(--green);outline:0;
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--green) 12%, transparent)}
+.paceArr{text-align:right;min-width:0}
+.paceArr b{display:block;font-size:14.5px;font-weight:700;font-variant-numeric:tabular-nums;
+  white-space:nowrap}
+.paceArr span{display:block;font-size:11.5px;color:var(--text-3);margin-top:1px;white-space:nowrap}
+.paceRow.tight .paceArr span{color:var(--gold)}
+.paceRow.bad .paceArr b,.paceRow.bad .paceArr span{color:var(--red)}
+.paceRow.bad .paceIn input{border-color:var(--red)}
+@media (max-width:420px){
+  .paceRow{grid-template-columns:minmax(0,1fr) 72px 82px;gap:7px}
+  .paceNm b{font-size:14px}
+  .paceIn input{font-size:14.5px;padding:8px 4px}
+  .paceArr b{font-size:13.5px}
+}
+
 /* ── editable gear items: a checkbox row plus edit/remove ───────── */
 .gitem{display:flex;align-items:center;gap:2px;position:relative}
 .gitem+.gitem::before{content:"";position:absolute;left:37px;right:0;top:0;height:1px;background:var(--hair)}
@@ -1152,6 +1184,7 @@ table.an tr:last-child td{border-bottom:0}
 <section id="r-race" class="view">
   <div id="raceHero"></div>
   <div class="seg" id="planPicker"></div>
+  <div class="planedit-row"><button class="linkbtn" id="editPace">Edit my splits</button></div>
   <div class="card" style="padding:0;overflow:hidden">
     <div id="readout" style="background:linear-gradient(158deg,var(--hero-hi),var(--hero-lo));color:#fff;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:10px;min-height:50px"></div>
     <svg id="profile" style="display:block;width:100%;touch-action:none"></svg>
@@ -2479,7 +2512,7 @@ var AIDX = [
 (function () {
   'use strict';
   var START = new Date(RACE.startISO).getTime(), MIN = 60000;
-  var S = { mode:null, plan:'goal', proj:'pace', theme:'light', gps:false, atomWho:{}, checks:{}, custom:[], people:[], notes:{}, splits:{}, aidOv:{}, bib:'', me:null, hidePast:false, gearAdd:{}, gearRemoved:{}, gearOverride:{} };
+  var S = { mode:null, plan:'goal', proj:'pace', theme:'light', gps:false, atomWho:{}, checks:{}, custom:[], people:[], notes:{}, splits:{}, aidOv:{}, bib:'', me:null, hidePast:false, gearAdd:{}, gearRemoved:{}, gearOverride:{}, paceOv:{} };
 
   /* Where a map link is safe. Fish Creek has no vehicle access at all, and a
      map to Summit Lake routes up Buffalo Pass Road, which is a disqualification. */
@@ -2507,7 +2540,8 @@ var AIDX = [
     ls('rrr.bib',S.bib||''); ls('rrr.theme',S.theme); ls('rrr.proj',S.proj);
     ls('rrr.gps',S.gps?'1':''); ls('rrr.atomwho',JSON.stringify(S.atomWho||{}));
     ls('rrr.gearadd',JSON.stringify(S.gearAdd||{})); ls('rrr.gearrm',JSON.stringify(S.gearRemoved||{}));
-    ls('rrr.gearov',JSON.stringify(S.gearOverride||{})); }
+    ls('rrr.gearov',JSON.stringify(S.gearOverride||{}));
+    ls('rrr.paceov',JSON.stringify(S.paceOv||{})); }
 
   var fT = new Intl.DateTimeFormat('en-US',{timeZone:RACE.tz,hour:'numeric',minute:'2-digit'});
   var fD = new Intl.DateTimeFormat('en-US',{timeZone:RACE.tz,weekday:'short'});
@@ -2537,7 +2571,52 @@ var AIDX = [
   }
   function pace(mi,mins){ var p=mins/mi; return Math.floor(p)+':'+String(Math.round(p%1*60)).padStart(2,'0'); }
   function now(){ return (Date.now()-START)/MIN; }
-  function planT(s){ return s[S.plan]; }
+  /* Your own splits, layered over the built-in plan. Stored per plan key so
+     editing your goal never touches the Cutoff or 2025-field reference
+     columns, which are official data and must stay as published.
+     planT() is the one place every clock in the app resolves through, so an
+     override here reaches arrival times, cutoff margins, crew ETAs, the
+     printable brief and the race-day projection without touching any of them. */
+  function paceOvFor(k){ return (S.paceOv&&S.paceOv[k||S.plan])||null; }
+  function planT(s){
+    if(!s) return 0;
+    var ov=paceOvFor(), i=s.__i;
+    if(ov && i!=null){ var v=ov[i]; if(v!=null && isFinite(v)) return +v; }
+    return s[S.plan];
+  }
+  /* the built-in value, ignoring any override -- what "reset" goes back to */
+  function planBase(i,k){ return STATIONS[i][k||S.plan]; }
+  function planMins(i,k){
+    var ov=paceOvFor(k);
+    if(ov){ var v=ov[i]; if(v!=null && isFinite(v)) return +v; }
+    return planBase(i,k);
+  }
+  function planFinish(k){ return planMins(STATIONS.length-1,k); }
+  function paceEdited(k){
+    var ov=paceOvFor(k); if(!ov) return false;
+    for(var i in ov) if(ov[i]!=null && isFinite(ov[i])) return true;
+    return false;
+  }
+  /* Write a whole set of arrival minutes for the current plan. Always stored
+     as absolute minutes from the gun so nothing has to be recomputed later. */
+  function setPace(mins){
+    S.paceOv=S.paceOv||{};
+    var o={};
+    for(var i=1;i<STATIONS.length;i++){
+      var v=mins[i];
+      if(v!=null && isFinite(v)) o[i]=Math.max(0,Math.round(v));
+    }
+    S.paceOv[S.plan]=o;
+    save(); markDirty(); render();
+  }
+  function resetPace(){
+    if(S.paceOv) delete S.paceOv[S.plan];
+    save(); markDirty(); render();
+  }
+  /* current arrival minutes for every station, override-aware */
+  function paceNow(k){
+    return STATIONS.map(function(_,i){ return i===0?0:planMins(i,k); });
+  }
   /* T() is the projection actually shown everywhere. With no logged splits it is
      the selected plan. Once the crew logs a station it becomes: observed time so
      far, plus the remaining plan stretched by the pace ratio observed to date. */
@@ -2977,14 +3056,16 @@ var AIDX = [
     pk.className = isRaceDay() ? 'seg compact' : 'seg';
     var fin=STATIONS[STATIONS.length-1];
     pk.innerHTML = PLANS.map(function(p){
-      var mins=fin[p.k];
+      var mins=planFinish(p.k);
       var pp = (mins!=null) ? pace(fin.mi,mins)+'/mi' : '';
       return '<button'+(p.k===S.plan?' class="on"':'')+' data-plan="'+p.k+'">'+p.name+
-        '<small>'+p.sub+(pp?' · '+pp:'')+'</small></button>';
+        '<small>'+(paceEdited(p.k)?dur(mins):p.sub)+(pp?' · '+pp:'')+'</small></button>';
     }).join('');
     document.querySelectorAll('[data-plan]').forEach(function(b){
       b.onclick=function(){ S.plan=b.dataset.plan; save(); markDirty(); render(); };
     });
+    var ep=document.getElementById('editPace');
+    if(ep) ep.onclick=function(){ openDetail('pace'); };
   }
   function renderRace(){
     var nm=now(), hero=document.getElementById('raceHero');
@@ -3041,12 +3122,12 @@ var AIDX = [
         '<div class="rt"><div class="a" style="color:'+(b<0?'var(--red)':b<180?'var(--gold)':'var(--green)')+'">'+dur(b)+'</div>'+
         '<div class="b">'+(b<0?'past cutoff':'to spare')+'</div></div></div>';
     }).join('');
-    var h='<thead><tr><th>Aid station</th><th>Mi</th><th>Goal</th><th>Leg</th><th>Avg</th><th>Cutoff</th></tr></thead><tbody>';
+    var h='<thead><tr><th>Aid station</th><th>Mi</th><th>'+esc(planName)+'</th><th>Leg</th><th>Avg</th><th>Cutoff</th></tr></thead><tbody>';
     STATIONS.forEach(function(x){
       var lg=splitVal(x.__i)!=null;
       h+='<tr'+(lg?' style="background:var(--green-tint)"':x.major?' style="background:var(--surface-2)"':'')+
         '><td>'+x.name+(lg?' \u2713':'')+'</td><td>'+x.mi.toFixed(1)+'</td>'+
-        '<td><b>'+clk(x.goal)+'</b></td><td>'+(x.__i>0?legPace(x.__i):'\u2014')+'</td><td>'+
+        '<td><b>'+clk(T(x))+'</b></td><td>'+(x.__i>0?legPace(x.__i):'\u2014')+'</td><td>'+
         (x.__i>0?cumPace(x.__i):'\u2014')+'</td>'+
         '<td style="color:'+(x.cut!=null?'var(--red)':'var(--text-3)')+'">'+(x.cut!=null?clk(x.cut):'—')+'</td></tr>';
     });
@@ -3190,6 +3271,7 @@ var AIDX = [
   function noteCount(){ return Object.keys(S.notes).length; }
 
   var DETAILS = {
+    pace:   {t:'Pace and splits',  b:buildPace},
     gear:   {t:'Gear checklist',   b:buildGear},
     bags:   {t:'Drop bags',        b:buildBags},
     carries:{t:'Long carries',     b:buildCarries},
@@ -3222,6 +3304,7 @@ var AIDX = [
       '<div><div class="k">Team</div><div class="v num">'+((pc+pp)||'\u2014')+'</div></div></div></div>'+
 
       '<div class="grp"><div class="grp-t">Race kit</div><div class="list">'+
+      row('pace','run','g','Pace and splits','Your goal times, and what the crew sees',dur(planFinish()))+
       row('gear','gear','g','Gear checklist','Mandatory five plus your own lists',g[0]+'/'+g[1])+
       row('bags','bag','','Drop bags','Two bags, four visits',bg[0]+'/'+bg[1])+
       row('carries','water','','Long carries','Where there is no water')+
@@ -3403,6 +3486,92 @@ var AIDX = [
       S.gearRemoved[key]=true;
     }
     delete S.checks[key]; save(); refreshDetail();
+  }
+  /* Nothing in the app let him change his own pacing, so a plan built weeks
+     ago could not absorb what he learned actually running the course. Two
+     ways to change it, because there are two kinds of wrong: the whole plan
+     is a bit off (stretch it), or one leg is wrong and the rest still holds
+     (change that leg and shift the rest). */
+  function parseHM(str){
+    if(str==null) return null;
+    str=String(str).trim(); if(!str) return null;
+    var m=/^(\d+):([0-5]?\d)$/.exec(str);
+    if(m) return (+m[1])*60 + (+m[2]);
+    if(/^\d+(\.\d+)?$/.test(str)) return Math.round(parseFloat(str));   // bare minutes
+    return null;
+  }
+  function buildPace(){
+    var fin=STATIONS[STATIONS.length-1];
+    var mins=paceNow(), finMins=mins[STATIONS.length-1];
+    var edited=paceEdited();
+    var planName=(PLANS.filter(function(p){return p.k===S.plan;})[0]||{}).name||'Plan';
+    var busts=0;
+    for(var q=1;q<STATIONS.length;q++)
+      if(STATIONS[q].cut!=null && mins[q]>STATIONS[q].cut) busts++;
+
+    var out='<div class="card">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:2px">'+
+        '<h3>'+esc(planName)+'</h3>'+
+        (edited?'<span class="pill gold">Edited</span>':'<span class="pill grey">Built-in</span>')+'</div>'+
+      '<p class="sec">What you actually expect to run. Every arrival time, cutoff margin and crew ETA follows this — including the ones on your crew and pacers’ phones.</p>'+
+      '<div class="metrics" style="margin-top:12px">'+
+        '<div><div class="k">Finish</div><div class="v num">'+dur(finMins)+'</div></div>'+
+        '<div><div class="k">Average</div><div class="v num">'+pace(fin.mi,finMins)+'/mi</div></div>'+
+        '<div><div class="k">Margin</div><div class="v num" style="color:'+
+          (RACE.limit-finMins<0?'var(--red)':'var(--text)')+'">'+dur(RACE.limit-finMins)+'</div></div>'+
+      '</div>'+
+      (busts?'<div class="callout w" style="margin-top:12px"><b>'+busts+
+        (busts===1?' stop is':' stops are')+' past the cutoff on this plan.</b> They are marked in red below.</div>':'')+
+      '<div class="fld" style="margin-top:14px"><label>Target finish</label>'+
+        '<input id="paceFin" type="text" inputmode="numeric" value="'+hm(finMins)+'" placeholder="29:38"></div>'+
+      '<button class="btn" id="paceApply">Stretch the whole plan to that finish</button>'+
+      '<p class="cap" style="margin-top:9px">Scales every leg by the same amount. To change one leg on its own, edit it below.</p>'+
+      (edited?'<button class="btn ghost sm" id="paceReset" style="margin-top:10px">Reset to the built-in '+esc(planName)+' plan</button>':'')+
+    '</div>';
+
+    out+='<div class="card"><h3>Leg by leg</h3>'+
+      '<p class="sec">Time allowed for each leg. Change one and every stop after it moves by the same amount.</p>'+
+      '<div class="paceList">';
+    for(var i=1;i<STATIONS.length;i++){
+      var A=STATIONS[i-1], B=STATIONS[i];
+      var legm=mins[i]-mins[i-1], d=+(B.mi-A.mi).toFixed(1);
+      var cut=B.cut, late=(cut!=null && mins[i]>cut), tight=(cut!=null && !late && (cut-mins[i])<180);
+      out+='<div class="paceRow'+(late?' bad':(tight?' tight':''))+'">'+
+        '<div class="paceNm"><b>'+esc(B.name)+'</b>'+
+          '<span>'+d.toFixed(1)+' mi · '+pace(d,legm)+'/mi</span></div>'+
+        '<div class="paceIn"><input type="text" inputmode="numeric" data-leg="'+i+'" value="'+hm(legm)+'"></div>'+
+        '<div class="paceArr"><b>'+clk(mins[i])+'</b><span>'+
+          (late?'past cutoff':(cut!=null?dur(cut-mins[i])+' spare':dyOf(mins[i])))+'</span></div>'+
+      '</div>';
+    }
+    return out+'</div></div>';
+  }
+  function bindPace(){
+    var root=shEl0();
+    var fin=root.querySelector('#paceFin');
+    var apply=root.querySelector('#paceApply');
+    if(apply) apply.onclick=function(){
+      var want=parseHM(fin&&fin.value);
+      if(want==null || want<=0){ if(fin){ fin.focus(); fin.select&&fin.select(); } return; }
+      var mins=paceNow(), cur=mins[STATIONS.length-1];
+      if(!cur){ return; }
+      var r=want/cur, next=mins.map(function(m){ return m*r; });
+      setPace(next); refreshDetail();
+    };
+    var rst=root.querySelector('#paceReset');
+    if(rst) rst.onclick=function(){ resetPace(); refreshDetail(); };
+    root.querySelectorAll('[data-leg]').forEach(function(inp){
+      inp.onchange=function(){
+        var i=+inp.dataset.leg, v=parseHM(inp.value);
+        var mins=paceNow();
+        if(v==null || v<0){ inp.value=hm(mins[i]-mins[i-1]); return; }
+        /* shift, do not rescale: the legs after this one were not what was
+           wrong, so their durations should survive unchanged */
+        var delta=(mins[i-1]+v)-mins[i];
+        for(var j=i;j<mins.length;j++) mins[j]+=delta;
+        setPace(mins); refreshDetail();
+      };
+    });
   }
   function buildBags(){
     var out='<div class="card alert"><p><b>Collected Thursday 3\u20136 pm, before the briefing.</b> Both bags are sealed about fifteen hours before you start, so you cannot adjust them to Friday\u2019s forecast. Pack for the bad version.</p>'+
@@ -3627,6 +3796,7 @@ var AIDX = [
   }
   function shEl0(){ return document.getElementById('detailBody')||document; }
   function bindDetail(k){
+    if(k==='pace') bindPace();
     if(k==='gear'){
       shEl0().querySelectorAll('[data-fold]').forEach(function(d){
         d.ontoggle=function(){ GEAROPEN[d.dataset.fold]=d.open; };
@@ -3713,7 +3883,7 @@ var AIDX = [
           '<button class="btn tint" id="rNo">Keep it</button>');
         document.getElementById('rYes').onclick=function(){
           S.checks={}; S.notes={}; S.people=[]; S.custom=[]; S.splits={}; S.aidOv={}; S.me=null;
-          S.gearAdd={}; S.gearRemoved={}; S.gearOverride={};
+          S.gearAdd={}; S.gearRemoved={}; S.gearOverride={}; S.paceOv={};
           save(); reproject(); closeSheet(); closeDetail(); };
         document.getElementById('rNo').onclick=closeSheet;
       };
@@ -5982,7 +6152,7 @@ var AIDX = [
      and identity is per-device by definition. */
   function sharedOut(){
     return { people:S.people, aidOv:S.aidOv, notes:S.notes, custom:S.custom, atomWho:S.atomWho,
-             bib:S.bib||'', plan:S.plan };
+             bib:S.bib||'', plan:S.plan, paceOv:S.paceOv||{} };
   }
   function sharedIn(o){
     if(!o||typeof o!=='object') return false;
@@ -5993,6 +6163,7 @@ var AIDX = [
     if(typeof o.bib==='string') S.bib=o.bib;
     if(o.atomWho&&typeof o.atomWho==='object') S.atomWho=o.atomWho;
     if(o.plan&&PLANS.some(function(p){return p.k===o.plan;})) S.plan=o.plan;
+    if(o.paceOv&&typeof o.paceOv==='object') S.paceOv=o.paceOv;
     return true;
   }
   function whoAmI(){
@@ -6210,6 +6381,7 @@ var AIDX = [
   /* ── boot ── */
   S.checks=jget('rrr.checks',{}); S.custom=jget('rrr.custom',[]); S.people=jget('rrr.people',[]);
   S.gearAdd=jget('rrr.gearadd',{}); S.gearRemoved=jget('rrr.gearrm',{}); S.gearOverride=jget('rrr.gearov',{});
+  S.paceOv=jget('rrr.paceov',{});
   S.notes=jget('rrr.notes',{}); S.splits=jget('rrr.splits',{}); S.aidOv=jget('rrr.aidov',{});
   /* earlier builds kept one note per station under notes['aid<N>']; move it
      into the new three-field shape so nothing written so far is lost */
