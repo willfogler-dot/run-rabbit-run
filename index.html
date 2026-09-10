@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Run Rabbit Run 100</title>
 <meta name="description" content="Run Rabbit Run 100, September 2026. Where the crew and pacers need to be, and when.">
 <link rel="manifest" href="manifest.webmanifest">
@@ -99,6 +99,13 @@
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
+/* app, not page: no double-tap zoom, no rubber band, no pull-to-refresh.
+   Surfaces that run their own gestures set touch-action:none themselves and
+   are more specific than this, so the map and the profile still work. */
+html,body{overscroll-behavior:none;touch-action:manipulation}
+/* pinned while a sheet, the name picker or the full map is open, so closing
+   one puts you back exactly where you were rather than somewhere new */
+body.locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 body{
   margin:0;color:var(--text);font-family:var(--font);
   font-size:17px;line-height:1.5;letter-spacing:-.006em;
@@ -541,17 +548,26 @@ blockquote{margin:13px 0;padding:2px 0 2px 14px;border-left:2.5px solid var(--ha
   box-shadow:0 -1px 0 rgba(255,255,255,.4) inset}
 .tab{flex:1;background:none;border:0;padding:8px 2px 6px;display:flex;flex-direction:column;
   align-items:center;gap:3px;color:var(--text-3);transition:color .22s;position:relative}
-.tab svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.7;
-  stroke-linecap:round;stroke-linejoin:round;transition:transform .26s var(--spring)}
+.tab .ic{position:relative;display:block;width:25px;height:25px}
+.tab svg{position:absolute;inset:0;width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;transition:transform .26s var(--spring), opacity .2s var(--ease)}
+/* outline at rest, solid when selected -- the clearest "you are here" a tab
+   bar has. Both are in the DOM so the swap cannot reflow the row. */
+.tab .ic-f{fill:currentColor;stroke:none;opacity:0}
+.tab.on .ic-o{opacity:0}
+.tab.on .ic-f{opacity:1}
 .tab span{font-size:11px;font-weight:550;letter-spacing:-.008em}
 .tab.on{color:var(--green-ink)} .tab.on span{font-weight:650}
-.tab.on svg{transform:translateY(-1px) scale(1.04);animation:tabPop .42s var(--spring)}
+.tab.on .ic{transform:translateY(-1px) scale(1.04);animation:tabPop .42s var(--spring)}
 @keyframes tabPop{0%{transform:translateY(-1px) scale(.82)}
   55%{transform:translateY(-1px) scale(1.16)}100%{transform:translateY(-1px) scale(1.04)}}
+.tab .ic{transition:transform .26s var(--spring)}
 .tab.on::before{content:"";position:absolute;top:2px;width:34px;height:30px;border-radius:10px;
   background:var(--green-tint);z-index:-1;animation:tabIn .3s var(--spring)}
 @keyframes tabIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
-.tab:active svg{transform:scale(.86)}
+.tab:active .ic{transform:scale(.86)}
+.tabs{transition:transform .26s var(--ease)}
+body.kbd .tabs{transform:translateY(130%);pointer-events:none}
 
 /* ── sheet: raised ───────────────────────────────────────────── */
 .modal{position:fixed;inset:0;z-index:95;display:flex;align-items:flex-end;justify-content:center;
@@ -562,12 +578,15 @@ blockquote{margin:13px 0;padding:2px 0 2px 14px;border-left:2.5px solid var(--ha
   -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
   transition:background .32s, backdrop-filter .32s, visibility 0s}
 .sh{background:var(--card);border-radius:var(--r-xl) var(--r-xl) 0 0;width:100%;max-width:700px;max-height:92vh;
-  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:0 18px calc(24px + var(--sb));
+  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 18px calc(24px + var(--sb));
   transform:translateY(101%);transition:transform .4s var(--ease);
   box-shadow:var(--e3), inset 0 1px 0 rgba(255,255,255,.5)}
 .modal.on .sh{transform:none}
 .sh-top{position:sticky;top:0;background:var(--card);padding:9px 0 10px;z-index:2;
-  display:flex;flex-direction:column;align-items:center}
+  display:flex;flex-direction:column;align-items:center;
+  touch-action:none;cursor:grab}
+.sh.dragging{transition:none}
+.sh.dragging .sh-top{cursor:grabbing}
 .grip{width:38px;height:5px;border-radius:3px;background:var(--hair-2)}
 .sh-x{position:absolute;right:0;top:8px;width:31px;height:31px;border-radius:16px;border:0;
   background:var(--fill);display:flex;align-items:center;justify-content:center;transition:background .2s}
@@ -1111,6 +1130,7 @@ body.raceday .nav .dot{background:var(--red);box-shadow:0 0 0 3px color-mix(in s
   background:linear-gradient(180deg, var(--green-tint), var(--green-tint2));
   display:flex;align-items:center;justify-content:center}
 .gate .pick .ico svg{width:22px;height:22px;stroke:var(--green-ink);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.gate .pick .ico b{color:var(--green-ink);letter-spacing:.01em}
 .gate .pick .tx{flex:1;min-width:0}
 .gate .pick .tx b{display:block;font-size:17px;font-weight:650;letter-spacing:-.018em}
 .gate .pick .tx span{display:block;font-size:14.5px;color:var(--text-3);margin-top:1px}
@@ -1195,7 +1215,11 @@ table.an tr:last-child td{border-bottom:0}
   .gate .pick:hover{box-shadow:var(--e2);transform:translateY(-1px)}
   .ev .edit:hover{background:var(--fill-2)}
 }
-.tabs,.nav,.tab,.btn,.item .lead,.acc-num{-webkit-user-select:none;user-select:none}
+/* chrome should not be selectable or offer the iOS copy callout. Prose is
+   deliberately left alone -- copying a driving address matters more. */
+.tabs,.nav,.tab,.btn,.item .lead,.item .nm,.item .dt,.acc-num,.acc-hd,
+.seg,.seg button,.pill,.stats,.hero .eyebrow,.hero .display,.chk span,.gate .pick{
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 
 /* ── print ───────────────────────────────────────────────────── */
 @media print{
@@ -1233,21 +1257,8 @@ table.an tr:last-child td{border-bottom:0}
   <div class="mark"><svg viewBox="0 0 24 24"><path d="M2 19l6-13 4.5 8.5L15.5 9 22 19z"/></svg></div>
   <h1>Run Rabbit Run 100</h1>
   <p class="sec">Steamboat Springs · 18–19 September 2026</p>
-  <button class="pick" data-mode="crew">
-    <span class="ico"><svg viewBox="0 0 24 24"><path d="M3 17h18M5 17l1.2-5.5h11.6L19 17M8 11.5V9a4 4 0 018 0v2.5"/><circle cx="7" cy="19.5" r="1.6"/><circle cx="17" cy="19.5" r="1.6"/></svg></span>
-    <span class="tx"><b>I'm on the crew</b><span>Where to be and when</span></span>
-    <svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
-  </button>
-  <button class="pick" data-mode="pacer">
-    <span class="ico"><svg viewBox="0 0 24 24"><circle cx="14" cy="4.6" r="2"/><path d="M9.5 21l2.3-6.6L9 11l1-4 3.6 1 2.4 2.6M13.8 14.4L16.4 21M6 10.4l3-2"/></svg></span>
-    <span class="tx"><b>I'm pacing</b><span>My leg, and how it works</span></span>
-    <svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
-  </button>
-  <button class="pick" data-mode="runner">
-    <span class="ico"><svg viewBox="0 0 24 24"><path d="M3 17l5-7 4 4 4-8 5 11"/></svg></span>
-    <span class="tx"><b>I'm running</b><span>The full race plan</span></span>
-    <svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
-  </button>
+  <h2 style="margin:22px 0 12px">Who are you?</h2>
+  <div id="gatePicks"></div>
 </div></div>
 
 <header class="nav" id="nav"><div class="nav-in">
@@ -1330,6 +1341,7 @@ table.an tr:last-child td{border-bottom:0}
 
 <!-- RUNNER -->
 <section id="r-race" class="view">
+  <div id="myJob"></div>
   <div id="raceHero"></div>
   <div class="seg" id="planPicker"></div>
   <div class="card" style="padding:0;overflow:hidden">
@@ -3014,6 +3026,23 @@ var AIDX = [
     leg:'<circle cx="14" cy="4.6" r="2"/><path d="M9.5 21l2.3-6.6L9 11l1-4 3.6 1 2.4 2.6M13.8 14.4L16.4 21M6 10.4l3-2"/>',
     aid:'<path d="M12 21.5s7-6 7-11.5a7 7 0 10-14 0c0 5.5 7 11.5 7 11.5z"/><path d="M12 7.4v5.2M9.4 10h5.2"/>'
   };
+  /* Filled counterparts for the five tabs. Knocked-out details are stroked in
+     the card colour so they read as holes in a solid shape. */
+  var ICF = {
+    race:'<path d="M3 16.2l5-7 4 4 4-8 5 11" fill="none" stroke="currentColor" '+
+         'stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>'+
+         '<rect x="2.3" y="19.4" width="19.4" height="2.1" rx="1.05"/>',
+    course:'<path d="M2 19l6-13 4.5 8.5L15.5 9 22 19z"/>',
+    aid:'<path d="M12 21.5s7-6 7-11.5a7 7 0 10-14 0c0 5.5 7 11.5 7 11.5z"/>'+
+        '<path d="M12 7v6M9 10h6" fill="none" stroke="var(--card)" stroke-width="2.1" stroke-linecap="round"/>',
+    sched:'<rect x="3" y="6.4" width="18" height="14.6" rx="3.5"/>'+
+        '<path d="M8 3.2v4M16 3.2v4" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/>'+
+        '<path d="M3.4 11.6h17.2" fill="none" stroke="var(--card)" stroke-width="1.7"/>',
+    team:'<circle cx="9" cy="7.8" r="3.4"/>'+
+        '<path d="M2.6 19.8c0-3.6 2.9-5.7 6.4-5.7s6.4 2.1 6.4 5.7z"/>'+
+        '<circle cx="17.6" cy="9.6" r="2.4"/>'+
+        '<path d="M16.6 13.9c.35-.06.68-.09 1-.09 2.3 0 3.9 1.5 3.9 3.9h-3.2c0-1.5-.6-2.8-1.7-3.8z"/>'
+  };
   var TABS = {
     crew:[['c-next','Next stop','next'],['c-stops','All stops','stops'],['x-course','Course','course'],['x-sched','Schedule','sched'],['c-info','Info','info']],
     pacer:[['p-leg','My leg','leg'],['x-course','Course','course'],['x-sched','Schedule','sched'],['p-info','Rules','info']],
@@ -3021,7 +3050,10 @@ var AIDX = [
   };
   function buildTabs(){
     document.getElementById('tabs').innerHTML = TABS[S.mode].map(function(t,i){
-      return '<button class="tab'+(i?'':' on')+'" data-v="'+t[0]+'"><svg viewBox="0 0 24 24">'+IC[t[2]]+'</svg><span>'+t[1]+'</span></button>';
+      return '<button class="tab'+(i?'':' on')+'" data-v="'+t[0]+'">'+
+        '<span class="ic"><svg class="ic-o" viewBox="0 0 24 24">'+IC[t[2]]+'</svg>'+
+        (ICF[t[2]]?'<svg class="ic-f" viewBox="0 0 24 24">'+ICF[t[2]]+'</svg>':'')+'</span>'+
+        '<span>'+t[1]+'</span></button>';
     }).join('');
     document.querySelectorAll('.tab').forEach(function(b){
       b.onclick = function(){
@@ -3032,8 +3064,10 @@ var AIDX = [
         var to=tabs.indexOf(b);
         tabs.forEach(function(x){x.classList.remove('on');});
         b.classList.add('on');
+        var leaving=document.querySelector('.view.on');
+        if(leaving) TABY[leaving.id]=window.scrollY||window.pageYOffset||0;
         swapView(b.dataset.v, (from>=0 && to<from) ? 'en-l' : 'en-r');
-        window.scrollTo(0,0);
+        window.scrollTo(0, TABY[b.dataset.v]||0);
         if (b.dataset.v==='r-race') drawProfile('profile');
         if (b.dataset.v==='x-course') renderCourse();
         if (b.dataset.v==='r-course') renderMap();
@@ -3043,14 +3077,16 @@ var AIDX = [
     document.querySelectorAll('.view').forEach(function(x){x.classList.remove('on');});
     document.getElementById(TABS[S.mode][0][0]).classList.add('on');
   }
-  function setMode(m){
-    S.mode=m; save();
-    document.getElementById('gate').classList.remove('on');
-    NAVT = m==='crew' ? 'Crew · Will' : m==='pacer' ? 'Pacer · Will' : 'Run Rabbit Run 100';
+  /* Everyone gets the same app now; the only thing identity changes is the
+     job card at the top of the race screen. S.mode is kept at 'runner' so
+     the handful of places that still read it keep working. */
+  function startApp(){
+    S.mode='runner'; save();
+    NAVT = 'Run Rabbit Run 100';
     setNav(false);
-    document.getElementById('foot').innerHTML = m==='runner'
-      ? 'Cutoffs and rules from the 2026 Runner\u2019s Manual v1.1. Goal splits from your tracker.<br>2025 field data: 68 Tortoises finishing between 28 and 32 hours.'
-      : 'Everything here comes from the official 2026 Runner\u2019s Manual.<br>If this app and a race volunteer disagree, the volunteer is right.';
+    document.getElementById('foot').innerHTML =
+      'Cutoffs and rules from the 2026 Runner\u2019s Manual v1.1. Goal splits from your tracker.<br>' +
+      '2025 field data: 68 Tortoises finishing between 28 and 32 hours.';
     buildTabs(); render();
   }
 
@@ -3563,6 +3599,7 @@ var AIDX = [
     var d=DETAILS[k]; if(!d) return;
     detailKey=k;
     document.getElementById('detailBody').innerHTML='<div class="phead"><h1>'+d.t+'</h1></div>'+d.b();
+    if(!noPush) DETAILY=window.scrollY||window.pageYOffset||0;
     swapView('r-detail','en-push');
     setNav(true, d.t);
     if(!keepScroll) window.scrollTo(0,0);
@@ -3572,7 +3609,7 @@ var AIDX = [
   function closeDetail(){
     detailKey=null; PLANEDIT=false;
     swapView('r-profile','en-pop');
-    setNav(false); renderProfile(); window.scrollTo(0,0);
+    setNav(false); renderProfile(); window.scrollTo(0, DETAILY||0);
   }
   function refreshDetail(){
     if(!detailKey) return;
@@ -3593,8 +3630,7 @@ var AIDX = [
       el.innerHTML='<div class="who"><span class="dot"></span><span class="t" id="navT">'+esc(NAVT)+'</span></div>'+
         '<span class="rclock" id="navClock" style="display:none"></span>'+
         '<button class="sw" id="switchBtn">Switch</button>';
-      document.getElementById('switchBtn').onclick=function(){
-        document.getElementById('gate').classList.add('on'); window.scrollTo(0,0); };
+      document.getElementById('switchBtn').onclick=openGate;
       paintClock();
     }
   }
@@ -4395,6 +4431,130 @@ var AIDX = [
     bindLog();
   }
 
+
+  /* ── who am I, and what is my job ──────────────────────────────
+     One interface, one link. What differs between people is a single
+     card at the top of the race screen, and it is driven by the person
+     you said you were -- which lives in the shared plan, so Will can
+     change someone's job from his own phone and their screen follows. */
+  var ME_WILL='will';
+  function meIsWill(){ return S.me===ME_WILL; }
+  function mePerson(){
+    if(!S.me||meIsWill()) return null;
+    for(var i=0;i<S.people.length;i++) if(S.people[i].id===S.me) return S.people[i];
+    return null;
+  }
+  function meLabel(){
+    if(meIsWill()) return 'Will';
+    var p=mePerson(); return p?p.name:'Guest';
+  }
+
+  /* The crew's next stop, as a card rather than a whole screen. Same
+     source of truth as the old crew view: crewPick() decides which of the
+     nine is next, and it advances on its own as splits get logged. */
+  function crewJobHTML(){
+    var pick=crewPick(), c=CREW[pick], a=crewArrive(c), lm=leaveMins(c);
+    var who=crewAt(c.n), mine=mePerson();
+    var isMine = !!(mine && (mine.stops||[]).indexOf(c.n)>=0);
+    var chip='';
+    if(lm!=null){
+      var left=lm-now();
+      chip = left<=0 ? 'Leave now' : left<=720 ? 'Leave in '+dur(left) : 'Leave '+clkDay(lm);
+      chip = '<div class="pill" style="background:rgba(255,255,255,'+(left<=60?'.26':'.16')+');color:#fff">'+chip+'</div>';
+    }
+    return '<div class="hero"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px">'+
+      '<div class="eyebrow">'+(c.rest?'Right now':'Your next stop · '+c.n+' of 9')+'</div>'+chip+'</div>'+
+      '<h2>'+c.where+'</h2>'+
+      (a!=null?'<div class="under">Will should arrive '+clkDay(a)+'</div>':'')+
+      (lm!=null?'<div class="stats"><div><div class="k">Leave town</div><div class="v num">'+clkDay2(lm)+'</div></div>'+
+        '<div><div class="k">Drive</div><div class="v num">'+driveShort(c)+'</div></div>'+
+        '<div><div class="k">Mile</div><div class="v num">'+(c.mi!=null?c.mi.toFixed(1):'—')+'</div></div></div>':'')+
+      (who.length?'<div class="pills" style="margin-top:14px">'+who.map(function(p){
+        return '<span class="pill'+(mine&&p.id===mine.id?' gold':'')+'">'+esc(p.name)+'</span>'; }).join('')+'</div>':'')+
+      '</div>'+
+      (isMine||!who.length?'':'<p class="cap" style="margin:-4px 0 12px">You are not down for this one — '+
+        nameList(who)+' '+(who.length>1?'are':'is')+'.</p>')+
+      (isRaceDay()
+        ? (c.mi!=null?logButtons(idxOf(c.mi)):'')+
+          '<button class="btn ghost sm" data-logany style="margin-bottom:10px">Log a different aid station</button>'
+        : '<button class="btn ghost sm" data-logany style="margin-bottom:10px">Log a time</button>')+
+      mapBtn(c.where, c.mi!=null?'tint':'')+
+      '<div class="card"><h3>What to have ready</h3><p class="sec">'+c.what+'</p>'+
+      '<button class="btn tint sm" data-detail="rota" style="margin-top:12px">All nine stops</button></div>';
+  }
+
+  /* A pacer is only pacing for a few hours of a thirty-hour day. The rest of
+     the time they are in a car with the crew, so they get both cards. */
+  function pacerJobHTML(p){
+    var mine=legsForPerson(p.id);
+    if(!mine.length) return '';
+    var all=pacerLegs().filter(function(L){ return !!L.who; });
+    var done=lastSplitIdx();
+    var rows=mine.map(function(L){
+      var nar=legNarrative(L), li=all.indexOf(L);
+      var past = done>=0 && L.to.__i!=null && done>=L.to.__i;
+      var live = done>=0 && L.from.__i!=null && done>=L.from.__i && !past;
+      return '<button class="item'+(past?' done':'')+(live?' current':'')+'" data-myleg="'+li+'">'+
+        '<div class="lead num">'+L.from.mi.toFixed(0)+'</div>'+
+        '<div class="mid"><div class="nm">'+nar.title+
+        (live?' <span class="pill nowpill">running now</span>':'')+'</div>'+
+        '<div class="dt">'+L.mi.toFixed(1)+' mi · starts '+clkDay(T(L.from))+'</div></div>'+
+        '<div class="rt"><div class="a num">'+dur(T(L.to)-T(L.from))+'</div><div class="b">on your feet</div></div>'+
+        CHEV+'</button>';
+    }).join('');
+    return '<div class="shead"><h2>Your '+(mine.length>1?'legs':'leg')+'</h2>'+
+      '<span class="note">'+mine.reduce(function(t,L){return t+L.mi;},0).toFixed(1)+' mi total</span></div>'+
+      '<div class="list">'+rows+'</div>';
+  }
+
+  function renderMyJob(){
+    var el=document.getElementById('myJob'); if(!el) return;
+    var p=mePerson();
+    if(!p){ el.innerHTML=''; return; }          /* Will, or nobody chosen */
+    var head='<div class="phead"><h1>Your job</h1><p class="sec">'+esc(p.name)+
+      ' · '+roleLabel(p)+'. This changes on its own as the race goes on.</p></div>';
+    el.innerHTML = head +
+      (p.role==='pacer' ? pacerJobHTML(p) : '') +
+      crewJobHTML();
+    bindLog();
+    el.querySelectorAll('[data-myleg]').forEach(function(b){
+      var all=pacerLegs().filter(function(L){ return !!L.who; });
+      b.onclick=function(){ openLeg(all[+b.dataset.myleg]); };
+    });
+    el.querySelectorAll('[data-detail]').forEach(function(b){
+      b.onclick=function(){ openDetail(b.dataset.detail); };
+    });
+  }
+
+  /* ── the gate: who are you ── */
+  function renderGate(){
+    var el=document.getElementById('gatePicks'); if(!el) return;
+    function pick(id,name,sub,ico){
+      return '<button class="pick" data-me="'+id+'">'+
+        '<span class="ico">'+(ico||'<b style="font-size:14px;font-weight:700">'+esc(initials(name))+'</b>')+'</span>'+
+        '<span class="tx"><b>'+esc(name)+'</b><span>'+esc(sub)+'</span></span>'+
+        '<svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>';
+    }
+    var team=sortedPeople().map(function(p){ return pick(p.id, p.name, roleLabel(p)); }).join('');
+    el.innerHTML =
+      pick(ME_WILL,'Will','Running it','<svg viewBox="0 0 24 24"><path d="M3 17l5-7 4 4 4-8 5 11"/></svg>') +
+      (team || '<p class="cap" style="margin:10px 2px">The team list has not reached this phone yet. '+
+               'It arrives with the first sync — give it a moment, or ask Will to re-share the link.</p>');
+    el.querySelectorAll('[data-me]').forEach(function(b){
+      b.onclick=function(){ setMe(b.dataset.me); };
+    });
+  }
+  function setMe(id){
+    S.me=id; save();
+    document.getElementById('gate').classList.remove('on'); syncScrollLock();
+    startApp();
+  }
+  function openGate(){
+    renderGate();
+    document.getElementById('gate').classList.add('on');
+    window.scrollTo(0,0); syncScrollLock();
+  }
+
   /* ── pacer ── */
   function myPacer(){ if(!S.me) return null;
     for(var i=0;i<S.people.length;i++) if(S.people[i].id===S.me&&S.people[i].role==='pacer') return S.people[i];
@@ -4522,14 +4682,90 @@ var AIDX = [
 
   /* ── sheet ── */
   var modal=document.getElementById('modal'), shEl=document.getElementById('sheet');
+
+  /* ── scroll position: remembered per tab, pinned under overlays ──
+     No counter. A counter that gets out of balance leaves the page
+     permanently unscrollable, which is a far worse bug than the one being
+     fixed, so this derives what it should be from the overlays themselves
+     and is safe to call as often as you like. */
+  var LOCKY=0, TABY={}, DETAILY=0;
+  /* the browser restores its own recorded offset on a back navigation, and it
+     does so after popstate runs -- which silently undid every position this
+     app tried to restore. The app owns scroll position now. */
+  try{ if('scrollRestoration' in history) history.scrollRestoration='manual'; }catch(e){}
+  function syncScrollLock(){
+    var g=document.getElementById('gate'), f=document.getElementById('mapFull');
+    var want = modal.classList.contains('on') ||
+               (g && g.classList.contains('on')) ||
+               (f && f.classList.contains('on'));
+    var have = document.body.classList.contains('locked');
+    if(!!want === have) return;
+    if(want){
+      LOCKY = window.scrollY || window.pageYOffset || 0;
+      document.body.style.top = (-LOCKY)+'px';
+      document.body.classList.add('locked');
+    } else {
+      document.body.classList.remove('locked');
+      document.body.style.top = '';
+      window.scrollTo(0, LOCKY);
+    }
+  }
   function sheet(title, html){
     shEl.innerHTML='<div class="sh-top"><div class="grip"></div>'+
       '<button class="sh-x" id="shX"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'+
       (title?'<h2 style="margin:2px 0 12px;padding-right:38px">'+esc(title)+'</h2>':'')+html;
-    shEl.scrollTop=0; modal.classList.add('on');
+    shEl.scrollTop=0; modal.classList.add('on'); syncScrollLock();
     document.getElementById('shX').onclick=closeSheet;
   }
-  function closeSheet(){ modal.classList.remove('on'); }
+  function closeSheet(){ modal.classList.remove('on'); syncScrollLock(); }
+
+  /* Drag the sheet down by its header to dismiss. Only the header, which can
+     carry touch-action:none -- starting a drag inside the scrolling body
+     means competing with the scroller for the same gesture. */
+  (function sheetDrag(){
+    var sy=0, dy=0, on=false, id=null;
+    function end(){
+      if(!on) return;
+      on=false; shEl.classList.remove('dragging'); shEl.style.transform='';
+      if(dy>90) closeSheet();
+    }
+    shEl.addEventListener('pointerdown', function(e){
+      var t=e.target;
+      if(!t.closest || !t.closest('.sh-top')) return;
+      if(t.closest('button,a,input,textarea,select')) return;
+      on=true; id=e.pointerId; sy=e.clientY; dy=0;
+      shEl.classList.add('dragging');
+      shEl.setPointerCapture && shEl.setPointerCapture(e.pointerId);
+    });
+    shEl.addEventListener('pointermove', function(e){
+      if(!on || e.pointerId!==id) return;
+      dy=Math.max(0, e.clientY-sy);
+      /* a little resistance past halfway, the way a real sheet feels */
+      var shown = dy<160 ? dy : 160+(dy-160)*0.4;
+      shEl.style.transform='translateY('+shown+'px)';
+    });
+    shEl.addEventListener('pointerup', end);
+    shEl.addEventListener('pointercancel', end);
+  })();
+
+  /* Left-edge swipe to go back. Safari gives you this in a tab and takes it
+     away in a home-screen app, which is the one place it is missed. */
+  (function edgeBack(){
+    var sx=0, sy=0, armed=false;
+    document.addEventListener('touchstart', function(e){
+      armed=false;
+      if(!detailKey || e.touches.length!==1) return;
+      var t=e.touches[0];
+      if(t.clientX>26) return;
+      armed=true; sx=t.clientX; sy=t.clientY;
+    }, {passive:true});
+    document.addEventListener('touchmove', function(e){
+      if(!armed || !e.touches.length) return;
+      var t=e.touches[0];
+      if(t.clientX-sx>60 && Math.abs(t.clientY-sy)<40){ armed=false; history.back(); }
+    }, {passive:true});
+    document.addEventListener('touchend', function(){ armed=false; }, {passive:true});
+  })();
   modal.onclick=function(e){ if(e.target===modal) closeSheet(); };
   document.addEventListener('keydown',function(e){
     if(e.key!=='Escape') return;
@@ -5377,6 +5613,7 @@ var AIDX = [
       '<div class="fm-sheet" id="fmSheet"></div>';
     document.body.classList.add('noscroll');
     el.classList.add('on');
+    syncScrollLock();
     MAPV.view=null; PV.on=false;
     fullMapPaint();
     document.getElementById('fmClose').onclick=fullMapClose;
@@ -5829,6 +6066,7 @@ var AIDX = [
     pvStop();
     document.getElementById('mapFull').classList.remove('on');
     document.body.classList.remove('noscroll');
+    syncScrollLock();
     MAPV.view=null;
     renderMap();
   }
@@ -6535,7 +6773,8 @@ var AIDX = [
   }
   function whoAmI(){
     var p=S.people.filter(function(x){return x.id===S.me;})[0];
-    return p?p.name:(S.mode==='runner'?'Will':'crew');
+    if(p) return p.name;
+    return meIsWill() ? 'Will' : 'someone';
   }
   function sbHead(extra){
     var h={ 'apikey':SUPA.key, 'Authorization':'Bearer '+SUPA.key, 'Content-Type':'application/json' };
@@ -6558,7 +6797,11 @@ var AIDX = [
         var row=rows&&rows[0]; if(!row) return false;
         if(row.updated_at===SB.stamp) return false;      // nothing new
         SB.stamp=row.updated_at;
-        return sharedIn(row.data);
+        var changed=sharedIn(row.data);
+        /* a phone opening the link for the first time has no team list until
+           this lands, so the name picker has to be redrawn when it does */
+        if(document.getElementById('gate').classList.contains('on')) renderGate();
+        return changed;
       });
   }
   function pushPlan(){
@@ -6739,9 +6982,8 @@ var AIDX = [
     reproject();
     document.body.classList.toggle('raceday', isRaceDay());
     paintClock();
-    if(S.mode==='crew'){ renderCrew(); renderCourse(); }
-    else if(S.mode==='pacer'){ renderPacer(); renderCourse(); }
-    else { renderPlanPicker(); drawProfile(); resetReadout(); renderRace(); renderSections(); renderAid(); renderProfile(); }
+    renderPlanPicker(); drawProfile(); resetReadout();
+    renderMyJob(); renderRace(); renderSections(); renderAid(); renderProfile();
     renderSched();
   }
 
@@ -6767,11 +7009,9 @@ var AIDX = [
   try{ GPS.last=JSON.parse(ls('rrr.gpslast')||'null'); }catch(e){}
   STATIONS.forEach(function(s,i){ s.__i=i; });
   S.plan=ls('rrr.plan')||'goal'; S.me=ls('rrr.me')||null;
-  var q=location.search;
-  var forced=/[?&]crew\b/.test(q)?'crew':/[?&]pacer\b/.test(q)?'pacer':/[?&]runner\b/.test(q)?'runner':null;
-  S.mode=forced||ls('rrr.mode');
-
-  document.querySelectorAll('[data-mode]').forEach(function(b){ b.onclick=function(){ setMode(b.dataset.mode); }; });
+  /* ?crew and ?pacer are still accepted so links already sent keep working.
+     They no longer pick an interface -- there is only one. */
+  S.mode='runner';
   document.getElementById('addEvent').onclick=function(){ editEvent(null); };
   document.getElementById('shareSched').onclick=function(){
     if(!S.custom.length&&!S.people.length){ sheet('Nothing to share yet','<p class="sec">Add a schedule item or a team member first.</p>'); return; }
@@ -6796,17 +7036,32 @@ var AIDX = [
   };
   window.addEventListener('scroll',window.navScroll,{passive:true});
 
+  /* iOS ignores user-scalable=no, but it does honour a cancelled gesture
+     event, and this is the only thing that actually stops a pinch from
+     zooming the whole interface on an iPhone. */
+  /* five tab icons floating on top of the keyboard is the most webby thing a
+     phone screen can do. The bar drops away while a field has focus. */
+  document.addEventListener('focusin', function(e){
+    var t=e.target&&e.target.tagName;
+    if(t==='INPUT'||t==='TEXTAREA'||t==='SELECT') document.body.classList.add('kbd');
+  });
+  document.addEventListener('focusout', function(){ document.body.classList.remove('kbd'); });
+
+  ['gesturestart','gesturechange','gestureend'].forEach(function(ev){
+    document.addEventListener(ev, function(e){ e.preventDefault(); }, {passive:false});
+  });
+
   if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
     navigator.serviceWorker.register('sw.js').then(function(){ SWOK=true; swBadge(); })
       .catch(function(){ SWOK=false; swBadge(); });
   } else { SWOK=false; swBadge(); }
 
   var rt; window.addEventListener('resize',function(){ clearTimeout(rt);
-    rt=setTimeout(function(){ if(S.mode==='runner') drawProfile(); },160); });
+    rt=setTimeout(function(){ drawProfile(); },160); });
 
   applyTheme();
   if(S.gps) gpsStart();
-  if(S.mode) setMode(S.mode); else document.getElementById('gate').classList.add('on');
+  if(S.me) startApp(); else openGate();
   startSync();
   setInterval(paintSync, 30000);
   window.addEventListener('popstate', function(){
@@ -6817,9 +7072,7 @@ var AIDX = [
   });
   checkIncoming();
   setInterval(paintClock,1000);
-  setInterval(function(){
-    if(S.mode==='runner') renderRace(); else if(S.mode==='crew') renderCrew(); else if(S.mode==='pacer') renderPacer();
-  }, 20000);
+  setInterval(function(){ renderMyJob(); renderRace(); }, 20000);
 })();
 </script>
 </body>
