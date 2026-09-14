@@ -257,6 +257,9 @@ to{opacity:1;transform:none}}
 .hero .eyebrow{font-size:11.5px;font-weight:650;color:rgba(237,244,239,.66);
   letter-spacing:.09em;text-transform:uppercase}
 .hero h2,.idcard h2{margin:4px 0 0;color:#fff;font-size:27px;font-weight:750;letter-spacing:-.028em}
+.heroslide .hero h2{font-size:23px;line-height:1.16;letter-spacing:-.024em}
+@media (min-width:640px){ .heroslide .hero h2{font-size:27px}
+  .heroclock b{font-size:34px} }
 .idcard h2{margin-bottom:2px}
 .hero .display{font-size:46px;font-weight:750;letter-spacing:-.032em;
   line-height:1;margin-top:10px;color:#fff;font-variant-numeric:tabular-nums}
@@ -295,8 +298,8 @@ to{opacity:1;transform:none}}
 @keyframes tflash{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
 .tflash{animation:tflash .38s var(--ease) both}
 
-.stopc-in{background:linear-gradient(180deg, var(--card) 0%, var(--card-2) 140%);
-  border:1px solid var(--hair);border-radius:var(--r-lg);
+.stopc-in{background:var(--card);
+  border:1px solid var(--hair);border-radius:var(--r-xl);
   box-shadow:var(--e1), var(--e0);overflow:hidden;
   transition:box-shadow .3s var(--ease), transform .3s var(--ease)}
 .stopc.now .stopc-in,.stopc.yours .stopc-in{box-shadow:var(--e2), var(--e0)}
@@ -307,11 +310,13 @@ to{opacity:1;transform:none}}
 .stopc.yours .stopc-in{border-left:3px solid var(--green)}
 /* a stop he has already left keeps its place in the sequence but stops
    taking a screenful to say so */
-.stopc.done .whoLine,.stopc.done .stopc-facts,
+.stopc.done .stopc-who,.stopc.done .stopc-facts,
 .stopc.done .snote,.stopc.done .nogo,.stopc.done .stopc-act{display:none}
 
 .stopc-hd{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;
-  background:none;border:0;padding:13px 14px 14px;transition:background .18s var(--ease)}
+  background:none;border:0;padding:13px 14px 10px;transition:background .18s var(--ease)}
+.stopc-who{padding:0 14px 12px}
+.stopc-who .whoLine{margin:0}
 .stopc-hd{-webkit-tap-highlight-color:transparent}
 .stopc-hd:active{background:var(--fill)}
 .stopc-hd:active .w{transform:translateX(1px)}
@@ -333,16 +338,20 @@ to{opacity:1;transform:none}}
 
 /* the three numbers, as a segmented strip -- it fills the card's width on a
    tablet instead of leaving a stranded "mile 17.7" hanging on the left */
-/* one rule above it, none below: the strip belongs to the header, not to the
-   block underneath. Two borders made a slab in the middle of the card. */
-.stopc-facts{display:flex;flex-wrap:wrap;gap:1px;background:var(--hair);
-  border-top:1px solid var(--hair)}
-.stopc-facts>div{flex:1 1 92px;min-width:0;background:var(--card-2);padding:8px 14px 9px}
+/* No rules at all. Hairlines boxing in two numbers is the thing that made
+   the card look like a table from 2011; soft tiles read as one surface. */
+.stopc-facts{display:flex;flex-wrap:wrap;gap:8px;padding:0 14px}
+.stopc-facts>div{flex:1 1 0;min-width:0;background:var(--sunken);
+  border-radius:var(--r-md);padding:9px 13px 10px}
 .stopc-facts span{display:block;font-size:10px;font-weight:700;letter-spacing:.07em;
-  text-transform:uppercase;color:var(--text-3);margin-bottom:2px;
+  text-transform:uppercase;color:var(--text-3);margin-bottom:3px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stopc-facts b{font-size:15px;font-weight:650;letter-spacing:-.02em;color:var(--text);
+.stopc-facts [data-eta]{display:block;font-size:12px;font-weight:600;letter-spacing:0;
+  text-transform:none;color:var(--text-3);margin:2px 0 0;
   font-variant-numeric:tabular-nums}
+.stopc-facts [data-eta]:empty{display:none}
+.stopc-facts b{display:block;font-size:16px;font-weight:700;letter-spacing:-.025em;
+  color:var(--text);font-variant-numeric:tabular-nums;line-height:1.15}
 .stopc-in .snote,.stopc-in .nogo{margin:13px 14px 0}
 .stopc-in .stopc-facts+.snote{margin-top:14px}
 /* ── people, colour-coded ────────────────────────────────────────
@@ -403,6 +412,91 @@ to{opacity:1;transform:none}}
 .whoLine.on-dark i.none{color:var(--gold-solid)}
 
 /* the two note channels, told apart by colour as well as by label */
+/* ── a pacer chip: the mark says the role, so it reads before the words do ── */
+.pchip.pacer{padding-left:8px;background:color-mix(in srgb, var(--pc) 13%, transparent);
+  border:1px solid color-mix(in srgb, var(--pc) 34%, transparent)}
+.pchip.pacer::before{display:none}
+.pchip .prole{width:14px;height:14px;flex:0 0 14px;stroke:currentColor;fill:none;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+.pchip i{font-style:normal;font-size:11.5px;font-weight:600;opacity:.72;margin-left:1px}
+.pchip i::before{content:"\00b7";margin-right:5px;opacity:.6}
+.on-dark .pchip.pacer{background:rgba(255,255,255,.17);border-color:rgba(255,255,255,.26)}
+.dark .pchip.pacer{background:color-mix(in srgb, var(--pc) 24%, transparent)}
+
+/* ── a pacer's own legs ── */
+.leglist{display:flex;flex-direction:column;gap:10px;margin-bottom:4px}
+.legcard{display:block;width:100%;text-align:left;background:var(--card);
+  border:1px solid var(--hair);border-radius:var(--r-lg);box-shadow:var(--e1), var(--e0);
+  padding:0;overflow:hidden;transition:background .18s, transform .16s var(--spring)}
+.legcard:active{transform:scale(.99)}
+.legcard.current{border-color:color-mix(in srgb, var(--green) 42%, transparent);
+  box-shadow:var(--e2), 0 0 0 1px color-mix(in srgb, var(--green) 20%, transparent)}
+.legcard.done{opacity:.6}
+.legcard-hd{display:flex;align-items:center;gap:10px;padding:13px 14px 12px}
+.legcard-hd .nm{flex:1;min-width:0;font-size:16.5px;font-weight:650;letter-spacing:-.018em;
+  line-height:1.28;color:var(--text)}
+.legcard-hd .pill{flex:0 0 auto}
+.legcard-hd .chev{flex:0 0 15px;width:15px;height:15px;stroke:var(--text-3);fill:none;
+  stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;opacity:.65}
+.legcard-f{display:flex;gap:1px;background:var(--hair);border-top:1px solid var(--hair)}
+.legcard-f>span{flex:1 1 0;min-width:0;background:var(--card-2);padding:8px 14px 9px}
+.legcard-f b{display:block;font-size:15px;font-weight:650;letter-spacing:-.02em;color:var(--text);
+  font-variant-numeric:tabular-nums}
+.legcard-f em{display:block;font-style:normal;font-size:10px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--text-3);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── the hero, as a strip you can swipe ──
+   Full-bleed to the screen edges so a half-visible neighbour tells you there
+   is more; one card per snap position. */
+.herostrip{display:flex;align-items:stretch;gap:20px;overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;overscroll-behavior-x:contain;
+  scrollbar-width:none;-ms-overflow-style:none;
+  padding-bottom:2px;-webkit-overflow-scrolling:touch}
+.herostrip::-webkit-scrollbar{display:none}
+.heroslide{flex:0 0 100%;min-width:0;display:flex;scroll-snap-align:start}
+.heroslide .hero{flex:1 1 auto;margin-bottom:0;display:flex;flex-direction:column}
+/* the same list, said in a sentence, for the summary card */
+.gearbox.run p{margin:0;font-size:14.5px;line-height:1.45;color:var(--text-2)}
+.hero-extra .gearbox.run p{color:rgba(237,244,239,.92)}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.hero-id{flex:1 1 auto;min-width:0}
+.hero-id h2{margin-top:3px}
+.herodots{display:flex;justify-content:center;align-items:center;gap:6px;margin:11px 0 12px}
+.herodots i{width:6px;height:6px;border-radius:4px;background:var(--hair-2);
+  transition:width .28s var(--ease), background .28s}
+.herodots i.on{width:20px;background:var(--green)}
+#heroNotes:not(:empty){margin-bottom:4px}
+
+
+.heroclock{flex:0 0 auto;text-align:right}
+.heroclock em{display:block;font-style:normal;font-size:10px;font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;color:rgba(237,244,239,.58);
+  margin-bottom:3px;white-space:nowrap}
+.heroclock em.soon{color:var(--gold-solid)}
+.heroclock>span{display:flex;align-items:baseline;justify-content:flex-end;gap:7px}
+.heroclock b{font-size:29px;font-weight:750;letter-spacing:-.03em;color:#fff;line-height:1}
+.heroclock s{text-decoration:none;font-size:12px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:rgba(237,244,239,.72)}
+.herometa{margin-top:12px;font-size:13.5px;color:rgba(237,244,239,.72);
+  font-variant-numeric:tabular-nums}
+.hero .whoLine.bare{margin-top:13px}
+
+/* ── notes and the list, inside the green card ──
+   Same two channels, same order, re-lit for a dark ground rather than
+   redesigned: a second visual language for the same content is how the
+   notes got confusing in the first place. */
+.hero-extra{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.16)}
+.hero-extra>*:first-child{margin-top:0}
+.hero-extra .snote.runner,.hero-extra .snote.crew{
+  background:rgba(255,255,255,.12);color:rgba(237,244,239,.94)}
+.hero-extra .snote.runner span{color:#BFE3CE}
+.hero-extra .snote.crew span{color:var(--gold-solid)}
+.hero-extra .gearbox{background:rgba(255,255,255,.1)}
+.hero-extra .gearbox .lbl{color:rgba(237,244,239,.6)}
+.hero-extra .gearbox li{color:rgba(237,244,239,.92)}
+.hero-extra .gearbox li::before{background:rgba(237,244,239,.75);opacity:.7}
+
 /* ── the packing list ──
    A labelled block like the two notes, so a stop reads as three things of the
    same kind. No inner card: a bordered box inside a bordered card inside a
@@ -416,7 +510,7 @@ to{opacity:1;transform:none}}
   color:var(--text-2)}
 .gearbox li::before{content:"";position:absolute;left:2px;top:11px;width:5px;height:5px;
   border-radius:3px;background:var(--text-3);opacity:.5}
-.stopc-in .gearbox{margin:10px 14px 0}
+.stopc-in .gearbox{margin:12px 14px 0}
 .hero+.gearbox,.card .gearbox{margin-left:0}
 
 /* ── editing it: one row per thing ── */
@@ -584,6 +678,14 @@ to{opacity:1;transform:none}}
 .grp{margin-bottom:22px}
 .grp-t{font-size:12.5px;font-weight:650;color:var(--text-3);text-transform:uppercase;
   letter-spacing:.06em;margin:0 0 8px 4px}
+
+.shead.tight{margin-bottom:10px}
+.seg.mini{flex:0 0 auto;width:auto;margin-bottom:0;padding:2px;gap:1px;box-shadow:none}
+.seg.mini button{flex:0 0 auto;padding:5px 11px;font-size:12.5px;font-weight:650;
+  letter-spacing:-.005em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.seg.mini button.on{box-shadow:var(--e1)}
+.shead .seg.mini{align-self:center}
+@media (min-width:640px){ .seg.mini button{padding:6px 13px;font-size:13.5px} }
 
 /* ── accordion ───────────────────────────────────────────────── */
 .acc{background:linear-gradient(180deg, var(--card) 0%, var(--card-2) 100%);
@@ -4825,30 +4927,115 @@ var AIDX = [
   /* The crew's next stop, as a card rather than a whole screen. Same
      source of truth as the old crew view: crewPick() decides which of the
      nine is next, and it advances on its own as splits get logged. */
-  function crewJobHTML(){
-    var pick=crewPick(), c=CREW[pick], a=crewArrive(c), lm=leaveMins(c);
-    var who=crewAt(c.n), mine=mePerson();
-    var isMine = !!(mine && (mine.stops||[]).indexOf(c.n)>=0);
-    /* No "leave town by" anywhere: when to set off is the crew's call, and a
-       number the app invented would be one more thing to argue with at 2am.
-       What they cannot work out for themselves is how long they have. */
-    var chip='';
-    if(a!=null){
-      var left=a-now();
-      if(left>0 && left<=720)
-        chip='<div class="pill" style="background:rgba(255,255,255,'+(left<=60?'.26':'.16')+
-          ');color:#fff">He arrives in '+dur(left)+'</div>';
-    }
-    return '<div class="hero"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px">'+
-      '<div class="eyebrow">'+(c.rest?'Right now':'Your next stop · '+
-        (visibleCrew().indexOf(c)+1)+' of '+visibleCrew().length)+'</div>'+chip+'</div>'+
-      '<h2>'+c.where+'</h2>'+
-      (a!=null?'<div class="under">Will should arrive '+clkDay(a)+'</div>':'')+
-      '<div class="stats"><div><div class="k">Travel time</div><div class="v num">'+driveShort(c)+'</div></div>'+
-        '<div><div class="k">Mile</div><div class="v num">'+(c.mi!=null?c.mi.toFixed(1):'—')+'</div></div></div>'+
-      whoLineHTML(c, true)+
+  /* One card per stop, swiped sideways. It lands on whichever stop the plan
+     says is next -- the start line before the gun, then forward on its own as
+     splits come in -- but the crew can push it along to look ahead.
+
+     Everything that changes with the clock (the countdown pill, which dot is
+     lit, the notes under the strip) is painted afterwards rather than built
+     into the markup. If it were in the string, the twenty-second refresh
+     would see different markup every time and rebuild the whole list. */
+  function heroSlideHTML(c, k, n){
+    var a=crewArrive(c);
+    var meta=[];
+    if(c.mi!=null) meta.push('Mile '+c.mi.toFixed(1));
+    meta.push(driveShort(c)+' to get there');
+    return '<div class="heroslide"><div class="hero">'+
+      '<div class="hero-top">'+
+        '<div class="hero-id">'+
+          '<div class="eyebrow">'+(c.rest?'Right now':'Stop '+(k+1)+' of '+n)+'</div>'+
+          '<h2>'+c.where+'</h2>'+
+        '</div>'+
+        (a!=null?'<div class="heroclock">'+
+          '<em data-heropill>He arrives</em>'+
+          '<span><b class="num">'+clk(a)+'</b><s>'+dyOf(a)+'</s></span></div>':'')+
       '</div>'+
-      notesHTML('aid', c.mi!=null?idxOf(c.mi):-1);
+      '<div class="herometa">'+meta.join(' \u00b7 ')+'</div>'+
+      whoLineHTML(c, true, true)+
+      (function(){
+        var body=notesHTML('aid', c.mi!=null?idxOf(c.mi):-1, true);
+        return body ? '<div class="hero-extra">'+body+'</div>' : '';
+      })()+
+      '</div></div>';
+  }
+  function crewJobHTML(){
+    var vis=visibleCrew(), n=vis.length;
+    return '<div class="herostrip" id="heroStrip">'+
+      vis.map(function(c,k){ return heroSlideHTML(c,k,n); }).join('')+'</div>'+
+      '<div class="herodots" id="heroDots">'+
+      vis.map(function(){ return '<i></i>'; }).join('')+'</div>';
+  }
+
+  /* Which card is showing. Null means "follow the plan"; once the crew swipe
+     it themselves that choice sticks, until the race moves on to a new stop. */
+  var HERO_AT=null, HERO_PICK=null;
+  /* offsets are measured from the first card, not from the strip, so the
+     strip's own left padding does not become a permanent 16px scroll */
+  function heroLeft(strip,k){
+    var kid=strip.children[k], first=strip.children[0];
+    return (kid&&first) ? kid.offsetLeft-first.offsetLeft : 0;
+  }
+  function heroIndex(strip){
+    var best=0, bd=1e9;
+    for(var k=0;k<strip.children.length;k++){
+      var d=Math.abs(heroLeft(strip,k)-strip.scrollLeft);
+      if(d<bd){ bd=d; best=k; }
+    }
+    return best;
+  }
+  function paintHeroAt(strip){
+    var vis=visibleCrew(), c=vis[HERO_AT]; if(!c) return;
+    /* the countdown, on the card that is showing */
+    for(var k=0;k<strip.children.length;k++){
+      var slot=strip.children[k].querySelector('[data-heropill]');
+      if(!slot) continue;
+      var aa=crewArrive(vis[k]), txt='He arrives', soon=false;
+      if(aa!=null){
+        var left=aa-now();
+        if(left>0 && left<=720){ txt='Arrives in '+dur(left); soon=left<=60; }
+        else if(left<=0) txt='Arrived';
+      }
+      if(slot.textContent!==txt) slot.textContent=txt;
+      slot.classList.toggle('soon', soon);
+    }
+    var dots=document.getElementById('heroDots');
+    if(dots) for(var d=0;d<dots.children.length;d++)
+      dots.children[d].classList.toggle('on', d===HERO_AT);
+  }
+  /* "Leave at 6:12" was a number the app invented and the crew disliked.
+     This is the same arithmetic run the other way and left to them: if you
+     set off now, this is when you get there. Only during the race, because
+     before it the answer is a date, not a time. */
+  function paintEtas(root){
+    var live=isRaceDay();
+    (root||document).querySelectorAll('[data-eta]').forEach(function(el){
+      var mins=+el.dataset.eta;
+      var txt = (live && mins>0) ? 'there '+clk(now()+mins) : '';
+      if(el.textContent!==txt) el.textContent=txt;
+    });
+  }
+  function paintHero(root){
+    var strip=(root||document).querySelector('#heroStrip'); if(!strip) return;
+    var vis=visibleCrew(), pick=vis.indexOf(CREW[crewPick()]);
+    if(pick<0) pick=0;
+    if(HERO_PICK!==pick){ HERO_PICK=pick; HERO_AT=pick; }   /* the race moved on */
+    if(HERO_AT==null || HERO_AT>=vis.length) HERO_AT=pick;
+    if(strip.children[HERO_AT]){
+      var target=heroLeft(strip,HERO_AT);
+      if(Math.abs(strip.scrollLeft-target)>4) strip.scrollLeft=target;
+    }
+    paintHeroAt(strip);
+    if(!strip.__b){
+      strip.__b=1;
+      var t=null;
+      strip.addEventListener('scroll', function(){
+        clearTimeout(t);
+        t=setTimeout(function(){
+          var k=heroIndex(strip);
+          if(k!==HERO_AT){ HERO_AT=k; paintHeroAt(strip); }
+        }, 90);
+      }, {passive:true});
+    }
   }
 
   /* Rest and Summit Lake are off by default -- no aid is run at either -- but
@@ -4898,19 +5085,57 @@ var AIDX = [
     var k=ids.indexOf(id);
     return (k<0 ? 0 : k) % 10;
   }
-  function personChip(p, me){
-    return '<span class="pchip pc'+personHue(p.id)+(me?' me':'')+'">'+esc(p.name)+'</span>';
+  var RUN_SVG='<svg class="prole" viewBox="0 0 24 24"><circle cx="14" cy="4.6" r="2"/>'+
+    '<path d="M9.5 21l2.3-6.6L9 11l1-4 3.6 1 2.4 2.6M13.8 14.4L16.4 21M6 10.4l3-2"/></svg>';
+  /* A chip says who. If it is a pacer it also says so -- a runner mark
+     instead of the colour dot, and what they are doing at this stop. Emma's
+     name on an aid station with no other clue reads as "Emma is crewing",
+     which is the opposite of true. */
+  function personChip(p, me, tag){
+    /* the name as an attribute as well as text: a pacer chip's text carries a
+       role word, so text is no longer a reliable way to say who this is */
+    return '<span class="pchip pc'+personHue(p.id)+(me?' me':'')+(tag?' pacer':'')+
+      '" data-p="'+esc(p.name)+'">'+
+      (tag?RUN_SVG:'')+esc(p.name)+(tag?'<i>'+tag+'</i>':'')+'</span>';
+  }
+  /* Who is pacing, and what changes hands here. Derived from the leg
+     assignments, never typed. */
+  function pacerEnds(i){
+    var L=pacerLegs().filter(function(L){ return L.who && L.to.__i===i; })[0];
+    return L?personById(L.who):null;
+  }
+  function pacerStarts(i){
+    var L=pacerLegs().filter(function(L){ return L.who && L.from.__i===i; })[0];
+    return L?personById(L.who):null;
+  }
+  function pacerChipsAt(i, mine){
+    if(i==null || i<0) return [];
+    var a=pacerEnds(i), b=pacerStarts(i), out=[], seen={};
+    function add(p,tag){
+      if(!p || seen[p.id]) return;
+      seen[p.id]=1;
+      out.push(personChip(p, !!(mine&&p.id===mine.id), tag));
+    }
+    /* short words: these chips live in a 184px column on a phone, and a chip
+       cannot wrap inside itself */
+    if(a && b && a.id===b.id){ add(a,'pacing'); return out; }
+    add(a,'finishes');
+    add(b,'joins');
+    if(!out.length){ var t=pacerInto(i); if(t) add(t,'pacing'); }
+    return out;
   }
   /* Spans, not divs: this renders inside the stop header's <span>, and a
      block element in there is invalid nesting browsers only tolerate. */
   function whoLineHTML(c, dark, bare){
     var w=responsibleAt(c), mine=mePerson();
-    var body = w.length
+    var i = c.mi!=null ? idxOf(c.mi) : -1;
+    var pac = pacerChipsAt(i, mine);
+    var crew = w.length
       ? w.map(function(p){ return personChip(p, !!(mine&&p.id===mine.id)); }).join('')
-      : '<span class="pchip none">Not assigned</span>';
+      : (pac.length ? '' : '<span class="pchip none">Not assigned</span>');
     return '<span class="whoLine'+(dark?' on-dark':'')+(bare?' bare':'')+'">'+
-      (bare?'':'<span class="lbl">On aid</span>')+
-      '<span class="pchips">'+body+'</span></span>';
+      (bare?'':'<span class="lbl">Who is here</span>')+
+      '<span class="pchips">'+crew+pac.join('')+'</span></span>';
   }
   /* Both channels, wherever a stop is shown. */
   /* Every note in the app is one of two channels hanging off one thing --
@@ -4943,8 +5168,10 @@ var AIDX = [
     return String(v||'').split('\n').map(function(x){ return x.trim(); })
       .filter(function(x){ return !!x; });
   }
-  function gearListHTML(i){
+  function gearListHTML(i, inline){
     var g=gearList(i); if(!g.length) return '';
+    if(inline) return '<div class="gearbox run"><span class="lbl">Bring</span>'+
+      '<p>'+g.map(esc).join(' \u00b7 ')+'</p></div>';
     return '<div class="gearbox"><span class="lbl">Bring</span><ul>'+
       g.map(function(t){ return '<li>'+esc(t)+'</li>'; }).join('')+'</ul></div>';
   }
@@ -4953,13 +5180,13 @@ var AIDX = [
   }
   /* Read-only. Draws nothing at all when both channels are empty -- a summary
      view with no note should be silent, not show an empty slot. */
-  function notesHTML(scope,id){
+  function notesHTML(scope,id,inline){
     if(id==null || (scope!=='sec' && id<0)) return '';
     return AID_FIELDS.map(function(f){
       var v=noteVal(scope,id,f.k); if(!v) return '';
       return '<div class="snote '+f.who+'"><span>'+f.label+'</span>'+
         esc(v).replace(/\n/g,'<br>')+'</div>';
-    }).join('') + (scope==='sec' ? '' : gearListHTML(id));
+    }).join('') + (scope==='sec' ? '' : gearListHTML(id, inline));
   }
   /* notes plus the one button that edits them, as a single unit -- so a
      reader never has to work out which of several boxes is the live one */
@@ -5025,43 +5252,39 @@ var AIDX = [
     var minen = vis.filter(function(c){ return isMineStop(c, mine); }).length;
     var only = (MINEONLY && minen) ? 1 : 0;
     var rows = only ? vis.filter(function(c){ return isMineStop(c, mine); }) : vis;
-    return '<div class="shead"><h2>Goal Times</h2>'+
-      '<span class="note">every time below moves</span></div>'+
-      '<div class="seg planpicker"></div>'+
-      '<div class="shead"><h2>Crew Aid Stations</h2>'+
-      '<span class="note">times are his arrival</span>'+
-      (meIsWill()?'<button class="linkbtn" id="editStops">Edit</button>':'')+'</div>'+
+    return '<div class="shead"><h2>Crew Aid Stations</h2>'+
       (minen
-        ? '<div class="seg sfilter">'+
-          '<button data-sfilter="0"'+(only?'':' class="on"')+
-            '>Crew assisted aid stations <small>'+vis.length+'</small></button>'+
-          '<button data-sfilter="1"'+(only?' class="on"':'')+
-            '>Just mine <small>'+minen+'</small></button>'+
+        ? '<div class="seg mini sfilter">'+
+          '<button data-sfilter="0"'+(only?'':' class="on"')+'>All '+vis.length+'</button>'+
+          '<button data-sfilter="1"'+(only?' class="on"':'')+'>Mine '+minen+'</button>'+
           '</div>'
         : '')+
+      (meIsWill()?'<button class="linkbtn" id="editStops">Edit</button>':'')+'</div>'+
       '<ol class="stoplist">'+
       rows.map(function(c, ri){
         var ix=CREW.indexOf(c), seq=vis.indexOf(c)+1;
         var a=crewArrive(c), lm=leaveMins(c), si=(c.mi!=null?idxOf(c.mi):-1);
         var yours = isMineStop(c, mine);
         var state = ix<pick ? ' done' : ix===pick ? ' now' : '';
-        var facts=[['Travel time', driveShort(c)]];
-        if(c.mi!=null) facts.push(['Mile', c.mi.toFixed(1)]);
+        var facts=[];
+        if(c.mi!=null) facts.push(['Mile', c.mi.toFixed(1), '']);
+        facts.push(['Travel time', driveShort(c),
+          driveMins(c) ? '<span data-eta="'+driveMins(c)+'"></span>' : '']);
         return '<li class="stopc'+state+(yours?' yours':'')+
           (only||ri===rows.length-1?' nolink':'')+'">'+
           '<span class="rail"><i class="dot">'+
             (ix<pick ? TICK_SVG : (c.rest?'—':seq))+'</i></span>'+
           '<div class="stopc-in">'+
             '<button class="stopc-hd" data-c="'+ix+'">'+
-              '<span class="w">'+c.where+(c.opt?'<i class="opt">optional</i>':'')+
-                whoLineHTML(c, false, true)+'</span>'+
+              '<span class="w">'+c.where+(c.opt?'<i class="opt">optional</i>':'')+'</span>'+
               (a!=null?'<span class="eta"><b>'+clk(a)+'</b><s>'+
                 fD.format(new Date(START+a*MIN))+'</s></span>':'')+
               '<svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>'+
             '</button>'+
+            '<div class="stopc-who">'+whoLineHTML(c, false, true)+'</div>'+
             (facts.length
               ? '<div class="stopc-facts">'+facts.map(function(f){
-                  return '<div><span>'+f[0]+'</span><b>'+f[1]+'</b></div>'; }).join('')+'</div>'
+                  return '<div><span>'+f[0]+'</span><b>'+f[1]+'</b>'+(f[2]||'')+'</div>'; }).join('')+'</div>'
               : '')+
             stopNotesHTML(si)+
             mapWarnHTML(c.where)+
@@ -5083,17 +5306,22 @@ var AIDX = [
       var nar=legNarrative(L), li=all.indexOf(L);
       var past = done>=0 && L.to.__i!=null && done>=L.to.__i;
       var live = done>=0 && L.from.__i!=null && done>=L.from.__i && !past;
-      return '<button class="item'+(past?' done':'')+(live?' current':'')+'" data-myleg="'+li+'">'+
-        '<div class="lead num">'+L.from.mi.toFixed(0)+'</div>'+
-        '<div class="mid"><div class="nm">'+nar.title+
-        (live?' <span class="pill nowpill">running now</span>':'')+'</div>'+
-        '<div class="dt">'+L.mi.toFixed(1)+' mi · starts '+clkDay(T(L.from))+'</div></div>'+
-        '<div class="rt"><div class="a num">'+dur(T(L.to)-T(L.from))+'</div><div class="b">on your feet</div></div>'+
-        CHEV+'</button>';
+      return '<button class="legcard'+(past?' done':'')+(live?' current':'')+'" data-myleg="'+li+'">'+
+        '<span class="legcard-hd">'+
+          '<span class="nm">'+nar.title+'</span>'+
+          (live?'<span class="pill nowpill">running now</span>':
+            past?'<span class="pill grey">done</span>':'')+
+          '<svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>'+
+        '</span>'+
+        '<span class="legcard-f">'+
+          '<span><b>'+L.mi.toFixed(1)+'</b><em>miles</em></span>'+
+          '<span><b>'+dur(T(L.to)-T(L.from))+'</b><em>on your feet</em></span>'+
+          '<span><b>'+clk(T(L.from))+'</b><em>starts '+dyOf(T(L.from))+'</em></span>'+
+        '</span></button>';
     }).join('');
     return '<div class="shead"><h2>Your '+(mine.length>1?'legs':'leg')+'</h2>'+
       '<span class="note">'+mine.reduce(function(t,L){return t+L.mi;},0).toFixed(1)+' mi total</span></div>'+
-      '<div class="list">'+rows+'</div>';
+      '<div class="leglist">'+rows+'</div>';
   }
 
   /* Written for somebody who has never opened this before and is reading it
@@ -5143,11 +5371,14 @@ var AIDX = [
     var head='<div class="phead"><h1>'+esc(p.name)+'</h1></div>';
     var html = head + howCardHTML() +
       (p.role==='pacer' ? pacerJobHTML(p) : '') +
+      '<div class="shead tight"><h2>Goal Times</h2></div>'+
+      '<div class="seg planpicker"></div>' +
       crewJobHTML() +
       stopsListHTML();
-    if(html===MYJOB_HTML) return;               /* nothing moved; leave it alone */
+    if(html===MYJOB_HTML){ paintHero(el); paintEtas(el); return; }  /* leave it alone */
     MYJOB_HTML=html;
     el.innerHTML = html;
+    paintHero(el); paintEtas(el);
     el.querySelectorAll('[data-myleg]').forEach(function(b){
       var all=pacerLegs().filter(function(L){ return !!L.who; });
       b.onclick=function(){ openLeg(all[+b.dataset.myleg]); };
@@ -7837,6 +8068,7 @@ var AIDX = [
   checkIncoming();
   setInterval(paintClock,1000);
   setInterval(function(){ renderMyJob(); renderRace(); }, 20000);
+  setInterval(function(){ paintEtas(); }, 30000);
 })();
 </script>
 </body>
