@@ -144,21 +144,33 @@ button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;letter
 .view.en-pop{animation:enPop .36s var(--ease) both}
 .view.en-r{animation:enR .34s var(--ease) both}
 .view.en-l{animation:enL .34s var(--ease) both}
-@keyframes enPush{from{opacity:0;transform:translate3d(30px,0,0)}to{opacity:1;transform:none}}
-@keyframes enPop{from{opacity:0;transform:translate3d(-26px,0,0)}to{opacity:1;transform:none}}
-@keyframes enR{from{opacity:0;transform:translate3d(20px,0,0)}to{opacity:1;transform:none}}
-@keyframes enL{from{opacity:0;transform:translate3d(-20px,0,0)}to{opacity:1;transform:none}}
-@keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes enPush{from{opacity:0;transform:translate3d(30px,0,0)}
+to{opacity:1;transform:none}}
+@keyframes enPop{from{opacity:0;transform:translate3d(-26px,0,0)}
+to{opacity:1;transform:none}}
+@keyframes enR{from{opacity:0;transform:translate3d(20px,0,0)}
+to{opacity:1;transform:none}}
+@keyframes enL{from{opacity:0;transform:translate3d(-20px,0,0)}
+to{opacity:1;transform:none}}
+@keyframes viewIn{from{opacity:0;transform:translateY(8px)}
+to{opacity:1;transform:none}}
 /* the header lands first, then each card behind it 45ms apart. Past the
    fifth there is no point staggering -- nothing below the fold is seen. */
-.view.on .wrap>*{animation:riseIn .42s var(--ease) both}
-.view.on .wrap>*:nth-child(1){animation-delay:.02s}
-.view.on .wrap>*:nth-child(2){animation-delay:.07s}
-.view.on .wrap>*:nth-child(3){animation-delay:.115s}
-.view.on .wrap>*:nth-child(4){animation-delay:.155s}
-.view.on .wrap>*:nth-child(5){animation-delay:.19s}
-.view.on .wrap>*:nth-child(n+6){animation-delay:.215s}
-@keyframes riseIn{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:none}}
+.view.on>*,.view.on .stoplist>li{animation:riseIn .42s var(--ease) both}
+.view.on .stoplist>li:nth-child(1){animation-delay:.03s}
+.view.on .stoplist>li:nth-child(2){animation-delay:.065s}
+.view.on .stoplist>li:nth-child(3){animation-delay:.1s}
+.view.on .stoplist>li:nth-child(4){animation-delay:.13s}
+.view.on .stoplist>li:nth-child(5){animation-delay:.155s}
+.view.on .stoplist>li:nth-child(n+6){animation-delay:.175s}
+.view.on>*:nth-child(1){animation-delay:.02s}
+.view.on>*:nth-child(2){animation-delay:.07s}
+.view.on>*:nth-child(3){animation-delay:.115s}
+.view.on>*:nth-child(4){animation-delay:.155s}
+.view.on>*:nth-child(5){animation-delay:.19s}
+.view.on>*:nth-child(n+6){animation-delay:.215s}
+@keyframes riseIn{from{opacity:0;transform:translate3d(0,10px,0)}
+to{opacity:1;transform:none}}
 :focus-visible{outline:2.5px solid var(--green);outline-offset:2px;border-radius:8px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
@@ -182,7 +194,8 @@ button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;letter
 .nav .back svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 .nav .back:active{opacity:.5}
 .nav .back{animation:backIn .3s var(--ease) both}
-@keyframes backIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+@keyframes backIn{from{opacity:0;transform:translateX(-8px)}
+to{opacity:1;transform:none}}
 /* the detail title is a duplicate of the H1 until the H1 has scrolled away,
    so it stays hidden until then and slides up into place */
 .nav .dt-ttl{flex:1;text-align:right;color:var(--text-2);
@@ -248,6 +261,177 @@ button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;letter
 .hero .display{font-size:46px;font-weight:750;letter-spacing:-.032em;
   line-height:1;margin-top:10px;color:#fff;font-variant-numeric:tabular-nums}
 .hero .display.sm{font-size:33px;letter-spacing:-.024em}
+/* what to have out, stated in the hero rather than in a card below it */
+.hero-bring{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.16);
+  font-size:14.5px;line-height:1.45;color:rgba(237,244,239,.86)}
+.hero-bring span{display:block;font-size:10.5px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:rgba(237,244,239,.55);margin-bottom:4px}
+
+/* the countdown is the runner's headline, not the crew's -- for anyone with a
+   job of their own it drops to a strip under the thing they actually need */
+
+/* ── every stop, as a list you scroll ───────────────────────────── */
+/* A spine down the left, so seven cards read as one journey in order rather
+   than as seven unrelated boxes. The number lives on the spine; the card is
+   free to use its whole width. */
+.stoplist{list-style:none;margin:0;padding:0}
+.stopc{position:relative;padding-left:40px;margin-bottom:10px}
+.stopc .rail{position:absolute;left:0;top:0;bottom:-10px;width:30px;
+  display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.stopc .rail::after{content:"";flex:1;width:2px;border-radius:2px;margin-top:5px;
+  background:var(--hair-2)}
+.stopc.nolink .rail::after{display:none}
+.stopc .rail .dot{flex:0 0 auto;width:28px;height:28px;border-radius:50%;
+  background:var(--card);border:1.5px solid var(--hair-2);font-style:normal;
+  display:flex;align-items:center;justify-content:center;margin-top:11px;
+  font-size:12.5px;font-weight:700;color:var(--text-2);font-variant-numeric:tabular-nums}
+.stopc .rail .dot svg{width:14px;height:14px;stroke:currentColor;fill:none;
+  stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.stopc.done{opacity:.66}
+.stopc.done .rail .dot{background:var(--fill);border-color:transparent;color:var(--text-3)}
+.stopc.done .rail::after{background:var(--hair)}
+.stopc.now .rail .dot{background:var(--green);border-color:var(--green);color:#fff;
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--green) 14%, transparent);
+  animation:dotPulse 2.8s var(--ease) infinite}
+@keyframes dotPulse{
+  0%,100%{box-shadow:0 0 0 4px color-mix(in srgb, var(--green) 14%, transparent)}
+  50%{box-shadow:0 0 0 8px color-mix(in srgb, var(--green) 5%, transparent)}}
+/* a number that just changed lifts into place rather than blinking */
+@keyframes tflash{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+.tflash{animation:tflash .38s var(--ease) both}
+
+.stopc-in{background:linear-gradient(180deg, var(--card) 0%, var(--card-2) 140%);
+  border:1px solid var(--hair);border-radius:var(--r-lg);
+  box-shadow:var(--e1), var(--e0);overflow:hidden;
+  transition:box-shadow .3s var(--ease), transform .3s var(--ease)}
+.stopc.now .stopc-in,.stopc.yours .stopc-in{box-shadow:var(--e2), var(--e0)}
+.stopc.now .stopc-in{border-color:color-mix(in srgb, var(--green) 40%, transparent);
+  box-shadow:var(--e1), 0 0 0 1px color-mix(in srgb, var(--green) 20%, transparent)}
+/* your own stops carry a colour edge instead of a badge -- the badge said
+   nothing the chips did not already say */
+.stopc.yours .stopc-in{border-left:3px solid var(--green)}
+/* a stop he has already left keeps its place in the sequence but stops
+   taking a screenful to say so */
+.stopc.done .whoLine,.stopc.done .stopc-facts,.stopc.done .stopc-bring,
+.stopc.done .snote,.stopc.done .nogo,.stopc.done .stopc-act{display:none}
+
+.stopc-hd{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;
+  background:none;border:0;padding:13px 14px 14px;transition:background .18s var(--ease)}
+.stopc-hd{-webkit-tap-highlight-color:transparent}
+.stopc-hd:active{background:var(--fill)}
+.stopc-hd:active .w{transform:translateX(1px)}
+.stopc-hd .w{transition:transform .18s var(--spring)}
+.stopc-hd .w{flex:1;min-width:0;font-size:16.5px;font-weight:650;letter-spacing:-.018em;
+  line-height:1.28;color:var(--text)}
+.stopc-hd .eta{flex:0 0 auto;text-align:right;padding-top:1px}
+.stopc-hd .eta b{display:block;font-size:17px;font-weight:700;letter-spacing:-.025em;
+  font-variant-numeric:tabular-nums}
+.stopc-hd .eta s{display:block;text-decoration:none;font-size:10.5px;font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--text-3);
+  margin-top:2px;white-space:nowrap}
+.stopc-hd .chev{flex:0 0 auto;width:15px;height:15px;margin-top:5px;stroke:var(--text-3);
+  fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;opacity:.65}
+.stopc-hd i{font-style:normal;display:inline-block;font-size:10.5px;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;border-radius:5px;padding:2px 6px;
+  margin-left:7px;vertical-align:2px}
+.stopc-hd i.opt{background:var(--fill);color:var(--text-3)}
+
+/* the three numbers, as a segmented strip -- it fills the card's width on a
+   tablet instead of leaving a stranded "mile 17.7" hanging on the left */
+.stopc-facts{display:flex;flex-wrap:wrap;gap:1px;background:var(--hair);
+  border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+.stopc-facts>div{flex:1 1 92px;min-width:0;background:var(--sunken);padding:9px 14px}
+.stopc-facts span{display:block;font-size:10px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--text-3);margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stopc-facts b{font-size:15.5px;font-weight:650;letter-spacing:-.02em;color:var(--text);
+  font-variant-numeric:tabular-nums}
+.stopc-bring{padding:13px 14px 0;font-size:14.5px;line-height:1.45;color:var(--text-2)}
+.stopc-bring span{display:block;font-size:10px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text-3);margin-bottom:3px}
+.stopc-in .snote,.stopc-in .nogo{margin:12px 14px 0}
+/* ── people, colour-coded ────────────────────────────────────────
+   One hue per person, hashed from their id so it never moves. The chip
+   carries the hue as a dot plus a wash, which survives both themes and
+   still reads for anyone who cannot separate the hues themselves. */
+.pc0{--pc:#1B5340} .pc1{--pc:#B5801E} .pc2{--pc:#A8452C} .pc3{--pc:#1B6A70}
+.pc4{--pc:#7A3566} .pc5{--pc:#3A4E8C} .pc6{--pc:#5F6B24} .pc7{--pc:#9A5423}
+.pc8{--pc:#44585E} .pc9{--pc:#8E2B4C}
+.pchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.whoLine.bare .pchips{margin-top:0}
+.pchip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;
+  letter-spacing:-.008em;border-radius:999px;padding:5px 11px 5px 9px;
+  background:color-mix(in srgb, var(--pc) 15%, transparent);
+  color:color-mix(in srgb, var(--pc) 82%, #0A130F)}
+.pchip::before{content:"";width:8px;height:8px;border-radius:5px;background:var(--pc);flex:0 0 8px}
+.pchip{white-space:nowrap}
+.pchip.none{background:transparent;border:1px dashed var(--hair-2);color:var(--text-3);
+  padding:4px 11px 4px 9px}
+.pchip.none::before{background:none;border:1.5px dashed var(--text-3);opacity:.55;
+  width:9px;height:9px;flex:0 0 9px;box-sizing:border-box}
+.dark .pchip.none{border-color:var(--hair-2)}
+.dark .pchip{background:color-mix(in srgb, var(--pc) 26%, transparent);
+  color:color-mix(in srgb, var(--pc) 38%, #EDEAE1)}
+.on-dark .pchip{background:rgba(255,255,255,.15);color:#fff}
+/* a dark hue on a dark hero is no dot at all -- lift it toward white so the
+   colour still identifies the person against the green */
+.on-dark .pchip::before{background:color-mix(in srgb, var(--pc) 38%, #fff)}
+.on-dark .pchip b{background:rgba(255,255,255,.22)}
+.on-dark .pchip.none{background:rgba(255,255,255,.15);color:var(--gold-tint)}
+.on-dark .pchip.none::before{background:var(--gold-solid)}
+
+/* ── the card's action row ──
+   Two labelled buttons side by side. It is only drawn when it has something
+   in it, so a stop with no driving route no longer shows an empty grey bar. */
+.stopc-act{display:flex;align-items:stretch;gap:8px;padding:13px 14px 14px}
+.stopc-act.solo{padding:14px 0 0}
+.stopc-act .golink{margin:0;flex:1 1 0;min-width:0;justify-content:center}
+.penbtn{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;
+  min-height:42px;padding:0 14px;border-radius:var(--r-sm);border:1px solid var(--hair-2);
+  background:var(--card);color:var(--text-2);font-size:14px;font-weight:600;
+  letter-spacing:-.008em;transition:background .2s, transform .14s var(--spring)}
+.penbtn:active{background:var(--fill);transform:scale(.97)}
+.penbtn svg{flex:0 0 16px;width:16px;height:16px;stroke:var(--text-2);fill:none;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
+.penbtn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* who is on aid, stated the same way on every surface */
+.whoLine{display:block;margin:11px 0 0;font-size:13px;line-height:1.5}
+.whoLine.bare{margin:7px 0 0}
+.whoLine .lbl{display:block;font-size:10.5px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text-3);margin-bottom:3px}
+.whoLine i{font-style:normal;display:inline-block;color:var(--text-2);margin-right:9px}
+.whoLine.on-dark{margin:16px 0 0}
+.whoLine.on-dark>span{color:rgba(237,244,239,.55)}
+.whoLine.on-dark i{color:rgba(237,244,239,.9)}
+.whoLine.on-dark i.me{color:#fff;font-weight:700}
+.whoLine.on-dark i.none{color:var(--gold-solid)}
+
+/* the two note channels, told apart by colour as well as by label */
+/* notes and the one button that edits them travel together */
+.noteunit{margin-top:12px}
+.noteunit .snote:first-child{margin-top:0}
+.noteunit .stopc-act.solo{padding:10px 0 0}
+.stopc-in .noteunit{margin:0 14px}
+.snote{margin:10px 0 0;border-radius:var(--r-md);padding:11px 13px;font-size:14px;
+  line-height:1.5;color:var(--text-2)}
+.snote span{display:block;font-size:10.5px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:4px}
+.snote.runner{background:var(--green-tint)} .snote.runner span{color:var(--green-ink)}
+.snote.crew{background:var(--gold-tint)} .snote.crew span{color:var(--gold)}
+.hero+.snote,.card .snote{margin-left:0}
+.golink{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  margin:13px 0 0;min-height:42px;
+  background:var(--green-tint);color:var(--green-ink);border-radius:var(--r-sm);
+  padding:9px 14px;font-size:14.5px;font-weight:650;text-decoration:none;
+  transition:background .2s, transform .14s var(--spring)}
+.golink:active{background:var(--green-tint2);transform:scale(.97)}
+.golink svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
+.nogo{margin:12px 0 0;background:var(--red-tint);border-radius:var(--r-md);
+  padding:11px 13px;font-size:13.5px;line-height:1.45;color:var(--text-2)}
+.nogo b{color:var(--red)}
+
 .hero .under,.idcard .u{font-size:14px;color:rgba(237,244,239,.68);margin-top:7px;letter-spacing:-.008em}
 
 /* ── stat chips ──────────────────────────────────────────────── */
@@ -304,9 +488,19 @@ button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;letter
 .seg button{flex:1;min-width:0;border:0;background:transparent;border-radius:var(--r-sm);padding:8px 2px;
   font-size:13.5px;font-weight:600;color:var(--text-2);
   transition:background .22s var(--ease), color .22s, box-shadow .22s, transform .15s var(--spring)}
-.seg button small{display:block;font-size:10.5px;font-weight:500;opacity:.7;margin-top:2px;
-  letter-spacing:-.012em;font-variant-numeric:tabular-nums;
+.seg button small{display:block;font-size:11px;font-weight:550;opacity:.75;margin-top:3px;
+  letter-spacing:-.01em;font-variant-numeric:tabular-nums;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg button small i{display:block;font-style:normal;font-size:10px;font-weight:500;
+  opacity:.72;margin-top:1px;letter-spacing:0}
+/* a four-up control 700px wide needs type to match, or it reads as a phone
+   control that has been stretched */
+@media (min-width:640px){
+  .seg{padding:4px;gap:3px}
+  .seg button{padding:13px 10px;font-size:15px}
+  .seg button small{font-size:13px;margin-top:5px;opacity:.8}
+  .seg button small i{font-size:11.5px;margin-top:3px}
+}
 .seg button{align-self:stretch}
 .seg button.on{background:var(--card);color:var(--text);box-shadow:var(--e1), var(--e0)}
 .seg button:active{transform:scale(.97)}
@@ -419,8 +613,66 @@ blockquote{margin:13px 0;padding:2px 0 2px 14px;border-left:2.5px solid var(--ha
 @keyframes tick{from{transform:rotate(42deg) scale(.2);opacity:0}
   60%{transform:rotate(42deg) scale(1.18);opacity:1} to{transform:rotate(42deg) scale(1)}}
 .chk input:checked{animation:tickBox .3s var(--spring)}
-@keyframes tickBox{0%{transform:scale(.86)}55%{transform:scale(1.09)}100%{transform:scale(1)}}
+@keyframes tickBox{0%{transform:scale(.86)}
+55%{transform:scale(1.09)}
+100%{transform:scale(1)}}
+/* .fld input is a full-width text field and lands after this block, so a
+   checkbox inside a form field was being stretched into a 50px grey slab --
+   which is exactly what the crew editor looked like */
+.fld .chk input{width:24px;min-height:0;padding:0}
 .chk span{font-size:15.5px;line-height:1.4;padding-top:1px}
+
+/* ── who is crewing: eight people in three rows, not eight rows ── */
+.whopick{display:flex;flex-wrap:wrap;gap:8px}
+.wpick{position:relative;display:inline-flex;align-items:center;gap:8px;
+  border:1px solid var(--hair-2);border-radius:999px;padding:9px 14px 9px 11px;
+  background:var(--card);font-size:14.5px;font-weight:600;letter-spacing:-.008em;
+  color:var(--text-2);cursor:pointer;
+  transition:background .18s, border-color .18s, color .18s, transform .14s var(--spring)}
+.fld .whopick input,.wpick input{position:absolute;opacity:0;width:1px;height:1px;
+  min-height:0;padding:0;margin:0;border:0;pointer-events:none}
+.wpick::before{content:"";width:9px;height:9px;border-radius:5px;flex:0 0 9px;
+  background:var(--pc);opacity:.55;transition:opacity .18s, transform .18s var(--spring)}
+.wpick i{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--text-3);opacity:.85}
+.wpick.on i{color:inherit;opacity:.7}
+.wpick:active{transform:scale(.96)}
+.wpick.on{border-color:color-mix(in srgb, var(--pc) 52%, transparent);
+  background:color-mix(in srgb, var(--pc) 14%, transparent);
+  color:color-mix(in srgb, var(--pc) 84%, #0A130F)}
+.wpick.on::before{opacity:1;transform:scale(1.12)}
+.dark .wpick.on{background:color-mix(in srgb, var(--pc) 26%, transparent);
+  color:color-mix(in srgb, var(--pc) 40%, #EDEAE1)}
+/* a text button: it had no style at all and was falling back to a browser
+   default button, which read as a box in the middle of a sentence */
+.linkbtn{background:none;border:0;padding:0;font:inherit;font-size:13.5px;font-weight:650;
+  color:var(--green-ink);letter-spacing:-.008em;text-decoration:underline;
+  text-underline-offset:3px;text-decoration-thickness:1.5px;
+  text-decoration-color:color-mix(in srgb, var(--green) 35%, transparent);
+  transition:opacity .18s}
+.linkbtn:active{opacity:.55}
+.phead .linkbtn{white-space:nowrap}
+.fld label .linkbtn{float:right;margin-top:-2px;text-transform:none;letter-spacing:-.008em}
+
+/* ── how this works ── */
+.howcard{background:var(--green-tint);border:1px solid color-mix(in srgb, var(--green) 22%, transparent);
+  border-radius:var(--r-lg);padding:15px 16px;margin-bottom:14px}
+.howcard b{display:block;font-size:15.5px;font-weight:650;letter-spacing:-.015em;
+  color:var(--green-ink);margin-bottom:3px}
+.howcard span{display:block;font-size:14.5px;line-height:1.45;color:var(--text-2)}
+.howcard-a{display:flex;gap:8px;margin-top:13px}
+.howcard-a .btn{flex:1 1 0;min-height:42px;margin:0}
+.howlist{list-style:none;margin:0;padding:0;counter-reset:h}
+.howlist li{counter-increment:h;position:relative;padding:0 0 15px 38px;margin-bottom:15px;
+  border-bottom:1px solid var(--hair)}
+.howlist li:last-child{border-bottom:0;padding-bottom:4px;margin-bottom:0}
+.howlist li::before{content:counter(h);position:absolute;left:0;top:-1px;
+  width:26px;height:26px;border-radius:50%;background:var(--green-tint);color:var(--green-ink);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.howlist b{display:block;font-size:15.5px;font-weight:650;letter-spacing:-.015em;
+  line-height:1.3;margin-bottom:4px}
+.howlist span{display:block;font-size:14.5px;line-height:1.5;color:var(--text-2)}
 .chk span em{display:block;font-size:13px;color:var(--text-3);font-style:normal;margin-top:1px}
 .chk input:checked+span{color:var(--text-3)}
 .chk input:checked+span em{opacity:.7}
@@ -451,14 +703,49 @@ blockquote{margin:13px 0;padding:2px 0 2px 14px;border-left:2.5px solid var(--ha
 .planChips span.warn{background:var(--gold-tint);color:var(--gold)}
 .planChips span.no{background:var(--red-tint);color:var(--red)}
 .planChips.fuel{margin-top:8px}
-.planNote{margin-top:10px;background:var(--gold-tint);color:var(--gold);border-radius:8px;
-  padding:6px 10px;font-size:13px;font-weight:650}
 .planFuel{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .planFuel>div{background:var(--sunken);border:1px solid var(--hair);border-radius:var(--r-md);padding:8px 10px;min-width:0}
 .planFuel span{display:block;font-size:10.5px;font-weight:700;letter-spacing:.04em;
   text-transform:uppercase;color:var(--text-3)}
 .planFuel b{display:block;font-size:13.5px;font-weight:600;line-height:1.3;margin-top:2px}
 @media (max-width:430px){ .planFuel{grid-template-columns:1fr} }
+/* ── the three goals, on the leg card ──
+   All of A, B and C on one screen, each editable where it is read, because
+   switching plans to fix one number was the whole complaint. */
+.goalRow{display:flex;gap:1px;margin-top:11px;background:var(--hair);
+  border:1px solid var(--hair);border-radius:var(--r-md);overflow:hidden}
+.goalRow .g{flex:1 1 0;min-width:0;background:var(--card-2);padding:8px 10px}
+.goalRow .g.on{background:var(--green-tint)}
+.goalRow .g span{display:block;font-size:9.5px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--text-3);margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.goalRow .g.on span{color:var(--green-ink)}
+.goalRow .g b{display:block;font-size:15.5px;font-weight:700;letter-spacing:-.02em;
+  color:var(--text);font-variant-numeric:tabular-nums}
+.goalRow .g s{display:block;text-decoration:none;font-size:11px;color:var(--text-3);
+  margin-top:1px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.goalRow.ed .g{padding:7px 8px}
+.goalRow .g input{width:100%;margin:1px 0;border:1px solid var(--hair-2);border-radius:var(--r-sm);
+  background:var(--card);color:var(--text);font-family:inherit;font-size:15px;font-weight:700;
+  letter-spacing:-.02em;padding:5px 7px;font-variant-numeric:tabular-nums;min-height:0}
+.goalRow .g input:focus{border-color:var(--green);outline:0;
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--green) 12%, transparent)}
+.goalFins{display:flex;gap:8px}
+.goalFins .gf{flex:1 1 0;min-width:0;display:block;font-size:10.5px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+.goalFins .gf.on{color:var(--green-ink)}
+.goalFins .gf input{width:100%;margin-top:4px;border:1px solid var(--hair-2);
+  border-radius:var(--r-sm);background:var(--card);color:var(--text);font-family:inherit;
+  font-size:16px;font-weight:700;letter-spacing:-.02em;padding:9px 10px;
+  text-transform:none;font-variant-numeric:tabular-nums;min-height:0}
+.goalFins .gf input:focus{border-color:var(--green);outline:0;
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--green) 12%, transparent)}
+/* who is there, read out of the plan rather than typed into it */
+.planWho{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:11px}
+.planWho>div{min-width:0}
+.planWho>div>span{display:block;font-size:9.5px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--text-3);margin-bottom:4px}
+.planWho .pchips{margin-top:0}
 .planEditGrid{margin-top:11px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .planEditGrid label{display:block;font-size:11px;font-weight:700;letter-spacing:.03em;
   text-transform:uppercase;color:var(--text-3);min-width:0}
@@ -481,37 +768,6 @@ blockquote{margin:13px 0;padding:2px 0 2px 14px;border-left:2.5px solid var(--ha
   text-transform:uppercase;color:var(--text-3)}
 .plan-print .bmeta b{display:block;font-size:16px;color:var(--green-ink);
   font-variant-numeric:tabular-nums;margin-top:1px}
-
-/* ── pace editor: leg, time allowed, resulting arrival ───────────
-   Three columns so the numbers line up down the page and a mistyped leg is
-   obvious. The input is the only thing that looks editable. */
-.paceList{margin-top:10px}
-.paceRow{display:grid;grid-template-columns:minmax(0,1fr) 84px 96px;gap:10px;
-  align-items:center;padding:11px 0;position:relative}
-.paceRow+.paceRow::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--hair)}
-.paceNm{min-width:0}
-.paceNm b{display:block;font-size:15px;font-weight:650;letter-spacing:-.01em;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.paceNm span{display:block;font-size:12px;color:var(--text-3);margin-top:1px;
-  font-variant-numeric:tabular-nums}
-.paceIn input{width:100%;text-align:center;font-size:15.5px;font-weight:650;
-  font-variant-numeric:tabular-nums;padding:9px 6px;border:1px solid var(--hair-2);
-  border-radius:var(--r-sm);background:var(--card);color:var(--text)}
-.paceIn input:focus{border-color:var(--green);outline:0;
-  box-shadow:0 0 0 3px color-mix(in srgb, var(--green) 12%, transparent)}
-.paceArr{text-align:right;min-width:0}
-.paceArr b{display:block;font-size:14.5px;font-weight:700;font-variant-numeric:tabular-nums;
-  white-space:nowrap}
-.paceArr span{display:block;font-size:11.5px;color:var(--text-3);margin-top:1px;white-space:nowrap}
-.paceRow.tight .paceArr span{color:var(--gold)}
-.paceRow.bad .paceArr b,.paceRow.bad .paceArr span{color:var(--red)}
-.paceRow.bad .paceIn input{border-color:var(--red)}
-@media (max-width:420px){
-  .paceRow{grid-template-columns:minmax(0,1fr) 72px 82px;gap:7px}
-  .paceNm b{font-size:14px}
-  .paceIn input{font-size:14.5px;padding:8px 4px}
-  .paceArr b{font-size:13.5px}
-}
 
 /* ── editable gear items: a checkbox row plus edit/remove ───────── */
 .gitem{display:flex;align-items:center;gap:2px;position:relative}
@@ -560,11 +816,13 @@ blockquote{margin:13px 0;padding:2px 0 2px 14px;border-left:2.5px solid var(--ha
 .tab.on{color:var(--green-ink)} .tab.on span{font-weight:650}
 .tab.on .ic{transform:translateY(-1px) scale(1.04);animation:tabPop .42s var(--spring)}
 @keyframes tabPop{0%{transform:translateY(-1px) scale(.82)}
-  55%{transform:translateY(-1px) scale(1.16)}100%{transform:translateY(-1px) scale(1.04)}}
+  55%{transform:translateY(-1px) scale(1.16)}
+100%{transform:translateY(-1px) scale(1.04)}}
 .tab .ic{transition:transform .26s var(--spring)}
 .tab.on::before{content:"";position:absolute;top:2px;width:34px;height:30px;border-radius:10px;
   background:var(--green-tint);z-index:-1;animation:tabIn .3s var(--spring)}
-@keyframes tabIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+@keyframes tabIn{from{opacity:0;transform:scale(.7)}
+to{opacity:1;transform:none}}
 .tab:active .ic{transform:scale(.86)}
 .tabs{transition:transform .26s var(--ease)}
 body.kbd .tabs{transform:translateY(130%);pointer-events:none}
@@ -619,7 +877,6 @@ body.kbd .tabs{transform:translateY(130%);pointer-events:none}
 .card.live .stats>div{background:var(--sunken)}
 /* station names are long; wrap rather than truncate to "Lane of ..." */
 
-
 .maphost{position:relative;overflow:hidden;background:var(--sunken)}
 .maphost .tiles{position:absolute;inset:0}
 .maphost .tiles img{position:absolute;user-select:none;-webkit-user-drag:none}
@@ -629,9 +886,11 @@ body.kbd .tabs{transform:translateY(130%);pointer-events:none}
    gently rather than sitting dead still — a small cue that the map is a
    live thing and not a static screenshot */
 .pv-pulse{transform-box:fill-box;transform-origin:center;animation:pvPulse 2.2s ease-in-out infinite}
-@keyframes pvPulse{0%,100%{opacity:.22;transform:scale(1)}50%{opacity:.36;transform:scale(1.18)}}
+@keyframes pvPulse{0%,100%{opacity:.22;transform:scale(1)}
+50%{opacity:.36;transform:scale(1.18)}}
 circle.pv-pulse[fill="none"]{animation-name:pvRingPulse}
-@keyframes pvRingPulse{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:.34;transform:scale(1.12)}}
+@keyframes pvRingPulse{0%,100%{opacity:.7;transform:scale(1)}
+50%{opacity:.34;transform:scale(1.12)}}
 .mapcredit{padding:6px 12px;font-size:11px;color:var(--text-3);background:var(--sunken);
   border-top:1px solid var(--hair);text-align:right}
 
@@ -647,7 +906,11 @@ circle.pv-pulse[fill="none"]{animation-name:pvRingPulse}
   box-shadow:0 0 0 2px var(--card);border-radius:2px}
 .stripx{position:relative;height:18px;margin-top:4px}
 .stripx b{position:absolute;transform:translateX(-50%);font-size:11px;font-weight:600;color:var(--text-3);
-  font-variant-numeric:tabular-nums}
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+/* the end labels are centred on their tick, which puts half of each one
+   outside the strip. Pull them back in. */
+.stripx b:first-child{transform:none}
+.stripx b:last-child{transform:translateX(-100%)}
 .striplg{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:10px}
 .striplg span{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--text-2)}
 .striplg i.k{width:12px;height:12px;border-radius:3px;display:block;flex:0 0 12px}
@@ -663,7 +926,6 @@ circle.pv-pulse[fill="none"]{animation-name:pvRingPulse}
 .mstep:active{background:var(--fill-2);transform:scale(.92)}
 .mlabel{flex:1;text-align:center;font-size:14.5px;font-weight:600;color:var(--text-2);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#coursemap{touch-action:manipulation}
 
 /* ── full screen planner ── */
 body.noscroll{overflow:hidden}
@@ -720,11 +982,6 @@ body.mapdrag,body.mapdrag *{-webkit-user-select:none!important;user-select:none!
   font-size:.82em;vertical-align:1px}
 .fm-nm em{font-style:normal;font-weight:650;color:var(--text-3)}
 .fm-sub{font-size:14.5px;color:var(--text-3);margin-top:4px;line-height:1.35}
-.playbtn{flex:0 0 auto;display:flex;align-items:center;gap:7px;border:0;border-radius:22px;
-  background:var(--green);color:#fff;font-size:14.5px;font-weight:650;padding:10px 15px;
-  box-shadow:var(--glow);transition:transform .14s var(--spring)}
-.playbtn svg{width:15px;height:15px;fill:currentColor;stroke:none}
-.playbtn:active{transform:scale(.95)}
 .fm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 0}
 .fm-grid>div{background:var(--sunken);border:1px solid var(--hair);border-radius:var(--r-md);padding:9px 6px;text-align:center}
 /* the value never wraps -- a wrapped value stretches every tile in the
@@ -738,8 +995,6 @@ body.mapdrag,body.mapdrag *{-webkit-user-select:none!important;user-select:none!
 .fm-facts span.ok{background:var(--green-tint);color:var(--green-ink)}
 .fm-facts span.no{background:var(--red-tint);color:var(--red)}
 .fm-facts span.warn{background:var(--gold-tint);color:var(--gold)}
-.fm-rule{height:1px;background:var(--hair);margin:18px 0 14px}
-
 /* ── panel sections ──────────────────────────────────────────────
    The panel used to be one long run of blocks with a single hairline in
    the middle of it, so "the leg ahead" and "where you are" bled together.
@@ -758,12 +1013,6 @@ body.mapdrag,body.mapdrag *{-webkit-user-select:none!important;user-select:none!
 .fm-sec.lead .fm-sechead span{color:var(--green-ink)}
 .fm-sec.lead .fm-sechead b{color:var(--text)}
 /* the notes section owns its own spacing between fields */
-.fm-sec .planbox:first-of-type{margin-top:10px}
-.fm-plan{margin-top:12px;background:var(--gold-tint);border-radius:var(--r-md);padding:11px 13px}
-.fm-plan b{display:block;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--gold);margin-bottom:4px}
-.fm-plan p{margin:0 0 4px;font-size:14.5px;line-height:1.4;color:var(--text)}
-.fm-plan.dim{background:var(--sunken)} .fm-plan.dim b{color:var(--text-3)} .fm-plan.dim p{color:var(--text-3)}
-
 /* ── timeline ── */
 .tl{margin-top:16px;touch-action:none;-webkit-user-select:none;user-select:none}
 .tltrack{position:relative;height:34px;display:flex;align-items:center;cursor:pointer}
@@ -780,7 +1029,8 @@ body.mapdrag,body.mapdrag *{-webkit-user-select:none!important;user-select:none!
 .thumb{position:absolute;z-index:3;width:20px;height:20px;margin-left:-10px;border-radius:11px;
   background:var(--card);border:3px solid var(--red);box-shadow:0 1px 4px rgba(16,28,22,.3);pointer-events:none}
 .tl.live .thumb{border-color:var(--red);animation:thumbPulse 1.8s infinite}
-@keyframes thumbPulse{0%,100%{box-shadow:0 1px 4px rgba(16,28,22,.3)}50%{box-shadow:0 1px 4px rgba(16,28,22,.3),0 0 0 6px color-mix(in srgb, var(--red) 18%, transparent)}}
+@keyframes thumbPulse{0%,100%{box-shadow:0 1px 4px rgba(16,28,22,.3)}
+50%{box-shadow:0 1px 4px rgba(16,28,22,.3),0 0 0 6px color-mix(in srgb, var(--red) 18%, transparent)}}
 .tlx{position:relative;height:15px;margin-top:1px}
 .tlx b{position:absolute;transform:translateX(-50%);font-size:10.5px;font-weight:600;color:var(--text-3);
   font-variant-numeric:tabular-nums}
@@ -831,22 +1081,6 @@ body.mapdrag,body.mapdrag *{-webkit-user-select:none!important;user-select:none!
 .terrrow b{color:var(--text-2);font-weight:650;font-variant-numeric:tabular-nums}
 
 /* ── game plan, editable in place ── */
-.planbox{margin-top:12px;background:var(--gold-tint);border-radius:var(--r-md);padding:10px 12px}
-.planbox.empty{background:var(--sunken)}
-.planbox.neutral{background:var(--sunken);border:1px solid var(--hair)}
-.planbox.neutral .planhead b{color:var(--text-3)}
-.planbox.neutral .planedit{background:var(--fill);color:var(--text-2)}
-.planbox+.planbox{margin-top:8px}
-.planhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
-.planhead b{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--gold)}
-.planbox.empty .planhead b{color:var(--text-3)}
-.planedit{display:flex;align-items:center;gap:5px;border:0;background:rgba(255,255,255,.55);
-  border-radius:8px;padding:4px 9px;font-size:12.5px;font-weight:650;color:var(--gold)}
-.planbox.empty .planedit{background:var(--fill);color:var(--text-2)}
-.planedit svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.planbox p{margin:0 0 4px;font-size:14.5px;line-height:1.4}
-.planbox p.dim{color:var(--text-3)}
-
 /* ── section detail inside the panel ── */
 .secblock{margin-top:12px}
 .secbody{font-size:14.5px;line-height:1.5;color:var(--text-2)}
@@ -859,8 +1093,6 @@ body.mapdrag,body.mapdrag *{-webkit-user-select:none!important;user-select:none!
   font-size:14px;color:var(--text-3)}
 .secbody .callout{font-size:14px;padding:10px 12px;margin:10px 0}
 .secbody b{color:var(--text)}
-.panelnote{margin:12px 0}
-.panelnote textarea{min-height:56px;font-size:15px}
 .fm-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 
 /* each leg of the course line is clickable; a faint glow under the cursor
@@ -870,7 +1102,8 @@ body.mapdrag,body.mapdrag *{-webkit-user-select:none!important;user-select:none!
 
 /* preview: type grows, chrome recedes.
    The sheet-height rule is bottom-sheet-only: it must not leak onto the
-   ≥820px standing panel below, whose own `.fm-sheet{height:auto}` (in the
+   ≥820px standing panel below, whose own `.fm-sheet{height:auto}
+` (in the
    min-width:820px block) has LOWER specificity (0-1-0) than this selector
    (0-2-0) and would silently lose the fight regardless of source order or
    media-query nesting -- which is exactly what made the panel collapse to
@@ -1022,7 +1255,8 @@ body.mapdrag,body.mapdrag *{-webkit-user-select:none!important;user-select:none!
   border-radius:20px;padding:5px 11px;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;
   margin-left:auto;margin-right:8px;letter-spacing:-.02em}
 .rc-dot{width:7px;height:7px;border-radius:4px;background:var(--red);animation:pulse 2.4s infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.82)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}
+50%{opacity:.3;transform:scale(.82)}}
 body.raceday .nav{background:color-mix(in srgb, var(--red-tint) 72%, transparent)}
 body.raceday .nav .dot{background:var(--red);box-shadow:0 0 0 3px color-mix(in srgb, var(--red) 16%, transparent)}
 
@@ -1041,18 +1275,6 @@ body.raceday .nav .dot{background:var(--red);box-shadow:0 0 0 3px color-mix(in s
 .logrow .mid{flex:1;min-width:0}
 .logrow .nm{font-size:16px;font-weight:600}
 .logrow .dt{font-size:14.5px;color:var(--text-3);margin-top:1px;font-variant-numeric:tabular-nums}
-
-/* ── notes ───────────────────────────────────────────────────── */
-.notebox{background:var(--sunken);border:1px solid var(--hair);border-radius:var(--r-md);padding:12px 13px;margin:14px 0}
-.notehead{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
-.notehead span:first-child{font-size:13.5px;font-weight:650;color:var(--green-ink)}
-.notehead .saved{font-size:12.5px;color:var(--text-3);opacity:0;transition:opacity .3s}
-.notehead .saved.on{opacity:1;color:var(--green-ink)}
-.notebox textarea{width:100%;min-height:74px;border:0;background:transparent;resize:vertical;
-  font-family:inherit;font-size:16px;line-height:1.45;color:var(--text);padding:0;letter-spacing:-.01em}
-.notebox textarea:focus{outline:0}
-.notebox textarea::placeholder{color:var(--text-3)}
-.notebox.read p{margin:0;font-size:16px;line-height:1.45}
 .ndot{display:inline-block;width:7px;height:7px;border-radius:4px;background:var(--gold-solid);
   vertical-align:middle;margin-left:2px}
 
@@ -1131,6 +1353,12 @@ body.raceday .nav .dot{background:var(--red);box-shadow:0 0 0 3px color-mix(in s
   display:flex;align-items:center;justify-content:center}
 .gate .pick .ico svg{width:22px;height:22px;stroke:var(--green-ink);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .gate .pick .ico b{color:var(--green-ink);letter-spacing:.01em}
+/* the picker chip carries the person's colour, so they meet it before the
+   stop list ever shows it to them */
+.gate .pick .ico.pc0,.gate .pick .ico.pc1,.gate .pick .ico.pc2,.gate .pick .ico.pc3,
+.gate .pick .ico.pc4,.gate .pick .ico.pc5,.gate .pick .ico.pc6,.gate .pick .ico.pc7,
+.gate .pick .ico.pc8,.gate .pick .ico.pc9{
+  background:color-mix(in srgb, var(--pc) 17%, transparent)}
 .gate .pick .tx{flex:1;min-width:0}
 .gate .pick .tx b{display:block;font-size:17px;font-weight:650;letter-spacing:-.018em}
 .gate .pick .tx span{display:block;font-size:14.5px;color:var(--text-3);margin-top:1px}
@@ -1186,6 +1414,15 @@ table.an tr:last-child td{border-bottom:0}
 .bfoot{margin-top:18px;padding-top:12px;border-top:1px solid var(--hair-2);
   font-size:12px;color:var(--text-3);line-height:1.5}
 @media (max-width:620px){ .bcols{grid-template-columns:1fr} .brief{padding:15px} }
+/* The brief's tables are thirteen columns wide because that is what belongs
+   on a sheet of paper. On a phone that pushed the whole page sideways, so on
+   screen the table itself becomes the scroller. Print is untouched: it still
+   lays out as a table. */
+@media screen{
+  .btable{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain}
+  .brief{overflow:hidden}
+}
 
 /* ── wide screens ────────────────────────────────────────────── */
 @media (min-width:820px){
@@ -1241,7 +1478,7 @@ table.an tr:last-child td{border-bottom:0}
   .bcard p{font-size:8pt}
   /* the race day planner prints its own sheet, not the screen cards */
   .plan-print{display:block!important}
-  .planCard,.paceList{display:none!important}
+  .planCard{display:none!important}
   .plan-print .bmeta{gap:14pt;padding:5pt 0;margin:6pt 0 8pt}
   .plan-print .bmeta b{font-size:12pt}
   .plan-print .bmeta span{font-size:6.5pt}
@@ -1340,10 +1577,11 @@ table.an tr:last-child td{border-bottom:0}
 </section>
 
 <!-- RUNNER -->
+<section id="r-crew" class="view"><div id="myJob"></div></section>
+
 <section id="r-race" class="view">
-  <div id="myJob"></div>
   <div id="raceHero"></div>
-  <div class="seg" id="planPicker"></div>
+  <div class="seg planpicker" id="planPicker"></div>
   <div class="card" style="padding:0;overflow:hidden">
     <div id="readout" style="background:linear-gradient(158deg,var(--hero-hi),var(--hero-lo));color:#fff;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:10px;min-height:50px"></div>
     <svg id="profile" style="display:block;width:100%;touch-action:none"></svg>
@@ -1431,11 +1669,13 @@ var SUPA = {
 
 var RACE = { startISO:'2026-09-18T09:00:00-06:00', tz:'America/Denver', dark:[[640,1285],[2078,2400]], limit:2160 };
 
+/* Labels only. The keys are what every stored override and every synced
+   plan row is filed under, so they do not move. */
 var PLANS = [
-  { k:'goal',   name:'Goal',        sub:'29:38' },
-  { k:'field',  name:'2025 field',  sub:'30:11' },
-  { k:'steady', name:'Steady',      sub:'32:00' },
-  { k:'slow',   name:'Cutoff',      sub:'36:00' }
+  { k:'goal',   name:'A Goal',  sub:'29:35' },
+  { k:'field',  name:'B Goal',  sub:'30:11' },
+  { k:'steady', name:'C Goal',  sub:'32:00' },
+  { k:'slow',   name:'Cutoff',  sub:'36:00' }
 ];
 
 /* gain = estimated gross climb for the segment INTO this station (Will's tracker) */
@@ -2720,7 +2960,7 @@ var AIDX = [
 (function () {
   'use strict';
   var START = new Date(RACE.startISO).getTime(), MIN = 60000;
-  var S = { mode:null, plan:'goal', proj:'pace', theme:'light', gps:false, atomWho:{}, checks:{}, custom:[], people:[], notes:{}, splits:{}, aidOv:{}, bib:'', me:null, hidePast:false, gearAdd:{}, gearRemoved:{}, gearOverride:{}, paceOv:{}, fuelOv:{} };
+  var S = { mode:null, plan:'goal', proj:'pace', theme:'light', gps:false, atomWho:{}, checks:{}, custom:[], people:[], notes:{}, splits:{}, aidOv:{}, secOv:{}, bib:'', me:null, hidePast:false, gearAdd:{}, gearRemoved:{}, gearOverride:{}, paceOv:{}, fuelOv:{} };
 
   /* Where a map link is safe. Fish Creek has no vehicle access at all, and a
      map to Summit Lake routes up Buffalo Pass Road, which is a disqualification. */
@@ -2744,6 +2984,7 @@ var AIDX = [
   function save(){ ls('rrr.mode',S.mode); ls('rrr.plan',S.plan); ls('rrr.me',S.me||'');
     ls('rrr.checks',JSON.stringify(S.checks)); ls('rrr.custom',JSON.stringify(S.custom));
     ls('rrr.people',JSON.stringify(S.people)); ls('rrr.notes',JSON.stringify(S.notes));
+    ls('rrr.secov',JSON.stringify(S.secOv||{}));
     ls('rrr.splits',JSON.stringify(S.splits)); ls('rrr.aidov',JSON.stringify(S.aidOv));
     ls('rrr.bib',S.bib||''); ls('rrr.theme',S.theme); ls('rrr.proj',S.proj);
     ls('rrr.gps',S.gps?'1':''); ls('rrr.atomwho',JSON.stringify(S.atomWho||{}));
@@ -2776,12 +3017,6 @@ var AIDX = [
      tells you whether the plan is still alive. */
   function legPace(i){ var L=legInto(i); return L&&L.mi>0 ? pace(L.mi,L.mins) : null; }
   function cumPace(i){ var s=STATIONS[i]; return s.mi>0 ? pace(s.mi, T(s)) : null; }
-  function paceRow(i){
-    var lp=legPace(i), cp=cumPace(i), L=legInto(i);
-    return '<div class="metrics"><div><div class="k">This leg</div><div class="v num">'+(lp?lp+'/mi':'\u2014')+'</div></div>'+
-      '<div><div class="k">Average so far</div><div class="v num">'+(cp?cp+'/mi':'\u2014')+'</div></div>'+
-      '<div><div class="k">Leg time</div><div class="v num">'+(L?dur(L.mins):'\u2014')+'</div></div></div>';
-  }
   function pace(mi,mins){ var p=mins/mi; return Math.floor(p)+':'+String(Math.round(p%1*60)).padStart(2,'0'); }
   function now(){ return (Date.now()-START)/MIN; }
   /* Your own splits, layered over the built-in plan. Stored per plan key so
@@ -2812,20 +3047,24 @@ var AIDX = [
   }
   /* Write a whole set of arrival minutes for the current plan. Always stored
      as absolute minutes from the gun so nothing has to be recomputed later. */
-  function setPace(mins){
+  function setPaceFor(k, mins){
     S.paceOv=S.paceOv||{};
     var o={};
     for(var i=1;i<STATIONS.length;i++){
       var v=mins[i];
       if(v!=null && isFinite(v)) o[i]=Math.max(0,Math.round(v));
     }
-    S.paceOv[S.plan]=o;
+    S.paceOv[k]=o;
     save(); markDirty(); render();
   }
-  function resetPace(){
-    if(S.paceOv) delete S.paceOv[S.plan];
+  /* The three goals are edited together on one screen, so they reset together
+     too. Cutoff is published data and is never touched either way. */
+  var GOALKS=['goal','field','steady'];
+  function resetGoals(){
+    if(S.paceOv) GOALKS.forEach(function(k){ delete S.paceOv[k]; });
     save(); markDirty(); render();
   }
+  function goalsEdited(){ return GOALKS.some(function(k){ return paceEdited(k); }); }
   /* current arrival minutes for every station, override-aware */
   function paceNow(k){
     return STATIONS.map(function(_,i){ return i===0?0:planMins(i,k); });
@@ -2864,7 +3103,6 @@ var AIDX = [
     PROJ=out;
   }
   function T(s){ var i=s&&s.__i; return (PROJ&&i!=null)?PROJ[i].min:planT(s); }
-  function projSrc(i){ return PROJ?PROJ[i].src:'plan'; }
   function anySplits(){ return lastSplitIdx()>=0; }
   function isRaceDay(){ var n=now(); return n>=-30 && n<=RACE.limit+120; }
   function raceClock(){
@@ -2886,10 +3124,6 @@ var AIDX = [
     el.style.display='';
     var c=raceClock();
     el.innerHTML='<span class="rc-dot"></span><span class="num">'+c.t+'</span>';
-  }
-  function paceRatio(){
-    var i=lastSplitIdx(); if(i<1) return null;
-    var p=planT(STATIONS[i]); return p>0?splitVal(i)/p:null;
   }
 
   /* ── logging ── */
@@ -3038,6 +3272,11 @@ var AIDX = [
     sched:'<rect x="3" y="6.4" width="18" height="14.6" rx="3.5"/>'+
         '<path d="M8 3.2v4M16 3.2v4" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/>'+
         '<path d="M3.4 11.6h17.2" fill="none" stroke="var(--card)" stroke-width="1.7"/>',
+    stops:'<rect x="8" y="4.6" width="13" height="2.6" rx="1.3"/>'+
+        '<rect x="8" y="10.7" width="13" height="2.6" rx="1.3"/>'+
+        '<rect x="8" y="16.8" width="13" height="2.6" rx="1.3"/>'+
+        '<circle cx="4.2" cy="5.9" r="1.9"/><circle cx="4.2" cy="12" r="1.9"/>'+
+        '<circle cx="4.2" cy="18.1" r="1.9"/>',
     team:'<circle cx="9" cy="7.8" r="3.4"/>'+
         '<path d="M2.6 19.8c0-3.6 2.9-5.7 6.4-5.7s6.4 2.1 6.4 5.7z"/>'+
         '<circle cx="17.6" cy="9.6" r="2.4"/>'+
@@ -3048,8 +3287,15 @@ var AIDX = [
     pacer:[['p-leg','My leg','leg'],['x-course','Course','course'],['x-sched','Schedule','sched'],['p-info','Rules','info']],
     runner:[['r-race','Race','race'],['r-course','Course','course'],['r-aid','Aid','aid'],['x-sched','Schedule','sched'],['r-profile','Profile','team']]
   };
+  /* Everyone gets the same five. Crew and pacers get a sixth in front of
+     them, which is the only structural difference between the two views. */
+  function tabsFor(){
+    var t=TABS.runner.slice();
+    if(mePerson()) t.unshift(['r-crew','Crew','stops']);
+    return t;
+  }
   function buildTabs(){
-    document.getElementById('tabs').innerHTML = TABS[S.mode].map(function(t,i){
+    document.getElementById('tabs').innerHTML = tabsFor().map(function(t,i){
       return '<button class="tab'+(i?'':' on')+'" data-v="'+t[0]+'">'+
         '<span class="ic"><svg class="ic-o" viewBox="0 0 24 24">'+IC[t[2]]+'</svg>'+
         (ICF[t[2]]?'<svg class="ic-f" viewBox="0 0 24 24">'+ICF[t[2]]+'</svg>':'')+'</span>'+
@@ -3075,7 +3321,7 @@ var AIDX = [
       };
     });
     document.querySelectorAll('.view').forEach(function(x){x.classList.remove('on');});
-    document.getElementById(TABS[S.mode][0][0]).classList.add('on');
+    document.getElementById(tabsFor()[0][0]).classList.add('on');
   }
   /* Everyone gets the same app now; the only thing identity changes is the
      job card at the top of the race screen. S.mode is kept at 'runner' so
@@ -3292,17 +3538,35 @@ var AIDX = [
 
   /* ── runner ── */
   function renderPlanPicker(){
-    var pk=document.getElementById('planPicker');
-    pk.className = isRaceDay() ? 'seg compact' : 'seg';
+    /* The runner has one of these on the Race tab and the crew have another
+       on theirs. Both are painted from the same state and bound to the same
+       handler, so they cannot drift apart. */
+    var pks=document.querySelectorAll('.planpicker');
+    if(!pks.length) return;
     var fin=STATIONS[STATIONS.length-1];
-    pk.innerHTML = PLANS.map(function(p){
+    var html = PLANS.map(function(p){
       var mins=planFinish(p.k);
       var pp = (mins!=null) ? pace(fin.mi,mins)+'/mi' : '';
+      /* hm() for an edited plan too -- dur() prints "29h 35m" next to a
+         neighbour printing "30:11", which reads as two different measures */
       return '<button'+(p.k===S.plan?' class="on"':'')+' data-plan="'+p.k+'">'+p.name+
-        '<small>'+(paceEdited(p.k)?dur(mins):p.sub)+(pp?' · '+pp:'')+'</small></button>';
+        '<small>'+(paceEdited(p.k)?hm(mins):p.sub)+(pp?'<i>'+pp+'</i>':'')+'</small></button>';
     }).join('');
+    pks.forEach(function(pk){
+      pk.className = 'seg planpicker' + (isRaceDay()?' compact':'');
+      pk.innerHTML = html;
+    });
     document.querySelectorAll('[data-plan]').forEach(function(b){
-      b.onclick=function(){ S.plan=b.dataset.plan; save(); markDirty(); render(); };
+      b.onclick=function(){ S.plan=b.dataset.plan; save(); markDirty(); render(); flashTimes(); };
+    });
+  }
+  /* Changing the goal moves every clock in the app at once. Without a cue
+     that is a screen full of numbers that silently became different numbers,
+     so the ones that moved lift into place. Quiet, and only on the numbers. */
+  function flashTimes(){
+    document.querySelectorAll('.stopc-hd .eta b, .stopc-facts b, .goalRow .g b, '+
+      '.planAt b, .hero .under, .hero .stats .v').forEach(function(e){
+      e.classList.remove('tflash'); void e.offsetWidth; e.classList.add('tflash');
     });
   }
   function renderRace(){
@@ -3350,7 +3614,9 @@ var AIDX = [
       '<div class="stats"><div><div class="k">Planned</div><div class="v num">'+clkDay2(T(s2))+'</div></div>'+
       '<div><div class="k">Cutoff</div><div class="v num" style="color:'+(s2.cut!=null?'var(--red)':'var(--text-3)')+'">'+
       (s2.cut!=null?clkDay2(s2.cut):'none')+'</div></div>'+
-      '<div><div class="k">Spare</div><div class="v num">'+(buf==null?'—':dur(buf))+'</div></div></div></div>';
+      '<div><div class="k">Spare</div><div class="v num">'+(buf==null?'—':dur(buf))+'</div></div></div>'+
+      stopNotesHTML(s2.__i)+
+      '<div class="stopc-act solo">'+penBtnHTML(s2.__i, hasNotes(s2.__i))+'</div></div>';
     var bw=document.getElementById('buffersWrap');
     if(bw) bw.style.display=(isRaceDay()||anySplits())?'':'none';
     document.getElementById('buffers').innerHTML = STATIONS.filter(function(x){return x.cut!=null;}).map(function(x){
@@ -3384,23 +3650,18 @@ var AIDX = [
   function accFor(s){
     var pc = s.ec==='gold'?'gold':s.ec==='brick'?'red':'';
     return '<div class="acc"><button class="acc-hd" aria-expanded="false"><span class="acc-num">'+s.n+'</span>'+
-      '<span class="acc-t"><span class="t">'+s.title+(hasNote('sec'+s.n)?' <span class="ndot"></span>':'')+
+      '<span class="acc-t"><span class="t">'+s.title+(noteAny('sec',s.n)?' <span class="ndot"></span>':'')+
       '</span><span class="s">'+s.sub+'</span></span>'+CHEV+'</button>'+
       '<div class="acc-bd"><div class="acc-in"><div class="pills" style="margin-bottom:13px"><span class="pill '+pc+'">'+s.effort+'</span>'+
       '<span class="pill grey">'+(s.to-s.from).toFixed(1)+' miles</span>'+
       (s.gain?'<span class="pill grey">'+s.gain.toLocaleString()+' ft up</span>':'')+'</div>'+
-      metrics(s)+noteBlock('sec'+s.n,'Anything you want to remember about this bit\u2026')+s.body+'</div></div></div>';
+      metrics(s)+noteUnitHTML('sec',s.n)+s.body+'</div></div></div>';
   }
   function bindAcc(sel){
     document.querySelectorAll(sel+' .acc-hd').forEach(function(b){
       b.onclick=function(){
         var open=b.parentNode.classList.toggle('open');
         b.setAttribute('aria-expanded', open?'true':'false');
-        if(open){
-          var t=b.parentNode.querySelector('textarea[data-nk]');
-          if(t){ var tm=null; t.oninput=function(){ clearTimeout(tm);
-            tm=setTimeout(function(){ noteSet(t.dataset.nk,t.value.trim()); },450); }; }
-        }
       };
     });
   }
@@ -3804,9 +4065,53 @@ var AIDX = [
   }
   function num1(n){ return (Math.round(n*10)/10).toFixed(1); }
 
+  /* Who is at a check-in and who is running into it. This used to be a free
+     text field in FUELPLAN, which meant it said whatever was typed there a
+     year ago -- "Emma pacing" long after the legs had been reassigned. Both
+     answers already exist in the plan, so read them rather than retype them. */
+  function crewAtStation(i){
+    var out=[], seen={};
+    function add(p){ if(p && !seen[p.id]){ seen[p.id]=1; out.push(p); } }
+    aidWho(i).forEach(function(id){ add(personById(id)); });
+    CREW.forEach(function(c){
+      if(c.mi!=null && idxOf(c.mi)===i && !stopHidden(c.n)) crewAt(c.n).forEach(add);
+    });
+    return out;
+  }
+  function pacerInto(i){
+    var legs=pacerLegs();
+    for(var j=0;j<legs.length;j++){
+      var L=legs[j];
+      if(!L.who || L.from.__i==null || L.to.__i==null) continue;
+      if(L.from.__i < i && i <= L.to.__i) return personById(L.who);
+    }
+    return null;
+  }
+  function planWhoText(i){
+    var cw=crewAtStation(i).map(function(p){ return p.name; });
+    var pc=pacerInto(i);
+    var out=[];
+    if(cw.length) out.push(cw.join(', '));
+    if(pc) out.push(pc.name+' pacing');
+    return out.join(' \u00b7 ');
+  }
+  function planWhoHTML(i){
+    var cw=crewAtStation(i), pc=pacerInto(i);
+    if(!cw.length && !pc) return '';
+    return '<div class="planWho">'+
+      (cw.length?'<div><span>Crew</span><div class="pchips">'+
+        cw.map(function(p){ return personChip(p); }).join('')+'</div></div>':'')+
+      (pc?'<div><span>Pacer</span><div class="pchips">'+personChip(pc)+'</div></div>':'')+
+    '</div>';
+  }
+
   function buildPace(){
     var fin=STATIONS[STATIONS.length-1];
     var mins=paceNow(), finMins=mins[STATIONS.length-1];
+    /* every goal's splits, computed once -- each leg card shows all three so
+       the plan can be read and edited without switching screens */
+    var GM={}; GOALKS.forEach(function(k){ GM[k]=paceNow(k); });
+    var GNAME={}; PLANS.forEach(function(p){ GNAME[p.k]=p.name; });
     var T=fuelTotals(), ed=PLANEDIT;
     var busts=0;
     for(var q=1;q<STATIONS.length;q++)
@@ -3815,7 +4120,8 @@ var AIDX = [
     var out='<div class="card no-print">'+
       '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:2px">'+
         '<h3>Race day</h3>'+
-        (ed?'<span class="pill gold">Editing</span>':'')+'</div>'+
+        '<span class="pill'+(ed?' gold':' grey')+'">'+(ed?'Editing ':'')+
+        PLANS.filter(function(p){return p.k===S.plan;})[0].name+'</span></div>'+
       '<p class="sec">Your splits, your fuel and who is with you, leg by leg. This is the page to open at an aid station. Everything here is on your crew and pacers’ phones too.</p>'+
       '<div class="metrics" style="margin-top:12px">'+
         '<div><div class="k">Finish</div><div class="v num">'+dur(finMins)+'</div></div>'+
@@ -3834,10 +4140,16 @@ var AIDX = [
         '<button class="btn'+(ed?'':' tint')+'" id="planEdit">'+(ed?'Done editing':'Edit the plan')+'</button>'+
         '<button class="btn tint" id="planPrint">Print / save as PDF</button>'+
       '</div>'+
-      (ed?'<div class="fld" style="margin-top:12px"><label>Stretch every leg to a target finish</label>'+
-          '<input id="paceFin" type="text" inputmode="numeric" value="'+hm(finMins)+'" placeholder="29:38"></div>'+
-          '<button class="btn tint sm" id="paceApply">Apply that finish</button>':'')+
-      ((ed&&(paceEdited()||fuelEdited()))?'<button class="btn ghost sm" id="planReset" style="margin-top:10px">Reset splits and fuel to the built-in plan</button>':'')+
+      (ed?'<div class="fld" style="margin-top:14px"><label>Target finish</label>'+
+        '<div class="goalFins">'+PLANS.filter(function(p){ return GOALKS.indexOf(p.k)>=0; })
+          .map(function(p){
+            return '<label class="gf'+(p.k===S.plan?' on':'')+'"><span>'+p.name+'</span>'+
+              '<input type="text" inputmode="numeric" data-gfin="'+p.k+'" value="'+
+              hm(planFinish(p.k))+'" placeholder="29:35"></label>'; }).join('')+'</div>'+
+        '<p class="cap" style="margin:9px 0 0">Change a finish and every leg of that goal '+
+        'stretches to match. Fuel is shared by all three \u2014 it does not change with the pace. '+
+        'Cutoff is published data and is never edited.</p></div>':'')+
+      ((ed&&(goalsEdited()||fuelEdited()))?'<button class="btn ghost sm" id="planReset" style="margin-top:12px">Reset all three goals and the fuel plan</button>':'')+
     '</div>';
 
     /* one card per check-in: when you arrive, what you do there, what you
@@ -3855,8 +4167,16 @@ var AIDX = [
             '<span>'+d.toFixed(1)+' mi from '+esc(A.name)+' · '+ft(B.gain||0)+' ft up</span></div>'+
           '<div class="planAt"><b>'+clk(mins[i])+'</b><span>'+dyOf(mins[i])+'</span></div>'+
         '</div>'+
+        '<div class="goalRow'+(ed?' ed':'')+'">'+GOALKS.map(function(k){
+          var gm=GM[k], gl=gm[i]-gm[i-1];
+          return '<div class="g'+(k===S.plan?' on':'')+'"><span>'+GNAME[k]+'</span>'+
+            (ed
+              ? '<input type="text" inputmode="numeric" data-leg="'+i+'" data-lplan="'+k+
+                '" value="'+hm(gl)+'">'
+              : '<b>'+hm(gl)+'</b>')+
+            '<s>'+clk(gm[i])+'</s></div>'; }).join('')+'</div>'+
+        planWhoHTML(i)+
         '<div class="planChips">'+
-          '<span>'+hm(legm)+' leg</span>'+
           '<span>'+pace(d,legm)+'/mi</span>'+
           '<span>'+dur(mins[i])+' in</span>'+
           (cut!=null?'<span class="'+(late?'no':(tight?'warn':'ok'))+'">'+
@@ -3865,8 +4185,6 @@ var AIDX = [
         '</div>';
       if(ed){
         out+='<div class="planEditGrid">'+
-          '<label>Leg time<input type="text" inputmode="numeric" data-leg="'+i+'" value="'+hm(legm)+'"></label>'+
-          '<label>Crew / pacer<input type="text" data-fx="note" data-fi="'+i+'" value="'+esc(f.note)+'" placeholder="who is here"></label>'+
           '<label class="wide">At the aid station<input type="text" data-fx="aid" data-fi="'+i+'" value="'+esc(f.aid)+'"></label>'+
           '<label class="wide">During the segment<input type="text" data-fx="seg" data-fi="'+i+'" value="'+esc(f.seg)+'"></label>'+
           '<label>Aid carbs g<input type="text" inputmode="numeric" data-fx="ac" data-fi="'+i+'" value="'+f.ac+'"></label>'+
@@ -3876,7 +4194,6 @@ var AIDX = [
           '<label>Caffeine mg<input type="text" inputmode="numeric" data-fx="caf" data-fi="'+i+'" value="'+f.caf+'"></label>'+
         '</div>';
       } else {
-        if(f.note) out+='<div class="planNote">'+esc(f.note)+'</div>';
         out+='<div class="planFuel">'+
           '<div><span>At the stop</span><b>'+esc(f.aid||'—')+'</b></div>'+
           '<div><span>On the way</span><b>'+esc(f.seg||'—')+'</b></div>'+
@@ -3923,7 +4240,7 @@ var AIDX = [
         '<td'+(late?' style="color:#8E2F1D;font-weight:700"':'')+'>'+(cut!=null?(late?'past':dur(cut-mins[i])):'—')+'</td>'+
         '<td>'+esc(f.aid||'—')+'</td><td>'+esc(f.seg||'—')+'</td>'+
         '<td>'+(f.ac+f.sc)+' g</td><td>'+f.caps+'</td><td>'+num1(f.water)+'</td>'+
-        '<td>'+esc(f.note||'')+'</td></tr>';
+        '<td>'+esc(planWhoText(i))+'</td></tr>';
     }
     h+='</tbody></table>'+
       '<div class="brule">Never drive to Fish Creek Falls · never drive Buffalo Pass Road above Dry Lake · never park at Dry Lake. '+
@@ -3937,27 +4254,29 @@ var AIDX = [
     if(eb) eb.onclick=function(){ PLANEDIT=!PLANEDIT; refreshDetail(); };
     var pb=root.querySelector('#planPrint');
     if(pb) pb.onclick=function(){ window.print(); };
-    var fin=root.querySelector('#paceFin');
-    var apply=root.querySelector('#paceApply');
-    if(apply) apply.onclick=function(){
-      var want=parseHM(fin&&fin.value);
-      if(want==null || want<=0){ if(fin){ fin.focus(); fin.select&&fin.select(); } return; }
-      var mins=paceNow(), cur=mins[STATIONS.length-1];
-      if(!cur) return;
-      var r=want/cur;
-      setPace(mins.map(function(m){ return m*r; })); refreshDetail();
-    };
+    /* switching here switches the app's selected plan too, so what you edit
+       and what the crew are looking at can never drift apart */
+    root.querySelectorAll('[data-gfin]').forEach(function(inp){
+      inp.onchange=function(){
+        var k=inp.dataset.gfin, want=parseHM(inp.value), mins=paceNow(k);
+        var cur=mins[STATIONS.length-1];
+        if(want==null || want<=0 || !cur){ inp.value=hm(cur); return; }
+        var r=want/cur;
+        setPaceFor(k, mins.map(function(m){ return m*r; })); refreshDetail();
+      };
+    });
     var rst=root.querySelector('#planReset');
-    if(rst) rst.onclick=function(){ resetPace(); resetFuel(); refreshDetail(); };
+    if(rst) rst.onclick=function(){ resetGoals(); resetFuel(); refreshDetail(); };
     root.querySelectorAll('[data-leg]').forEach(function(inp){
       inp.onchange=function(){
-        var i=+inp.dataset.leg, v=parseHM(inp.value), mins=paceNow();
+        var i=+inp.dataset.leg, k=inp.dataset.lplan||S.plan;
+        var v=parseHM(inp.value), mins=paceNow(k);
         if(v==null || v<0){ inp.value=hm(mins[i]-mins[i-1]); return; }
         /* shift, do not rescale: the legs after this one were not the ones
            that were wrong, so their durations should survive unchanged */
         var delta=(mins[i-1]+v)-mins[i];
         for(var j=i;j<mins.length;j++) mins[j]+=delta;
-        setPace(mins); refreshDetail();
+        setPaceFor(k, mins); refreshDetail();
       };
     });
     root.querySelectorAll('[data-fx]').forEach(function(inp){
@@ -4282,7 +4601,7 @@ var AIDX = [
           '<button class="btn danger" id="rYes" style="margin-top:8px">Yes, clear it all</button>'+
           '<button class="btn tint" id="rNo">Keep it</button>');
         document.getElementById('rYes').onclick=function(){
-          S.checks={}; S.notes={}; S.people=[]; S.custom=[]; S.splits={}; S.aidOv={}; S.me=null;
+          S.checks={}; S.notes={}; S.secOv={}; S.people=[]; S.custom=[]; S.splits={}; S.aidOv={}; S.me=null;
           S.gearAdd={}; S.gearRemoved={}; S.gearOverride={}; S.paceOv={}; S.fuelOv={};
           save(); reproject(); closeSheet(); closeDetail(); };
         document.getElementById('rNo').onclick=closeSheet;
@@ -4324,6 +4643,13 @@ var AIDX = [
     return null;
   }
   function crewPick(){
+    var p=crewPickRaw();
+    /* never point the hero at a stop nobody is driving to */
+    while(p<CREW.length-1 && stopHidden(CREW[p].n)) p++;
+    while(p>0 && stopHidden(CREW[p].n)) p--;
+    return p;
+  }
+  function crewPickRaw(){
     var nm=now();
     if(anySplits()){
       var last=lastSplitIdx(), lsp=splitOf(last);
@@ -4444,10 +4770,6 @@ var AIDX = [
     for(var i=0;i<S.people.length;i++) if(S.people[i].id===S.me) return S.people[i];
     return null;
   }
-  function meLabel(){
-    if(meIsWill()) return 'Will';
-    var p=mePerson(); return p?p.name:'Guest';
-  }
 
   /* The crew's next stop, as a card rather than a whole screen. Same
      source of truth as the old crew view: crewPick() decides which of the
@@ -4463,24 +4785,219 @@ var AIDX = [
       chip = '<div class="pill" style="background:rgba(255,255,255,'+(left<=60?'.26':'.16')+');color:#fff">'+chip+'</div>';
     }
     return '<div class="hero"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px">'+
-      '<div class="eyebrow">'+(c.rest?'Right now':'Your next stop · '+c.n+' of 9')+'</div>'+chip+'</div>'+
+      '<div class="eyebrow">'+(c.rest?'Right now':'Your next stop · '+
+        (visibleCrew().indexOf(c)+1)+' of '+visibleCrew().length)+'</div>'+chip+'</div>'+
       '<h2>'+c.where+'</h2>'+
       (a!=null?'<div class="under">Will should arrive '+clkDay(a)+'</div>':'')+
       (lm!=null?'<div class="stats"><div><div class="k">Leave town</div><div class="v num">'+clkDay2(lm)+'</div></div>'+
         '<div><div class="k">Drive</div><div class="v num">'+driveShort(c)+'</div></div>'+
         '<div><div class="k">Mile</div><div class="v num">'+(c.mi!=null?c.mi.toFixed(1):'—')+'</div></div></div>':'')+
-      (who.length?'<div class="pills" style="margin-top:14px">'+who.map(function(p){
-        return '<span class="pill'+(mine&&p.id===mine.id?' gold':'')+'">'+esc(p.name)+'</span>'; }).join('')+'</div>':'')+
+      whoLineHTML(c, true)+
+      '<div class="hero-bring"><span>Bring</span>'+c.what+'</div>'+
       '</div>'+
-      (isMine||!who.length?'':'<p class="cap" style="margin:-4px 0 12px">You are not down for this one — '+
-        nameList(who)+' '+(who.length>1?'are':'is')+'.</p>')+
-      (isRaceDay()
-        ? (c.mi!=null?logButtons(idxOf(c.mi)):'')+
-          '<button class="btn ghost sm" data-logany style="margin-bottom:10px">Log a different aid station</button>'
-        : '<button class="btn ghost sm" data-logany style="margin-bottom:10px">Log a time</button>')+
-      mapBtn(c.where, c.mi!=null?'tint':'')+
-      '<div class="card"><h3>What to have ready</h3><p class="sec">'+c.what+'</p>'+
-      '<button class="btn tint sm" data-detail="rota" style="margin-top:12px">All nine stops</button></div>';
+      stopNotesHTML(c.mi!=null?idxOf(c.mi):-1);
+  }
+
+  /* Rest and Summit Lake are off by default -- no aid is run at either -- but
+     they are hidden, not deleted, so a change of plan is a checkbox. */
+  var STOPS_OFF_DEFAULT = { 3:1, 8:1 };
+  function stopHidden(n){
+    return S.stopsOff ? !!S.stopsOff[n] : !!STOPS_OFF_DEFAULT[n];
+  }
+  function visibleCrew(){ return CREW.filter(function(c){ return !stopHidden(c.n); }); }
+
+  /* Which of the nine the crew actually drive to. Shared, so one change on
+     Will's phone reaches every phone. */
+  function editStops(){
+    sheet('Which stops show',
+      '<p class="sec" style="margin-bottom:12px">Untick a stop the crew is not driving to. '+
+      'It disappears from everyone’s list; the aid station itself is untouched.</p>'+
+      CREW.map(function(c){
+        return '<label class="chk"><input type="checkbox" class="stopOn" value="'+c.n+'"'+
+          (stopHidden(c.n)?'':' checked')+'><span>'+c.n+'. '+c.where+
+          '<em>'+(c.mi!=null?'mile '+c.mi.toFixed(1):'no location')+'</em></span></label>';
+      }).join('')+
+      '<button class="btn" id="stopsSave" style="margin-top:16px">Save</button>');
+    document.getElementById('stopsSave').onclick=function(){
+      var off={};
+      shEl.querySelectorAll('.stopOn').forEach(function(c){ if(!c.checked) off[c.value]=1; });
+      S.stopsOff=off; save(); markDirty(); closeSheet(); render();
+    };
+  }
+
+  /* Who is on aid at a stop. Two lists could answer this -- the person's own
+     `stops`, and the station's `who` -- so both are read and merged rather
+     than trusting whichever one happened to get filled in. */
+  function responsibleAt(c){
+    var out=[], seen={};
+    function add(p){ if(p && !seen[p.id]){ seen[p.id]=1; out.push(p); } }
+    crewAt(c.n).forEach(add);
+    var i = c.mi!=null ? idxOf(c.mi) : -1;
+    if(i>=0) aidWho(i).forEach(function(id){
+      add(S.people.filter(function(x){ return x.id===id; })[0]); });
+    return out;
+  }
+  /* One hue each, no duplicates. Ordered by id -- which is a creation
+     timestamp -- so a person added tonight takes the next free colour and
+     everybody already on the team keeps the one they learned. */
+  function personHue(id){
+    var ids=(S.people||[]).map(function(p){ return p.id; }).sort();
+    var k=ids.indexOf(id);
+    return (k<0 ? 0 : k) % 10;
+  }
+  function personChip(p, me){
+    return '<span class="pchip pc'+personHue(p.id)+(me?' me':'')+'">'+esc(p.name)+'</span>';
+  }
+  /* Spans, not divs: this renders inside the stop header's <span>, and a
+     block element in there is invalid nesting browsers only tolerate. */
+  function whoLineHTML(c, dark, bare){
+    var w=responsibleAt(c), mine=mePerson();
+    var body = w.length
+      ? w.map(function(p){ return personChip(p, !!(mine&&p.id===mine.id)); }).join('')
+      : '<span class="pchip none">Not assigned</span>';
+    return '<span class="whoLine'+(dark?' on-dark':'')+(bare?' bare':'')+'">'+
+      (bare?'':'<span class="lbl">On aid</span>')+
+      '<span class="pchips">'+body+'</span></span>';
+  }
+  /* Both channels, wherever a stop is shown. */
+  /* Every note in the app is one of two channels hanging off one thing --
+     an aid station or a course section. Same two labels, same two colours,
+     same editor, wherever it is read. Anything else means somebody types
+     into a field that another screen never looks at. */
+  function noteVal(scope,id,k){
+    if(scope==='sec'){
+      var o=(S.secOv&&S.secOv[id])||{};
+      return typeof o[k]==='string' ? o[k] : '';
+    }
+    return aidField(id,k);
+  }
+  function setNoteVal(scope,id,patch){
+    if(scope!=='sec') return setAidOv(id,patch);
+    S.secOv=S.secOv||{};
+    var o=S.secOv[id]||{};
+    for(var k in patch){ if(patch[k]==null||patch[k]==='') delete o[k]; else o[k]=patch[k]; }
+    if(!Object.keys(o).length) delete S.secOv[id]; else S.secOv[id]=o;
+    save(); markDirty();
+  }
+  function noteAny(scope,id){
+    return AID_FIELDS.some(function(f){ return noteVal(scope,id,f.k); });
+  }
+  function notesHTML(scope,id){
+    if(id==null || (scope!=='sec' && id<0)) return '';
+    return AID_FIELDS.map(function(f){
+      var v=noteVal(scope,id,f.k); if(!v) return '';
+      return '<div class="snote '+f.who+'"><span>'+f.label+'</span>'+
+        esc(v).replace(/\n/g,'<br>')+'</div>';
+    }).join('');
+  }
+  /* notes plus the one button that edits them, as a single unit -- so a
+     reader never has to work out which of several boxes is the live one */
+  function noteUnitHTML(scope,id,label){
+    if(id==null || (scope!=='sec' && id<0)) return '';
+    return '<div class="noteunit">'+notesHTML(scope,id)+
+      '<div class="stopc-act solo"><button class="penbtn" data-editnote="'+scope+':'+id+'">'+
+      PEN_SVG+'<span>'+(label||(noteAny(scope,id)?'Edit notes':'Add a note'))+'</span></button></div></div>';
+  }
+  function stopNotesHTML(i){ return notesHTML('aid', i); }
+  /* A compact directions affordance for a list row. */
+  function mapGoLink(where){
+    if(!MAPQ[where]) return '';
+    return '<a class="golink" target="_blank" rel="noopener" href="'+
+      'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(MAPQ[where])+'">'+
+      '<svg viewBox="0 0 24 24"><path d="M12 21.5s7-6 7-11.5a7 7 0 10-14 0c0 5.5 7 11.5 7 11.5z"/>'+
+      '<circle cx="12" cy="10" r="2.6"/></svg>Directions</a>';
+  }
+  function mapWarnHTML(where){
+    if(!NOMAP[where]) return '';
+    return '<div class="nogo"><b>Do not use a map app.</b> '+NOMAP[where]+'</div>';
+  }
+  var PEN_SVG = '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/>'+
+    '<path d="M14.5 5.5l4 4"/></svg>';
+  var TICK_SVG = '<svg viewBox="0 0 24 24"><path d="M5 13l4.5 4.5L19 7"/></svg>';
+  function hasNotes(i){
+    if(i==null || i<0) return false;
+    return AID_FIELDS.some(function(f){ return aidField(i,f.k); });
+  }
+  /* A labelled button, not a bare glyph. Crew who have never opened the app
+     should not have to guess what a pencil in a grey bar does. */
+  function penBtnHTML(i, any){
+    if(i==null || i<0) return '';
+    return '<button class="penbtn" data-editaid="'+i+'">'+PEN_SVG+
+      '<span>'+(any?'Edit notes':'Add a note')+'</span></button>';
+  }
+  /* The row of things you can actually do at this stop. It is only drawn if
+     there is something in it -- an empty tinted bar reads as a broken card,
+     which is exactly what the crew saw at Fish Creek Falls. */
+  function stopActHTML(where, i){
+    var go=mapGoLink(where), pen=penBtnHTML(i, hasNotes(i));
+    if(!go && !pen) return '';
+    return '<div class="stopc-act">'+go+pen+'</div>';
+  }
+
+  /* Every stop, in order, each answering the only three questions a crew
+     member has: when does he get here, what do I need out, how do I drive
+     to it. Yours are marked; the others are still listed, because on the
+     night people cover for each other. */
+  function isMineStop(c, mine){
+    if(!mine) return false;
+    return responsibleAt(c).some(function(p){ return p.id===mine.id; });
+  }
+  /* A view preference, not part of the plan -- it lives on this phone only
+     and is deliberately not synced, because two people filtering each
+     other's screens on race night would be a bug, not a feature. */
+  var MINEONLY = 0;
+
+  function stopsListHTML(){
+    var pick=crewPick(), mine=mePerson(), vis=visibleCrew();
+    var minen = vis.filter(function(c){ return isMineStop(c, mine); }).length;
+    var only = (MINEONLY && minen) ? 1 : 0;
+    var rows = only ? vis.filter(function(c){ return isMineStop(c, mine); }) : vis;
+    return '<div class="shead"><h2>If he runs to</h2>'+
+      '<span class="note">every time below moves</span></div>'+
+      '<div class="seg planpicker"></div>'+
+      '<div class="shead"><h2>Every stop</h2>'+
+      '<span class="note">times are his arrival</span>'+
+      (meIsWill()?'<button class="linkbtn" id="editStops">Edit</button>':'')+'</div>'+
+      (minen
+        ? '<div class="seg sfilter">'+
+          '<button data-sfilter="0"'+(only?'':' class="on"')+'>All stops <small>'+vis.length+'</small></button>'+
+          '<button data-sfilter="1"'+(only?' class="on"':'')+'>Just mine <small>'+minen+'</small></button>'+
+          '</div>'
+        : '')+
+      '<ol class="stoplist">'+
+      rows.map(function(c, ri){
+        var ix=CREW.indexOf(c), seq=vis.indexOf(c)+1;
+        var a=crewArrive(c), lm=leaveMins(c), si=(c.mi!=null?idxOf(c.mi):-1);
+        var yours = isMineStop(c, mine);
+        var state = ix<pick ? ' done' : ix===pick ? ' now' : '';
+        var facts=[];
+        if(lm!=null) facts.push(['Leave town', clk(lm)]);
+        if(c.drive) facts.push(['Drive', driveShort(c)]);
+        if(c.mi!=null) facts.push(['Mile', c.mi.toFixed(1)]);
+        return '<li class="stopc'+state+(yours?' yours':'')+
+          (only||ri===rows.length-1?' nolink':'')+'">'+
+          '<span class="rail"><i class="dot">'+
+            (ix<pick ? TICK_SVG : (c.rest?'—':seq))+'</i></span>'+
+          '<div class="stopc-in">'+
+            '<button class="stopc-hd" data-c="'+ix+'">'+
+              '<span class="w">'+c.where+(c.opt?'<i class="opt">optional</i>':'')+
+                whoLineHTML(c, false, true)+'</span>'+
+              (a!=null?'<span class="eta"><b>'+clk(a)+'</b><s>'+
+                fD.format(new Date(START+a*MIN))+'</s></span>':'')+
+              '<svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>'+
+            '</button>'+
+            (facts.length
+              ? '<div class="stopc-facts">'+facts.map(function(f){
+                  return '<div><span>'+f[0]+'</span><b>'+f[1]+'</b></div>'; }).join('')+'</div>'
+              : '')+
+            '<div class="stopc-bring"><span>Bring</span>'+c.what+'</div>'+
+            stopNotesHTML(si)+
+            mapWarnHTML(c.where)+
+            stopActHTML(c.where, si)+
+          '</div>'+
+        '</li>';
+      }).join('')+
+      '</ol>';
   }
 
   /* A pacer is only pacing for a few hours of a thirty-hour day. The rest of
@@ -4507,16 +5024,56 @@ var AIDX = [
       '<div class="list">'+rows+'</div>';
   }
 
+  /* Written for somebody who has never opened this before and is reading it
+     in a car park at 2am. Seven things, in the order they will need them. */
+  var HOWTO = [
+    ['Pick your name once',
+     'Everything you see is filtered to you. Tapped the wrong name? Switch, top right.'],
+    ['The Crew tab is your list',
+     'Every stop you drive to, in order, with the time Will should get there and what to have ready.'],
+    ['The times are a prediction, not a promise',
+     'A Goal, B Goal and C Goal are how fast you assume he runs. Tap one and every time in the app moves with it. If he is running slow, tap a slower goal.'],
+    ['Tap a stop for the rest',
+     'Directions, where to park, what happens at that station, and the pacer swap if there is one.'],
+    ['Notes are the same two everywhere',
+     'Will\u2019s note and a Crew note. Anyone on the crew can write the Crew note, from the button underneath. Everyone sees both, on every screen that shows that stop.'],
+    ['It works with no signal',
+     'Once it has opened on your phone it keeps working on Buffalo Pass. Anything you write syncs by itself when you get signal back.'],
+    ['Three rules that end his race',
+     'Never drive to Fish Creek Falls trailhead. Never drive Buffalo Pass Road above Dry Lake. Never park at Dry Lake.']
+  ];
+  /* Will wrote this app; nobody else on the team has ever opened it. The
+     first thing on their first screen says so, and goes away when they say
+     it can. A modal that opens itself would sit on top of whatever they do
+     next and swallow their back button. */
+  function howCardHTML(){
+    if(meIsWill() || ls('rrr.helpseen')) return '';
+    return '<div class="howcard"><div><b>First time here?</b>'+
+      '<span>Two minutes on how this works, then you are set for race day.</span></div>'+
+      '<div class="howcard-a"><button class="btn sm" id="howRead">Read it</button>'+
+      '<button class="btn ghost sm" id="howSkip">Not now</button></div></div>';
+  }
+  function howSheet(){
+    ls('rrr.helpseen','1');
+    sheet('How this works',
+      '<p class="sec" style="margin:-6px 0 14px">Two minutes. You will not need it twice.</p>'+
+      '<ol class="howlist">'+HOWTO.map(function(h){
+        return '<li><b>'+h[0]+'</b><span>'+h[1]+'</span></li>'; }).join('')+'</ol>'+
+      '<button class="btn" id="howOk">Got it</button>');
+    var ok=document.getElementById('howOk');
+    if(ok) ok.onclick=closeSheet;
+  }
   function renderMyJob(){
     var el=document.getElementById('myJob'); if(!el) return;
     var p=mePerson();
     if(!p){ el.innerHTML=''; return; }          /* Will, or nobody chosen */
     var head='<div class="phead"><h1>Your job</h1><p class="sec">'+esc(p.name)+
-      ' · '+roleLabel(p)+'. This changes on its own as the race goes on.</p></div>';
-    el.innerHTML = head +
+      ' · '+roleLabel(p)+'. This changes on its own as the race goes on. '+
+      '<button class="linkbtn" id="howBtn">How this works</button></p></div>';
+    el.innerHTML = head + howCardHTML() +
       (p.role==='pacer' ? pacerJobHTML(p) : '') +
-      crewJobHTML();
-    bindLog();
+      crewJobHTML() +
+      stopsListHTML();
     el.querySelectorAll('[data-myleg]').forEach(function(b){
       var all=pacerLegs().filter(function(L){ return !!L.who; });
       b.onclick=function(){ openLeg(all[+b.dataset.myleg]); };
@@ -4524,18 +5081,41 @@ var AIDX = [
     el.querySelectorAll('[data-detail]').forEach(function(b){
       b.onclick=function(){ openDetail(b.dataset.detail); };
     });
+    el.querySelectorAll('[data-editaid]').forEach(function(b){
+      b.onclick=function(){ editAid(+b.dataset.editaid); };
+    });
+    el.querySelectorAll('[data-c]').forEach(function(b){
+      b.onclick=function(){ openCrewStop(CREW[+b.dataset.c]); };
+    });
+    el.querySelectorAll('[data-sfilter]').forEach(function(b){
+      b.onclick=function(){ MINEONLY=+b.dataset.sfilter; renderMyJob(); };
+    });
+    renderPlanPicker();
+    var es=el.querySelector('#editStops');
+    if(es) es.onclick=editStops;
+    var hb=el.querySelector('#howBtn');
+    if(hb) hb.onclick=howSheet;
+    var hr=el.querySelector('#howRead');
+    if(hr) hr.onclick=function(){ howSheet(); renderMyJob(); };
+    var hs=el.querySelector('#howSkip');
+    if(hs) hs.onclick=function(){ ls('rrr.helpseen','1'); renderMyJob(); };
   }
 
   /* ── the gate: who are you ── */
   function renderGate(){
     var el=document.getElementById('gatePicks'); if(!el) return;
-    function pick(id,name,sub,ico){
+    function pick(id,name,sub,ico,hue){
       return '<button class="pick" data-me="'+id+'">'+
-        '<span class="ico">'+(ico||'<b style="font-size:14px;font-weight:700">'+esc(initials(name))+'</b>')+'</span>'+
+        '<span class="ico'+(hue!=null?' pc'+hue:'')+'">'+(ico||'<b style="font-size:14px;font-weight:700">'+esc(initials(name))+'</b>')+'</span>'+
         '<span class="tx"><b>'+esc(name)+'</b><span>'+esc(sub)+'</span></span>'+
         '<svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>';
     }
-    var team=sortedPeople().map(function(p){ return pick(p.id, p.name, roleLabel(p)); }).join('');
+    var team=sortedPeople().map(function(p){
+      return pick(p.id, p.name, roleLabel(p),
+        '<b class="pc'+personHue(p.id)+'" style="font-size:14px;font-weight:800;'+
+        'color:color-mix(in srgb, var(--pc) 82%, #0A130F)">'+esc(initials(p.name))+'</b>',
+        personHue(p.id));
+    }).join('');
     el.innerHTML =
       pick(ME_WILL,'Will','Running it','<svg viewBox="0 0 24 24"><path d="M3 17l5-7 4 4 4-8 5 11"/></svg>') +
       (team || '<p class="cap" style="margin:10px 2px">The team list has not reached this phone yet. '+
@@ -4781,9 +5361,8 @@ var AIDX = [
       (s.gain?'<span class="pill grey">'+s.gain.toLocaleString()+' ft up</span>':'')+
       '<span class="pill grey">'+ft(cumGain(s.to))+' ft by the end</span></div>'+
       metrics(s)+
-      noteBlock('sec'+s.n,'Anything you want to remember about this bit…')+
+      noteUnitHTML('sec',s.n)+
       s.body);
-    bindNote();
   }
 
 
@@ -4813,26 +5392,6 @@ var AIDX = [
 
   
 /* ── notes ── */
-  function noteGet(k){ return S.notes[k]||''; }
-  function noteSet(k,v){ if(v) S.notes[k]=v; else delete S.notes[k]; save(); markDirty(); }
-  function noteBlock(k,placeholder){
-    return '<div class="notebox"><div class="notehead"><span>Your notes</span>'+
-      '<span class="saved">Saved</span></div>'+
-      '<textarea class="noteBox" data-nk="'+k+'" placeholder="'+placeholder+'">'+esc(noteGet(k))+'</textarea></div>';
-  }
-  function bindNote(){
-    var t=shEl.querySelector('.noteBox'); if(!t) return;
-    var tag=shEl.querySelector('.notehead .saved'), tm=null;
-    t.addEventListener('input',function(){
-      clearTimeout(tm);
-      tm=setTimeout(function(){
-        noteSet(t.dataset.nk, t.value.trim());
-        if(tag){ tag.classList.add('on'); setTimeout(function(){tag.classList.remove('on');},1400); }
-        if(S.mode==='runner'){ renderAid(); renderSections(); }
-      },450);
-    });
-  }
-  function hasNote(k){ return !!noteGet(k); }
 
 
   /* ═══════════════ COURSE MAP ═══════════════
@@ -4921,7 +5480,6 @@ var AIDX = [
     }
     return out;
   }
-  function tilesFor(P,W,H,base){ return tilesForBox(P,0,0,W,H,base); }
   function tileURL(base,z,x,y){
     var b=BASES[base]; if(!b||!b.url) return null;
     return b.url.replace('{z}',z).replace('{x}',x).replace('{y}',y);
@@ -5014,10 +5572,6 @@ var AIDX = [
     return { from:A, to:B, mi:+(B.mi-A.mi).toFixed(1), gain:B.gain||0, mins:T(B)-T(A), sec:sec };
   }
   /* Which pacer leg covers a mile, so the planner can name who is with him. */
-  function pacerLegAt(mi){
-    for(var i=0;i<PACERS.length;i++) if(mi>PACERS[i].from && mi<=PACERS[i].to) return PACERS[i];
-    return null;
-  }
   function crewStopFor(mi){
     for(var c=0;c<CREW.length;c++) if(CREW[c].mi===mi) return CREW[c];
     return null;
@@ -5337,11 +5891,6 @@ var AIDX = [
       commit(0,0, e.deltaY>0 ? -0.45 : 0.45);
     };
   }
-  function mapReset(full){
-    MAPV.view=null;
-    if(full){ fullMapPaint(); } else renderMap();
-  }
-
   function coverageStrip(){
     function seg(a,b,cls,title){
       var l=(a/101.8*100).toFixed(2), w=((b-a)/101.8*100).toFixed(2);
@@ -5535,27 +6084,7 @@ var AIDX = [
 
   /* The full section write-up, rendered into the side panel so the detail is
      one glance away rather than behind a tap. Notes are editable in place. */
-  function panelNote(key,placeholder){
-    return '<div class="notebox panelnote"><div class="notehead"><span>Your notes</span>'+
-      '<span class="saved">Saved</span></div>'+
-      '<textarea class="pnote" data-nk="'+key+'" placeholder="'+placeholder+'">'+esc(noteGet(key))+'</textarea></div>';
-  }
-  function bindPanelNotes(root){
-    root.querySelectorAll('.pnote').forEach(function(t){
-      var tag=t.closest('.notebox').querySelector('.saved'), tm=null;
-      t.addEventListener('focus',function(){ if(PV.on) pvHold(true); });
-      t.addEventListener('blur',function(){ if(PV.on) pvHold(false); });
-      t.addEventListener('input',function(){
-        clearTimeout(tm);
-        tm=setTimeout(function(){
-          noteSet(t.dataset.nk, t.value.trim());
-          if(tag){ tag.classList.add('on'); setTimeout(function(){tag.classList.remove('on');},1200); }
-        },420);
-      });
-    });
-  }
   /* typing in a note shouldn't have the preview run off underneath you */
-  function pvHold(on){ PV.frozen=!!on; }
 
   function sectionPanel(sec){
     var t=secTerrain(sec), mins=secMins(sec), d=sec.to-sec.from;
@@ -5571,7 +6100,7 @@ var AIDX = [
         '<div><b>'+clk(T(st(sec.to)))+'</b><span>arrive by</span></div>'+
       '</div>'+
       terrainBlock(t,'This section')+
-      panelNote('sec'+sec.n,'Anything you want to remember about this bit\u2026')+
+      noteUnitHTML('sec',sec.n)+
       '<div class="secbody">'+sec.body+'</div>'+
     '</div>';
   }
@@ -5579,7 +6108,7 @@ var AIDX = [
     var x=AIDX[i]||{};
     return '<div class="secblock">'+
       (x.desc?'<div class="secbody"><p>'+x.desc+'</p></div>':'')+
-      panelNote('aid'+i,'Bring a sandwich, Gatorade, goldfish\u2026')+
+      noteUnitHTML('aid',i)+
     '</div>';
   }
 
@@ -5772,15 +6301,9 @@ var AIDX = [
     var box=document.getElementById('fmSheet'); if(!box) return;
     box.innerHTML = PV.on ? pvSheetHTML() : browseSheetHTML();
     if(PV.on) pvBind(box); else browseBind(box);
-    bindPanelNotes(box);
     box.querySelectorAll('[data-pedit]').forEach(function(b){
       b.onclick=function(){ editAid(+b.dataset.pedit); };
     });
-  }
-  function ticksHTML(){
-    return STATIONS.map(function(s){
-      return '<i style="left:'+(s.mi/101.8*100).toFixed(2)+'%"'+(s.major?' class="maj"':'')+'></i>';
-    }).join('');
   }
   /* The single renderer for "everything about station i" -- used both when
      browsing with the arrows and when the preview pauses at a stop, so the
@@ -5848,10 +6371,6 @@ var AIDX = [
         (with_?'<span class="ok">With '+esc(with_.name)+'</span>':(s.mi>=PACER_FROM?'<span class="no">No pacer assigned</span>':'<span class="no">Solo</span>'))+
         (s.cut!=null?'<span class="'+((s.cut-T(s))<180?'warn':'')+'">'+dur(s.cut-T(s))+' of margin</span>':'')+
       '</div></div>'+
-      '<div class="fm-sec">'+
-      '<div class="fm-sechead"><span>Your plan for this stop</span></div>'+
-      aidFieldsHTML(i,{edit:true,showEmpty:true})+
-      '</div>'+
       stationPanelDetail(i)+
 
       '<div class="fm-acts"><button class="fa" id="fmOpenAid">Full aid station details</button></div>';
@@ -5882,7 +6401,6 @@ var AIDX = [
     box.querySelectorAll('[data-fgo]').forEach(function(b){
       b.onclick=function(){ barStep(b.dataset.fgo==='next'?1:-1); };
     });
-    var fe=document.getElementById('fmEdit'); if(fe) fe.onclick=function(){ editAid(MAPV.step); };
     var fo=document.getElementById('fmOpenAid'); if(fo) fo.onclick=function(){ openAid(MAPV.step); };
     bindTimeline(box, function(mi,done){
       timelineMove(mi);
@@ -6021,7 +6539,7 @@ var AIDX = [
     var sn=secFor(PV.mi).n;
     if(full||PV.holdShown!==(PV.hold>0)||PV.secN!==sn){
       PV.holdShown=(PV.hold>0); PV.secN=sn;
-      box.innerHTML=pvSheetHTML(); pvBind(box); bindPanelNotes(box);
+      box.innerHTML=pvSheetHTML(); pvBind(box);
       box.querySelectorAll('[data-pedit]').forEach(function(b){
         b.onclick=function(){ editAid(+b.dataset.pedit); };
       });
@@ -6040,9 +6558,6 @@ var AIDX = [
     box.querySelectorAll('[data-spd]').forEach(function(b){
       b.onclick=function(){ PV.speed=+b.dataset.spd; pvSheetUpdate(true); };
     });
-    var back=document.getElementById('pvBack'), fwd=document.getElementById('pvFwd');
-    if(back) back.onclick=function(){ pvJump(-1); };
-    if(fwd) fwd.onclick=function(){ pvJump(1); };
     bindTimeline(box, function(mi,done){
       PV.mi=mi; PV.hold=0; PV.at=-1;
       for(var i=0;i<STATIONS.length;i++) if(STATIONS[i].mi<=PV.mi+0.001) PV.at=i;
@@ -6287,10 +6802,6 @@ var AIDX = [
     return { d:d, eA:Math.round(eA), eB:Math.round(eB), net:net, up:up, down:down,
              upPerMi:up/d, upGrade:up/(d*5280)*100, share:up/17850*100 };
   }
-  function legTerrain(i){
-    if(i<=0) return null;
-    return terrain(STATIONS[i-1].mi, STATIONS[i].mi, STATIONS[i].gain||0);
-  }
   function legTerrainOut(i){
     if(i<0 || i>=STATIONS.length-1) return null;
     return terrain(STATIONS[i].mi, STATIONS[i+1].mi, STATIONS[i+1].gain||0);
@@ -6455,10 +6966,14 @@ var AIDX = [
      starts empty. Nothing is pre-filled: stock copy in an editable field reads
      as something you already wrote and cannot be cleared. */
   var AID_FIELDS = [
-    { k:'plan',  label:'Game plan',  hint:'What happens at this stop. In, out, who does what.' },
-    { k:'has',   label:"What's here", hint:'Aid, water, toilets, drop bag, anything worth knowing.' },
-    { k:'notes', label:'Your notes', hint:'Anything else you want to remember.' }
+    { k:'runner', who:'runner', label:'Will\u2019s note',
+      hint:'Will writes this. What he wants here, and his plan for the stop.' },
+    { k:'crew',   who:'crew',   label:'Crew note',
+      hint:'Anyone on the crew can write this. Food, kit, who is doing what.' }
   ];
+  /* Will owns his own note and can edit either; the crew edit theirs. Two
+     people writing one field at 3am is how a plan gets lost. */
+  function mayEdit(f){ return meIsWill() || f.who==='crew'; }
   function aidField(i,k){ var o=aidOv(i); return (o&&typeof o[k]==='string')?o[k]:''; }
   function aidWho(i){ var o=aidOv(i); return o.who||[]; }
   function setAidOv(i,patch){
@@ -6471,20 +6986,10 @@ var AIDX = [
   function aidHasAny(i){
     return AID_FIELDS.some(function(f){ return aidField(i,f.k); });
   }
-  /* Renders whichever of the three have been filled in. */
+  /* Kept as a name, not as a second design: every surface that used to draw
+     its own version of these two notes now draws the one unit. */
   function aidFieldsHTML(i,opts){
-    var o=opts||{};
-    return AID_FIELDS.map(function(f){
-      var v=aidField(i,f.k);
-      if(!v && !o.showEmpty) return '';
-      var cls = f.k==='plan' ? 'planbox' : 'planbox neutral';
-      return '<div class="'+cls+(v?'':' empty')+'">'+
-        '<div class="planhead"><b>'+f.label+'</b>'+
-        (o.edit?'<button class="planedit" data-editaid="'+i+'"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>Edit</button>':'')+
-        '</div>'+
-        (v?'<p>'+esc(v).replace(/\n/g,'<br>')+'</p>':'<p class="dim">'+f.hint+'</p>')+
-      '</div>';
-    }).join('');
+    return noteUnitHTML('aid', i, (opts||{}).label);
   }
   /* After an edit, repaint whichever surface is actually on screen. */
   function afterAidEdit(){
@@ -6492,37 +6997,103 @@ var AIDX = [
     if(fm && fm.classList.contains('on')){ fullMapSheet(); fmBarPaint(); drawMap('mapHostF'); }
     else render();
   }
+  function noteFieldsHTML(scope,id){
+    return AID_FIELDS.filter(mayEdit).map(function(f){
+      return '<div class="fld"><label>'+f.label+'</label>'+
+        '<textarea id="af_'+f.k+'" placeholder="'+f.hint+'">'+esc(noteVal(scope,id,f.k))+'</textarea></div>';
+    }).join('');
+  }
+  function noteFieldsRead(){
+    var patch={};
+    AID_FIELDS.filter(mayEdit).forEach(function(f){
+      var el=document.getElementById('af_'+f.k);
+      if(el) patch[f.k]=el.value.trim();
+    });
+    return patch;
+  }
+  /* A course section's notes, in the same sheet as a station's. */
+  function editSec(n){
+    var s=SECTIONS.filter(function(x){ return x.n===n; })[0];
+    sheet('Notes \u00b7 '+(s?s.title:'Section '+n),
+      (s?'<div class="cap" style="margin:-8px 0 12px">Section '+n+' of 12 \u00b7 '+
+        s.from.toFixed(1)+'\u2013'+s.to.toFixed(1)+' mi</div>':'')+
+      noteFieldsHTML('sec',n)+
+      '<button class="btn" id="aSave">Save</button>'+
+      (noteAny('sec',n)?'<button class="btn danger" id="aClear">Clear these notes</button>':''));
+    document.getElementById('aSave').onclick=function(){
+      setNoteVal('sec',n,noteFieldsRead()); closeSheet(); afterAidEdit();
+    };
+    var cl=document.getElementById('aClear');
+    if(cl) cl.onclick=function(){
+      var patch={};
+      AID_FIELDS.filter(mayEdit).forEach(function(f){ patch[f.k]=null; });
+      setNoteVal('sec',n,patch); closeSheet(); afterAidEdit();
+    };
+  }
+  /* One place decides which editor a note button opens. */
+  function openNoteEditor(tok){
+    var p=String(tok).split(':');
+    if(p[0]==='sec') editSec(+p[1]); else editAid(+p[1]);
+  }
+  /* Delegated once, at the document, so a note button works the same whether
+     it was drawn into a tab, a bottom sheet or the map's side panel. Wiring
+     it per render is how one surface ends up with a dead button. */
+  document.addEventListener('click', function(e){
+    var b=e.target.closest && e.target.closest('[data-editnote]');
+    if(!b) return;
+    e.preventDefault(); e.stopPropagation();
+    openNoteEditor(b.dataset.editnote);
+  }, true);
+
   function editAid(i){
     var s=STATIONS[i], who=aidWho(i);
     sheet('Plan '+s.name,
       '<div class="cap" style="margin:-8px 0 12px">Mile '+s.mi.toFixed(1)+' \u00b7 '+clkDay(T(s))+
         ' \u00b7 '+dur(T(s))+' into the race</div>'+
-      '<div class="fld"><label>Who is crewing here</label>'+
+      '<div class="fld"><label>Who is crewing here'+
+        (S.people.length?'<button class="linkbtn" id="whoAll">'+
+          (who.length>=S.people.length?'Clear':'Everyone')+'</button>':'')+'</label>'+
       (S.people.length
-        ? S.people.map(function(p){
-            return '<label class="chk"><input type="checkbox" class="aWho" value="'+p.id+'"'+
-              (who.indexOf(p.id)>=0?' checked':'')+'><span>'+esc(p.name)+
-              '<em>'+roleLabel(p)+'</em></span></label>';
-          }).join('')
+        ? '<div class="whopick">'+sortedPeople().map(function(p){
+            var on=who.indexOf(p.id)>=0;
+            return '<label class="wpick pc'+personHue(p.id)+(on?' on':'')+'" title="'+esc(roleLabel(p))+'">'+
+              '<input type="checkbox" class="aWho" value="'+p.id+'"'+(on?' checked':'')+'>'+
+              '<span>'+esc(p.name)+'</span>'+
+              (p.role==='pacer'?'<i>pacer</i>':'')+'</label>';
+          }).join('')+'</div>'
         : '<p class="cap">Nobody on the team yet \u2014 add people on the Profile tab first.</p>')+'</div>'+
-      AID_FIELDS.map(function(f){
-        return '<div class="fld"><label>'+f.label+'</label>'+
-          '<textarea id="af_'+f.k+'" placeholder="'+f.hint+'">'+esc(aidField(i,f.k))+'</textarea></div>';
-      }).join('')+
+      noteFieldsHTML('aid',i)+
       '<button class="btn" id="aSave">Save</button>'+
       (aidHasAny(i)||who.length?'<button class="btn danger" id="aClear">Clear everything for this stop</button>':''));
+    shEl.querySelectorAll('.wpick input').forEach(function(c){
+      c.onchange=function(){ c.parentNode.classList.toggle('on', c.checked); paintWhoAll(); };
+    });
+    function paintWhoAll(){
+      var b=document.getElementById('whoAll'); if(!b) return;
+      var n=shEl.querySelectorAll('.aWho:checked').length;
+      b.textContent = n>=S.people.length ? 'Clear' : 'Everyone';
+    }
+    var wa=document.getElementById('whoAll');
+    if(wa) wa.onclick=function(){
+      var all = shEl.querySelectorAll('.aWho:checked').length < S.people.length;
+      shEl.querySelectorAll('.aWho').forEach(function(c){
+        c.checked=all; c.parentNode.classList.toggle('on', all); });
+      paintWhoAll();
+    };
     document.getElementById('aSave').onclick=function(){
       var sel=Array.prototype.slice.call(shEl.querySelectorAll('.aWho:checked')).map(function(c){return c.value;});
-      var patch={ who: sel.length?sel:null };
-      AID_FIELDS.forEach(function(f){
-        patch[f.k]=document.getElementById('af_'+f.k).value.trim();
-      });
+      var patch=noteFieldsRead();
+      patch.who = sel.length?sel:null;
       setAidOv(i,patch);
       closeSheet(); afterAidEdit();
     };
     var cl=document.getElementById('aClear');
     if(cl) cl.onclick=function(){
-      setAidOv(i,{who:null,plan:null,has:null,notes:null});
+      var patch={};
+      AID_FIELDS.filter(mayEdit).forEach(function(f){ patch[f.k]=null; });
+      /* only the runner clears the shared assignment and the pre-reshape keys */
+      if(meIsWill()){ patch.who=null; patch.plan=null; patch.has=null; patch.notes=null; }
+      setAidOv(i,patch);
       closeSheet(); afterAidEdit();
     };
   }
@@ -6609,14 +7180,14 @@ var AIDX = [
       '<div class="pills" style="margin-bottom:13px">'+who.join('')+'</div>'+
       logButtons(i,'tint')+
       (x.desc?'<p class="sec">'+x.desc+'</p>':'')+
-      (aidWho(i).length?'<div class="callout g"><b>Crewing here.</b> '+
-        aidWho(i).map(function(id){ var q=S.people.filter(function(z){return z.id===id;})[0];
-          return q?esc(q.name):''; }).filter(Boolean).join(', ')+'</div>':'')+
-      aidFieldsHTML(i,{showEmpty:true})+
+      (crewAtStation(i).length
+        ? '<div class="whoLine"><span class="lbl">On aid</span><span class="pchips">'+
+          crewAtStation(i).map(function(q){ return personChip(q); }).join('')+'</span></div>'
+        : '')+
+      noteUnitHTML('aid', i, 'Edit notes and who is crewing')+
       (s.crew?'<div class="callout g"><b>Crew.</b> '+(s.crew===2?'On foot or by bicycle only — a vehicle here risks disqualification.'
         :s.crew===3?'Drop off and leave. There is no parking and the sheriff tickets and tows.'
         :'Vehicles and parking are fine here.')+'</div>':'')+
-      '<button class="btn ghost sm" data-editaid="'+i+'" style="margin:12px 0">Edit this aid station</button>'+
       aidMapBtn(i));
     drawLegMap(i);
     bindCopy(); bindLog();
@@ -6755,7 +7326,7 @@ var AIDX = [
      phone" stay local — ten people toggling one packing list is chaos,
      and identity is per-device by definition. */
   function sharedOut(){
-    return { people:S.people, aidOv:S.aidOv, notes:S.notes, custom:S.custom, atomWho:S.atomWho,
+    return { people:S.people, aidOv:S.aidOv, secOv:S.secOv, notes:S.notes, custom:S.custom, atomWho:S.atomWho,
              bib:S.bib||'', plan:S.plan, paceOv:S.paceOv||{}, fuelOv:S.fuelOv||{} };
   }
   function sharedIn(o){
@@ -6763,6 +7334,7 @@ var AIDX = [
     if(Array.isArray(o.people)) S.people=o.people;
     if(o.aidOv&&typeof o.aidOv==='object') S.aidOv=o.aidOv;
     if(o.notes&&typeof o.notes==='object') S.notes=o.notes;
+    if(o.secOv&&typeof o.secOv==='object') S.secOv=o.secOv;
     if(Array.isArray(o.custom)) S.custom=o.custom;
     if(typeof o.bib==='string') S.bib=o.bib;
     if(o.atomWho&&typeof o.atomWho==='object') S.atomWho=o.atomWho;
@@ -6992,6 +7564,21 @@ var AIDX = [
   S.gearAdd=jget('rrr.gearadd',{}); S.gearRemoved=jget('rrr.gearrm',{}); S.gearOverride=jget('rrr.gearov',{});
   S.paceOv=jget('rrr.paceov',{}); S.fuelOv=jget('rrr.fuelov',{});
   S.notes=jget('rrr.notes',{}); S.splits=jget('rrr.splits',{}); S.aidOv=jget('rrr.aidov',{});
+  S.secOv=jget('rrr.secov',{});
+  /* section notes used to be a single unlabelled box called "Your notes",
+     written only by Will. Move them into the runner channel so there is one
+     note model in the app; the originals stay put. */
+  (function(){
+    var moved=false;
+    Object.keys(S.notes||{}).forEach(function(k){
+      var m=/^sec(\d+)$/.exec(k); if(!m) return;
+      var n=m[1];
+      if(S.secOv[n] && typeof S.secOv[n].runner==='string') return;
+      if(!String(S.notes[k]||'').trim()) return;
+      S.secOv[n]=S.secOv[n]||{}; S.secOv[n].runner=S.notes[k]; moved=true;
+    });
+    if(moved) ls('rrr.secov',JSON.stringify(S.secOv));
+  })();
   /* earlier builds kept one note per station under notes['aid<N>']; move it
      into the new three-field shape so nothing written so far is lost */
   (function(){
@@ -7001,6 +7588,15 @@ var AIDX = [
       S.aidOv[m[1]]=S.aidOv[m[1]]||{};
       if(!S.aidOv[m[1]].notes) S.aidOv[m[1]].notes=S.notes[k];
       delete S.notes[k]; moved=true;
+    });
+    /* Three fields become one runner channel. The old keys are deliberately
+       left where they are: this is a reshape, and a reshape that deletes the
+       only copy of someone's race plan is not one worth making. */
+    Object.keys(S.aidOv||{}).forEach(function(i){
+      var o=S.aidOv[i]; if(!o || typeof o.runner==='string') return;
+      var parts=['plan','has','notes'].map(function(k){ return o[k]; })
+        .filter(function(v){ return typeof v==='string' && v.trim(); });
+      if(parts.length){ o.runner=parts.join('\n'); moved=true; }
     });
     if(moved){ ls('rrr.notes',JSON.stringify(S.notes)); ls('rrr.aidov',JSON.stringify(S.aidOv)); }
   })();
