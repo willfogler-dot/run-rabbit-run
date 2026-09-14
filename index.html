@@ -261,11 +261,6 @@ to{opacity:1;transform:none}}
 .hero .display{font-size:46px;font-weight:750;letter-spacing:-.032em;
   line-height:1;margin-top:10px;color:#fff;font-variant-numeric:tabular-nums}
 .hero .display.sm{font-size:33px;letter-spacing:-.024em}
-/* what to have out, stated in the hero rather than in a card below it */
-.hero-bring{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.16);
-  font-size:14.5px;line-height:1.45;color:rgba(237,244,239,.86)}
-.hero-bring span{display:block;font-size:10.5px;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:rgba(237,244,239,.55);margin-bottom:4px}
 
 /* the countdown is the runner's headline, not the crew's -- for anyone with a
    job of their own it drops to a strip under the thing they actually need */
@@ -312,7 +307,7 @@ to{opacity:1;transform:none}}
 .stopc.yours .stopc-in{border-left:3px solid var(--green)}
 /* a stop he has already left keeps its place in the sequence but stops
    taking a screenful to say so */
-.stopc.done .whoLine,.stopc.done .stopc-facts,.stopc.done .stopc-bring,
+.stopc.done .whoLine,.stopc.done .stopc-facts,
 .stopc.done .snote,.stopc.done .nogo,.stopc.done .stopc-act{display:none}
 
 .stopc-hd{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;
@@ -338,18 +333,18 @@ to{opacity:1;transform:none}}
 
 /* the three numbers, as a segmented strip -- it fills the card's width on a
    tablet instead of leaving a stranded "mile 17.7" hanging on the left */
+/* one rule above it, none below: the strip belongs to the header, not to the
+   block underneath. Two borders made a slab in the middle of the card. */
 .stopc-facts{display:flex;flex-wrap:wrap;gap:1px;background:var(--hair);
-  border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
-.stopc-facts>div{flex:1 1 92px;min-width:0;background:var(--sunken);padding:9px 14px}
+  border-top:1px solid var(--hair)}
+.stopc-facts>div{flex:1 1 92px;min-width:0;background:var(--card-2);padding:8px 14px 9px}
 .stopc-facts span{display:block;font-size:10px;font-weight:700;letter-spacing:.07em;
   text-transform:uppercase;color:var(--text-3);margin-bottom:2px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stopc-facts b{font-size:15.5px;font-weight:650;letter-spacing:-.02em;color:var(--text);
+.stopc-facts b{font-size:15px;font-weight:650;letter-spacing:-.02em;color:var(--text);
   font-variant-numeric:tabular-nums}
-.stopc-bring{padding:13px 14px 0;font-size:14.5px;line-height:1.45;color:var(--text-2)}
-.stopc-bring span{display:block;font-size:10px;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--text-3);margin-bottom:3px}
-.stopc-in .snote,.stopc-in .nogo{margin:12px 14px 0}
+.stopc-in .snote,.stopc-in .nogo{margin:13px 14px 0}
+.stopc-in .stopc-facts+.snote{margin-top:14px}
 /* ── people, colour-coded ────────────────────────────────────────
    One hue per person, hashed from their id so it never moves. The chip
    carries the hue as a dot plus a wash, which survives both themes and
@@ -383,7 +378,7 @@ to{opacity:1;transform:none}}
 /* ── the card's action row ──
    Two labelled buttons side by side. It is only drawn when it has something
    in it, so a stop with no driving route no longer shows an empty grey bar. */
-.stopc-act{display:flex;align-items:stretch;gap:8px;padding:13px 14px 14px}
+.stopc-act{display:flex;align-items:stretch;gap:8px;padding:12px 14px 13px}
 .stopc-act.solo{padding:14px 0 0}
 .stopc-act .golink{margin:0;flex:1 1 0;min-width:0;justify-content:center}
 .penbtn{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;
@@ -408,6 +403,34 @@ to{opacity:1;transform:none}}
 .whoLine.on-dark i.none{color:var(--gold-solid)}
 
 /* the two note channels, told apart by colour as well as by label */
+/* ── the packing list ──
+   A labelled block like the two notes, so a stop reads as three things of the
+   same kind. No inner card: a bordered box inside a bordered card inside a
+   bordered list is three frames saying nothing. */
+.gearbox{margin:10px 0 0;border-radius:var(--r-md);padding:11px 13px 12px;
+  background:var(--sunken)}
+.gearbox .lbl{display:block;font-size:10.5px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text-3);margin-bottom:6px}
+.gearbox ul{list-style:none;margin:0;padding:0}
+.gearbox li{position:relative;padding:3px 0 3px 15px;font-size:14.5px;line-height:1.4;
+  color:var(--text-2)}
+.gearbox li::before{content:"";position:absolute;left:2px;top:11px;width:5px;height:5px;
+  border-radius:3px;background:var(--text-3);opacity:.5}
+.stopc-in .gearbox{margin:10px 14px 0}
+.hero+.gearbox,.card .gearbox{margin-left:0}
+
+/* ── editing it: one row per thing ── */
+.gedit{display:flex;flex-direction:column;gap:7px}
+.gerow{display:flex;align-items:center;gap:7px}
+.fld .gerow input{flex:1 1 auto;min-height:44px;padding:10px 13px;margin:0}
+.germ{flex:0 0 40px;height:44px;border-radius:var(--r-sm);border:1px solid var(--hair-2);
+  background:var(--card);color:var(--text-3);font-size:19px;line-height:1;
+  transition:background .18s, color .18s, transform .14s var(--spring)}
+.germ:active{background:var(--red-tint);color:var(--red);transform:scale(.94)}
+#gadd{width:auto;min-height:40px;padding:0 15px}
+#gadd svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.2;
+  stroke-linecap:round}
+
 /* notes and the one button that edits them travel together */
 .noteunit{margin-top:12px}
 .noteunit .snote:first-child{margin-top:0}
@@ -420,6 +443,7 @@ to{opacity:1;transform:none}}
 .snote.runner{background:var(--green-tint)} .snote.runner span{color:var(--green-ink)}
 .snote.crew{background:var(--gold-tint)} .snote.crew span{color:var(--gold)}
 .hero+.snote,.card .snote{margin-left:0}
+.hero+.noteunit{margin-top:-2px}
 .golink{display:inline-flex;align-items:center;justify-content:center;gap:7px;
   margin:13px 0 0;min-height:42px;
   background:var(--green-tint);color:var(--green-ink);border-radius:var(--r-sm);
@@ -485,6 +509,7 @@ to{opacity:1;transform:none}}
 /* ── segmented control ───────────────────────────────────────── */
 .seg{display:flex;background:var(--fill);border-radius:var(--r-md);padding:3px;gap:2px;margin-bottom:14px;
   box-shadow:inset 0 1px 2px rgba(20,32,26,.05)}
+.sfilter button{white-space:normal;line-height:1.25;padding:9px 8px}
 .seg button{flex:1;min-width:0;border:0;background:transparent;border-radius:var(--r-sm);padding:8px 2px;
   font-size:13.5px;font-weight:600;color:var(--text-2);
   transition:background .22s var(--ease), color .22s, box-shadow .22s, transform .15s var(--spring)}
@@ -634,7 +659,7 @@ blockquote{margin:13px 0;padding:2px 0 2px 14px;border-left:2.5px solid var(--ha
 .wpick::before{content:"";width:9px;height:9px;border-radius:5px;flex:0 0 9px;
   background:var(--pc);opacity:.55;transition:opacity .18s, transform .18s var(--spring)}
 .wpick i{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.07em;
-  text-transform:uppercase;color:var(--text-3);opacity:.85}
+  text-transform:uppercase;color:var(--text-3);opacity:.85;margin-left:6px}
 .wpick.on i{color:inherit;opacity:.7}
 .wpick:active{transform:scale(.96)}
 .wpick.on{border-color:color-mix(in srgb, var(--pc) 52%, transparent);
@@ -2960,7 +2985,7 @@ var AIDX = [
 (function () {
   'use strict';
   var START = new Date(RACE.startISO).getTime(), MIN = 60000;
-  var S = { mode:null, plan:'goal', proj:'pace', theme:'light', gps:false, atomWho:{}, checks:{}, custom:[], people:[], notes:{}, splits:{}, aidOv:{}, secOv:{}, bib:'', me:null, hidePast:false, gearAdd:{}, gearRemoved:{}, gearOverride:{}, paceOv:{}, fuelOv:{} };
+  var S = { mode:null, plan:'goal', proj:'pace', theme:'light', gps:false, atomWho:{}, checks:{}, custom:[], people:[], notes:{}, splits:{}, aidOv:{}, secOv:{}, driveOv:{}, bib:'', me:null, hidePast:false, gearAdd:{}, gearRemoved:{}, gearOverride:{}, paceOv:{}, fuelOv:{} };
 
   /* Where a map link is safe. Fish Creek has no vehicle access at all, and a
      map to Summit Lake routes up Buffalo Pass Road, which is a disqualification. */
@@ -2985,6 +3010,7 @@ var AIDX = [
     ls('rrr.checks',JSON.stringify(S.checks)); ls('rrr.custom',JSON.stringify(S.custom));
     ls('rrr.people',JSON.stringify(S.people)); ls('rrr.notes',JSON.stringify(S.notes));
     ls('rrr.secov',JSON.stringify(S.secOv||{}));
+    ls('rrr.driveov',JSON.stringify(S.driveOv||{}));
     ls('rrr.splits',JSON.stringify(S.splits)); ls('rrr.aidov',JSON.stringify(S.aidOv));
     ls('rrr.bib',S.bib||''); ls('rrr.theme',S.theme); ls('rrr.proj',S.proj);
     ls('rrr.gps',S.gps?'1':''); ls('rrr.atomwho',JSON.stringify(S.atomWho||{}));
@@ -3552,10 +3578,15 @@ var AIDX = [
       return '<button'+(p.k===S.plan?' class="on"':'')+' data-plan="'+p.k+'">'+p.name+
         '<small>'+(paceEdited(p.k)?hm(mins):p.sub)+(pp?'<i>'+pp+'</i>':'')+'</small></button>';
     }).join('');
+    /* Same rule as the crew list: the background refresh must not re-create
+       these buttons every twenty seconds just to write the same thing. */
+    var cls='seg planpicker' + (isRaceDay()?' compact':'');
+    var touched=false;
     pks.forEach(function(pk){
-      pk.className = 'seg planpicker' + (isRaceDay()?' compact':'');
-      pk.innerHTML = html;
+      if(pk.className===cls && pk.__html===html) return;
+      pk.className=cls; pk.__html=html; pk.innerHTML=html; touched=true;
     });
+    if(!touched) return;
     document.querySelectorAll('[data-plan]').forEach(function(b){
       b.onclick=function(){ S.plan=b.dataset.plan; save(); markDirty(); render(); flashTimes(); };
     });
@@ -3615,8 +3646,7 @@ var AIDX = [
       '<div><div class="k">Cutoff</div><div class="v num" style="color:'+(s2.cut!=null?'var(--red)':'var(--text-3)')+'">'+
       (s2.cut!=null?clkDay2(s2.cut):'none')+'</div></div>'+
       '<div><div class="k">Spare</div><div class="v num">'+(buf==null?'—':dur(buf))+'</div></div></div>'+
-      stopNotesHTML(s2.__i)+
-      '<div class="stopc-act solo">'+penBtnHTML(s2.__i, hasNotes(s2.__i))+'</div></div>';
+      stopNotesHTML(s2.__i)+'</div>';
     var bw=document.getElementById('buffersWrap');
     if(bw) bw.style.display=(isRaceDay()||anySplits())?'':'none';
     document.getElementById('buffers').innerHTML = STATIONS.filter(function(x){return x.cut!=null;}).map(function(x){
@@ -3788,7 +3818,8 @@ var AIDX = [
     rules:  {t:'Rules that end your race', b:buildRules},
     qs:     {t:'Ask the RDs',      b:buildQuestions},
     manual: {t:'The manual',       b:buildManual},
-    app:    {t:'App and data',     b:buildApp}
+    app:    {t:'App and data',     b:buildApp},
+    how:    {t:'How this works',   b:buildHow}
   };
   function row(key,icon,cls,title,sub,count){
     return '<button class="item" data-detail="'+key+'"><span class="ico '+(cls||'')+'">'+
@@ -3828,6 +3859,7 @@ var AIDX = [
       row('rules','ban','r','Rules that end your race','Nine of them',String(RULES.length))+
       row('qs','ask','','Ask the RDs on Thursday','Seven open questions',String(QUESTIONS.length))+
       row('manual','book','','The manual','What is in the 20 pages')+
+      row('how','ask','g','How this works','Seven things, for anyone new to the app')+
       '</div></div>'+
 
       '<div class="grp"><div class="grp-t">App</div><div class="list">'+
@@ -4601,7 +4633,7 @@ var AIDX = [
           '<button class="btn danger" id="rYes" style="margin-top:8px">Yes, clear it all</button>'+
           '<button class="btn tint" id="rNo">Keep it</button>');
         document.getElementById('rYes').onclick=function(){
-          S.checks={}; S.notes={}; S.secOv={}; S.people=[]; S.custom=[]; S.splits={}; S.aidOv={}; S.me=null;
+          S.checks={}; S.notes={}; S.secOv={}; S.driveOv={}; S.people=[]; S.custom=[]; S.splits={}; S.aidOv={}; S.me=null;
           S.gearAdd={}; S.gearRemoved={}; S.gearOverride={}; S.paceOv={}; S.fuelOv={};
           save(); reproject(); closeSheet(); closeDetail(); };
         document.getElementById('rNo').onclick=closeSheet;
@@ -4619,13 +4651,32 @@ var AIDX = [
   /* ── crew ── */
   function crewArrive(c){ return c.mi==null?null:T(STATIONS[idxOf(c.mi)]); }
   function driveFor(c){ return DRIVES[c.where]||{t:'',d:''}; }
-  function leaveMins(c){ if(!c.drive||c.mi==null) return null;
+  function leaveMins(c){ var d=driveMins(c); if(!d||c.mi==null) return null;
     var i=idxOf(c.mi); if(i<0) return null;
-    return T(STATIONS[i])-c.drive-(c.drive>=120?30:20); }
+    return T(STATIONS[i])-d-(d>=120?30:20); }
   function leaveBy(c){ var m=leaveMins(c); return m==null?null:clkDay(m); }
+  /* How long it takes the crew to get there. Shipped as an estimate, but
+     Fish Creek is a four-mile hike and Summit is a mountain pass -- only the
+     people driving it know the real number, so they own it. */
+  function driveMins(c){
+    var o=(S.driveOv||{})[c.n];
+    return (o!=null && isFinite(o)) ? +o : (c.drive||0);
+  }
+  function setDrive(n, mins){
+    S.driveOv=S.driveOv||{};
+    if(mins==null || !isFinite(mins) || mins<=0) delete S.driveOv[n];
+    else S.driveOv[n]=Math.round(mins);
+    save(); markDirty();
+  }
   function driveShort(c){
-    if(!c.drive) return c.mi==null?'—':'on foot';
-    return c.drive>=120 ? Math.round(c.drive/60)+' hrs' : c.drive+' min';
+    var d=driveMins(c);
+    if(!d) return c.mi==null?'—':'not set';
+    return d>=120 ? hm(d) : d+' min';
+  }
+  function crewStopAt(i){
+    for(var k=0;k<CREW.length;k++)
+      if(CREW[k].mi!=null && idxOf(CREW[k].mi)===i) return CREW[k];
+    return null;
   }
   function mapBtn(where,tone){
     if(MAPQ[where]) return '<a class="btn '+(tone||'')+'" style="text-decoration:none" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+
@@ -4748,7 +4799,7 @@ var AIDX = [
         (lv?'<div style="margin-top:10px"><span class="pill">Leave by '+lv+'</span></div>':'')+'</div>':'')+
       (who.length?'<div class="pills" style="margin-bottom:12px">'+who.map(function(p){return '<span class="pill">'+esc(p.name)+'</span>';}).join('')+'</div>':'')+
       mapBtn(c.where)+
-      '<h4 style="font-size:15px;font-weight:650;color:var(--green-ink);margin:16px 0 5px">What to have ready</h4><p class="sec">'+c.what+'</p>'+
+      (c.mi!=null?notesHTML('aid', idxOf(c.mi)):'')+
       '<h4 style="font-size:15px;font-weight:650;color:var(--green-ink);margin:16px 0 5px">What happens here</h4><p class="sec">'+c.body+'</p>'+
       (c.pacer?'<div class="callout g"><b>'+c.pacer+'.</b></div>':'')+
       (dr.d?'<h4 style="font-size:15px;font-weight:650;color:var(--green-ink);margin:16px 0 5px">How to get there</h4><p class="sec">'+dr.d+'</p>'+
@@ -4778,24 +4829,26 @@ var AIDX = [
     var pick=crewPick(), c=CREW[pick], a=crewArrive(c), lm=leaveMins(c);
     var who=crewAt(c.n), mine=mePerson();
     var isMine = !!(mine && (mine.stops||[]).indexOf(c.n)>=0);
+    /* No "leave town by" anywhere: when to set off is the crew's call, and a
+       number the app invented would be one more thing to argue with at 2am.
+       What they cannot work out for themselves is how long they have. */
     var chip='';
-    if(lm!=null){
-      var left=lm-now();
-      chip = left<=0 ? 'Leave now' : left<=720 ? 'Leave in '+dur(left) : 'Leave '+clkDay(lm);
-      chip = '<div class="pill" style="background:rgba(255,255,255,'+(left<=60?'.26':'.16')+');color:#fff">'+chip+'</div>';
+    if(a!=null){
+      var left=a-now();
+      if(left>0 && left<=720)
+        chip='<div class="pill" style="background:rgba(255,255,255,'+(left<=60?'.26':'.16')+
+          ');color:#fff">He arrives in '+dur(left)+'</div>';
     }
     return '<div class="hero"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px">'+
       '<div class="eyebrow">'+(c.rest?'Right now':'Your next stop · '+
         (visibleCrew().indexOf(c)+1)+' of '+visibleCrew().length)+'</div>'+chip+'</div>'+
       '<h2>'+c.where+'</h2>'+
       (a!=null?'<div class="under">Will should arrive '+clkDay(a)+'</div>':'')+
-      (lm!=null?'<div class="stats"><div><div class="k">Leave town</div><div class="v num">'+clkDay2(lm)+'</div></div>'+
-        '<div><div class="k">Drive</div><div class="v num">'+driveShort(c)+'</div></div>'+
-        '<div><div class="k">Mile</div><div class="v num">'+(c.mi!=null?c.mi.toFixed(1):'—')+'</div></div></div>':'')+
+      '<div class="stats"><div><div class="k">Travel time</div><div class="v num">'+driveShort(c)+'</div></div>'+
+        '<div><div class="k">Mile</div><div class="v num">'+(c.mi!=null?c.mi.toFixed(1):'—')+'</div></div></div>'+
       whoLineHTML(c, true)+
-      '<div class="hero-bring"><span>Bring</span>'+c.what+'</div>'+
       '</div>'+
-      stopNotesHTML(c.mi!=null?idxOf(c.mi):-1);
+      notesHTML('aid', c.mi!=null?idxOf(c.mi):-1);
   }
 
   /* Rest and Summit Lake are off by default -- no aid is run at either -- but
@@ -4879,16 +4932,34 @@ var AIDX = [
     if(!Object.keys(o).length) delete S.secOv[id]; else S.secOv[id]=o;
     save(); markDirty();
   }
+  /* Notes are prose; this is a packing list. A comma-separated sentence is
+     unreadable at 2am with a head torch -- you cannot run your finger down
+     it. Stored as one item per line, drawn as a column you tick off.
+     The ticks are per phone, like every other checklist here: two people
+     loading two cars each want their own. */
+  function gearList(i){
+    if(i==null || i<0) return [];
+    var v=aidField(i,'gear');
+    return String(v||'').split('\n').map(function(x){ return x.trim(); })
+      .filter(function(x){ return !!x; });
+  }
+  function gearListHTML(i){
+    var g=gearList(i); if(!g.length) return '';
+    return '<div class="gearbox"><span class="lbl">Bring</span><ul>'+
+      g.map(function(t){ return '<li>'+esc(t)+'</li>'; }).join('')+'</ul></div>';
+  }
   function noteAny(scope,id){
     return AID_FIELDS.some(function(f){ return noteVal(scope,id,f.k); });
   }
+  /* Read-only. Draws nothing at all when both channels are empty -- a summary
+     view with no note should be silent, not show an empty slot. */
   function notesHTML(scope,id){
     if(id==null || (scope!=='sec' && id<0)) return '';
     return AID_FIELDS.map(function(f){
       var v=noteVal(scope,id,f.k); if(!v) return '';
       return '<div class="snote '+f.who+'"><span>'+f.label+'</span>'+
         esc(v).replace(/\n/g,'<br>')+'</div>';
-    }).join('');
+    }).join('') + (scope==='sec' ? '' : gearListHTML(id));
   }
   /* notes plus the one button that edits them, as a single unit -- so a
      reader never has to work out which of several boxes is the live one */
@@ -4922,14 +4993,16 @@ var AIDX = [
      should not have to guess what a pencil in a grey bar does. */
   function penBtnHTML(i, any){
     if(i==null || i<0) return '';
-    return '<button class="penbtn" data-editaid="'+i+'">'+PEN_SVG+
+    return '<button class="penbtn" data-editnote="aid:'+i+'">'+PEN_SVG+
       '<span>'+(any?'Edit notes':'Add a note')+'</span></button>';
   }
   /* The row of things you can actually do at this stop. It is only drawn if
      there is something in it -- an empty tinted bar reads as a broken card,
      which is exactly what the crew saw at Fish Creek Falls. */
   function stopActHTML(where, i){
-    var go=mapGoLink(where), pen=penBtnHTML(i, hasNotes(i));
+    var go=mapGoLink(where), pen='';
+    if(i!=null && i>=0) pen='<button class="penbtn" data-editnote="aid:'+i+'">'+PEN_SVG+
+      '<span>Edit this stop</span></button>';
     if(!go && !pen) return '';
     return '<div class="stopc-act">'+go+pen+'</div>';
   }
@@ -4952,16 +5025,18 @@ var AIDX = [
     var minen = vis.filter(function(c){ return isMineStop(c, mine); }).length;
     var only = (MINEONLY && minen) ? 1 : 0;
     var rows = only ? vis.filter(function(c){ return isMineStop(c, mine); }) : vis;
-    return '<div class="shead"><h2>If he runs to</h2>'+
+    return '<div class="shead"><h2>Goal Times</h2>'+
       '<span class="note">every time below moves</span></div>'+
       '<div class="seg planpicker"></div>'+
-      '<div class="shead"><h2>Every stop</h2>'+
+      '<div class="shead"><h2>Crew Aid Stations</h2>'+
       '<span class="note">times are his arrival</span>'+
       (meIsWill()?'<button class="linkbtn" id="editStops">Edit</button>':'')+'</div>'+
       (minen
         ? '<div class="seg sfilter">'+
-          '<button data-sfilter="0"'+(only?'':' class="on"')+'>All stops <small>'+vis.length+'</small></button>'+
-          '<button data-sfilter="1"'+(only?' class="on"':'')+'>Just mine <small>'+minen+'</small></button>'+
+          '<button data-sfilter="0"'+(only?'':' class="on"')+
+            '>Crew assisted aid stations <small>'+vis.length+'</small></button>'+
+          '<button data-sfilter="1"'+(only?' class="on"':'')+
+            '>Just mine <small>'+minen+'</small></button>'+
           '</div>'
         : '')+
       '<ol class="stoplist">'+
@@ -4970,9 +5045,7 @@ var AIDX = [
         var a=crewArrive(c), lm=leaveMins(c), si=(c.mi!=null?idxOf(c.mi):-1);
         var yours = isMineStop(c, mine);
         var state = ix<pick ? ' done' : ix===pick ? ' now' : '';
-        var facts=[];
-        if(lm!=null) facts.push(['Leave town', clk(lm)]);
-        if(c.drive) facts.push(['Drive', driveShort(c)]);
+        var facts=[['Travel time', driveShort(c)]];
         if(c.mi!=null) facts.push(['Mile', c.mi.toFixed(1)]);
         return '<li class="stopc'+state+(yours?' yours':'')+
           (only||ri===rows.length-1?' nolink':'')+'">'+
@@ -4990,7 +5063,6 @@ var AIDX = [
               ? '<div class="stopc-facts">'+facts.map(function(f){
                   return '<div><span>'+f[0]+'</span><b>'+f[1]+'</b></div>'; }).join('')+'</div>'
               : '')+
-            '<div class="stopc-bring"><span>Bring</span>'+c.what+'</div>'+
             stopNotesHTML(si)+
             mapWarnHTML(c.where)+
             stopActHTML(c.where, si)+
@@ -5049,40 +5121,39 @@ var AIDX = [
   function howCardHTML(){
     if(meIsWill() || ls('rrr.helpseen')) return '';
     return '<div class="howcard"><div><b>First time here?</b>'+
-      '<span>Two minutes on how this works, then you are set for race day.</span></div>'+
+      '<span>Two minutes on how this works, then you are set for race day. '+
+      'It stays on the Profile tab if you want it later.</span></div>'+
       '<div class="howcard-a"><button class="btn sm" id="howRead">Read it</button>'+
       '<button class="btn ghost sm" id="howSkip">Not now</button></div></div>';
   }
-  function howSheet(){
-    ls('rrr.helpseen','1');
-    sheet('How this works',
-      '<p class="sec" style="margin:-6px 0 14px">Two minutes. You will not need it twice.</p>'+
-      '<ol class="howlist">'+HOWTO.map(function(h){
-        return '<li><b>'+h[0]+'</b><span>'+h[1]+'</span></li>'; }).join('')+'</ol>'+
-      '<button class="btn" id="howOk">Got it</button>');
-    var ok=document.getElementById('howOk');
-    if(ok) ok.onclick=closeSheet;
+  function buildHow(){
+    return '<p class="sec" style="margin-bottom:16px">Two minutes. You will not need it twice.</p>'+
+      '<div class="card"><ol class="howlist">'+HOWTO.map(function(h){
+        return '<li><b>'+h[0]+'</b><span>'+h[1]+'</span></li>'; }).join('')+'</ol></div>';
   }
+  /* The background refresh rebuilt this list every twenty seconds, which
+     re-created every card and replayed their entrance animation -- the crew
+     saw the page blink at them. Build the markup, and only touch the DOM if
+     it actually says something different. */
+  var MYJOB_HTML=null;
   function renderMyJob(){
     var el=document.getElementById('myJob'); if(!el) return;
     var p=mePerson();
-    if(!p){ el.innerHTML=''; return; }          /* Will, or nobody chosen */
-    var head='<div class="phead"><h1>Your job</h1><p class="sec">'+esc(p.name)+
-      ' · '+roleLabel(p)+'. This changes on its own as the race goes on. '+
-      '<button class="linkbtn" id="howBtn">How this works</button></p></div>';
-    el.innerHTML = head + howCardHTML() +
+    if(!p){ el.innerHTML=''; MYJOB_HTML=null; return; }  /* Will, or nobody chosen */
+    var head='<div class="phead"><h1>'+esc(p.name)+'</h1></div>';
+    var html = head + howCardHTML() +
       (p.role==='pacer' ? pacerJobHTML(p) : '') +
       crewJobHTML() +
       stopsListHTML();
+    if(html===MYJOB_HTML) return;               /* nothing moved; leave it alone */
+    MYJOB_HTML=html;
+    el.innerHTML = html;
     el.querySelectorAll('[data-myleg]').forEach(function(b){
       var all=pacerLegs().filter(function(L){ return !!L.who; });
       b.onclick=function(){ openLeg(all[+b.dataset.myleg]); };
     });
     el.querySelectorAll('[data-detail]').forEach(function(b){
       b.onclick=function(){ openDetail(b.dataset.detail); };
-    });
-    el.querySelectorAll('[data-editaid]').forEach(function(b){
-      b.onclick=function(){ editAid(+b.dataset.editaid); };
     });
     el.querySelectorAll('[data-c]').forEach(function(b){
       b.onclick=function(){ openCrewStop(CREW[+b.dataset.c]); };
@@ -5093,10 +5164,8 @@ var AIDX = [
     renderPlanPicker();
     var es=el.querySelector('#editStops');
     if(es) es.onclick=editStops;
-    var hb=el.querySelector('#howBtn');
-    if(hb) hb.onclick=howSheet;
     var hr=el.querySelector('#howRead');
-    if(hr) hr.onclick=function(){ howSheet(); renderMyJob(); };
+    if(hr) hr.onclick=function(){ ls('rrr.helpseen','1'); renderMyJob(); openDetail('how'); };
     var hs=el.querySelector('#howSkip');
     if(hs) hs.onclick=function(){ ls('rrr.helpseen','1'); renderMyJob(); };
   }
@@ -6100,7 +6169,7 @@ var AIDX = [
         '<div><b>'+clk(T(st(sec.to)))+'</b><span>arrive by</span></div>'+
       '</div>'+
       terrainBlock(t,'This section')+
-      noteUnitHTML('sec',sec.n)+
+      notesHTML('sec',sec.n)+
       '<div class="secbody">'+sec.body+'</div>'+
     '</div>';
   }
@@ -6108,7 +6177,7 @@ var AIDX = [
     var x=AIDX[i]||{};
     return '<div class="secblock">'+
       (x.desc?'<div class="secbody"><p>'+x.desc+'</p></div>':'')+
-      noteUnitHTML('aid',i)+
+      notesHTML('aid',i)+
     '</div>';
   }
 
@@ -6392,9 +6461,6 @@ var AIDX = [
     return stationSheetHTML(i);
   }
   function bindAidEdit(box){
-    box.querySelectorAll('[data-editaid]').forEach(function(b){
-      b.onclick=function(){ editAid(+b.dataset.editaid); };
-    });
   }
   function browseBind(box){
     bindAidEdit(box);
@@ -6628,7 +6694,7 @@ var AIDX = [
         '<div><div class="k">Cutoff</div><div class="v num" style="color:'+(s.cut!=null?'var(--red)':'var(--text-3)')+'">'+
           (s.cut!=null?clkDay(s.cut):'none')+'</div></div>'+
         '<div><div class="k">Spare</div><div class="v num">'+(s.cut!=null?dur(s.cut-T(s)):'\u2014')+'</div></div></div>'+
-        aidFieldsHTML(i,{})+
+        notesHTML('aid',i)+
         '<button class="btn tint sm" data-openaid="'+i+'" style="margin-top:14px">Open this aid station</button></div>';
     }
 
@@ -6986,13 +7052,9 @@ var AIDX = [
   function aidHasAny(i){
     return AID_FIELDS.some(function(f){ return aidField(i,f.k); });
   }
-  /* Kept as a name, not as a second design: every surface that used to draw
-     its own version of these two notes now draws the one unit. */
-  function aidFieldsHTML(i,opts){
-    return noteUnitHTML('aid', i, (opts||{}).label);
-  }
   /* After an edit, repaint whichever surface is actually on screen. */
   function afterAidEdit(){
+    MYJOB_HTML=null;                             /* the list itself changed */
     var fm=document.getElementById('mapFull');
     if(fm && fm.classList.contains('on')){ fullMapSheet(); fmBarPaint(); drawMap('mapHostF'); }
     else render();
@@ -7045,11 +7107,63 @@ var AIDX = [
     openNoteEditor(b.dataset.editnote);
   }, true);
 
+  /* One row per thing. Enter adds the next one, so a list can be typed
+     without ever reaching for the mouse. */
+  function gearRowHTML(v){
+    return '<div class="gerow"><input type="text" class="gitm" value="'+esc(v||'')+
+      '" placeholder="Add something"><button type="button" class="germ" '+
+      'aria-label="Remove">\u00d7</button></div>';
+  }
+  function bindGearEditor(){
+    var box=document.getElementById('gedit'); if(!box) return;
+    function addRow(after){
+      var d=document.createElement('div');
+      d.innerHTML=gearRowHTML('');
+      var row=d.firstChild;
+      if(after && after.nextSibling) box.insertBefore(row, after.nextSibling);
+      else box.appendChild(row);
+      wire(row);
+      row.querySelector('.gitm').focus();
+    }
+    function wire(row){
+      row.querySelector('.germ').onclick=function(){
+        row.parentNode.removeChild(row);
+        if(!box.children.length) addRow();
+      };
+      row.querySelector('.gitm').onkeydown=function(e){
+        if(e.key==='Enter'){ e.preventDefault(); addRow(row); }
+        else if(e.key==='Backspace' && !this.value && box.children.length>1){
+          e.preventDefault();
+          var prev=row.previousSibling;
+          row.parentNode.removeChild(row);
+          if(prev) prev.querySelector('.gitm').focus();
+        }
+      };
+    }
+    Array.prototype.forEach.call(box.children, wire);
+    var add=document.getElementById('gadd');
+    if(add) add.onclick=function(){ addRow(); };
+  }
+  function gearEditorRead(){
+    var box=document.getElementById('gedit'); if(!box) return null;
+    return Array.prototype.slice.call(box.querySelectorAll('.gitm'))
+      .map(function(el){ return el.value.trim(); })
+      .filter(function(v){ return !!v; }).join('\n');
+  }
+
   function editAid(i){
-    var s=STATIONS[i], who=aidWho(i);
-    sheet('Plan '+s.name,
+    var s=STATIONS[i], who=aidWho(i), cst=crewStopAt(i);
+    sheet('Edit '+s.name,
       '<div class="cap" style="margin:-8px 0 12px">Mile '+s.mi.toFixed(1)+' \u00b7 '+clkDay(T(s))+
         ' \u00b7 '+dur(T(s))+' into the race</div>'+
+      (cst
+        ? '<div class="fld"><label>How long to get there</label>'+
+          '<input id="afDrive" type="text" inputmode="numeric" value="'+
+          (driveMins(cst)||'')+'" placeholder="minutes">'+
+          '<p class="cap" style="margin:7px 0 0">Minutes, door to door. '+
+          (NOMAP[cst.where]?'This one is on foot or by bike — allow for the walk.'
+            :'Change it once you know the real drive.')+'</p></div>'
+        : '')+
       '<div class="fld"><label>Who is crewing here'+
         (S.people.length?'<button class="linkbtn" id="whoAll">'+
           (who.length>=S.people.length?'Clear':'Everyone')+'</button>':'')+'</label>'+
@@ -7063,8 +7177,14 @@ var AIDX = [
           }).join('')+'</div>'
         : '<p class="cap">Nobody on the team yet \u2014 add people on the Profile tab first.</p>')+'</div>'+
       noteFieldsHTML('aid',i)+
+      '<div class="fld"><label>Bring</label>'+
+        '<div class="gedit" id="gedit">'+
+        (gearList(i).concat(['']).map(gearRowHTML).join(''))+'</div>'+
+        '<button type="button" class="btn ghost sm" id="gadd" style="margin-top:9px">'+
+        '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add item</button></div>'+
       '<button class="btn" id="aSave">Save</button>'+
       (aidHasAny(i)||who.length?'<button class="btn danger" id="aClear">Clear everything for this stop</button>':''));
+    bindGearEditor();
     shEl.querySelectorAll('.wpick input').forEach(function(c){
       c.onchange=function(){ c.parentNode.classList.toggle('on', c.checked); paintWhoAll(); };
     });
@@ -7083,7 +7203,11 @@ var AIDX = [
     document.getElementById('aSave').onclick=function(){
       var sel=Array.prototype.slice.call(shEl.querySelectorAll('.aWho:checked')).map(function(c){return c.value;});
       var patch=noteFieldsRead();
+      var gv=gearEditorRead();
+      if(gv!=null) patch.gear=gv;
       patch.who = sel.length?sel:null;
+      var dv=document.getElementById('afDrive');
+      if(cst && dv) setDrive(cst.n, dv.value.trim()===''?null:parseFloat(dv.value));
       setAidOv(i,patch);
       closeSheet(); afterAidEdit();
     };
@@ -7091,6 +7215,7 @@ var AIDX = [
     if(cl) cl.onclick=function(){
       var patch={};
       AID_FIELDS.filter(mayEdit).forEach(function(f){ patch[f.k]=null; });
+      patch.gear=null;
       /* only the runner clears the shared assignment and the pre-reshape keys */
       if(meIsWill()){ patch.who=null; patch.plan=null; patch.has=null; patch.notes=null; }
       setAidOv(i,patch);
@@ -7196,7 +7321,6 @@ var AIDX = [
         var s=SECTIONS.filter(function(x){return x.n===n;})[0];
         if(s) openSection(s); };
     });
-    shEl.querySelectorAll('[data-editaid]').forEach(function(b){ b.onclick=function(){ editAid(+b.dataset.editaid); }; });
   }
   function bindCopy(){
     document.querySelectorAll('[data-copy]').forEach(function(b){
@@ -7246,7 +7370,8 @@ var AIDX = [
         '<td>'+(c.mi!=null?c.mi.toFixed(1):'\u2014')+'</td>'+
         '<td>'+(t!=null?clkDay(t):'\u2014')+'</td>'+
         '<td>'+(lv!=null?clkDay(lv):'\u2014')+'</td>'+
-        '<td>'+driveShort(c)+'</td><td>'+whoAt(c.n)+'</td><td>'+c.what+'</td></tr>';
+        '<td>'+driveShort(c)+'</td><td>'+whoAt(c.n)+'</td><td>'+
+        esc(c.mi!=null?(noteVal('aid',idxOf(c.mi),'crew')||c.what):c.what)+'</td></tr>';
     });
     h+='</tbody></table>';
 
@@ -7326,7 +7451,7 @@ var AIDX = [
      phone" stay local — ten people toggling one packing list is chaos,
      and identity is per-device by definition. */
   function sharedOut(){
-    return { people:S.people, aidOv:S.aidOv, secOv:S.secOv, notes:S.notes, custom:S.custom, atomWho:S.atomWho,
+    return { people:S.people, aidOv:S.aidOv, secOv:S.secOv, driveOv:S.driveOv, notes:S.notes, custom:S.custom, atomWho:S.atomWho,
              bib:S.bib||'', plan:S.plan, paceOv:S.paceOv||{}, fuelOv:S.fuelOv||{} };
   }
   function sharedIn(o){
@@ -7335,6 +7460,7 @@ var AIDX = [
     if(o.aidOv&&typeof o.aidOv==='object') S.aidOv=o.aidOv;
     if(o.notes&&typeof o.notes==='object') S.notes=o.notes;
     if(o.secOv&&typeof o.secOv==='object') S.secOv=o.secOv;
+    if(o.driveOv&&typeof o.driveOv==='object') S.driveOv=o.driveOv;
     if(Array.isArray(o.custom)) S.custom=o.custom;
     if(typeof o.bib==='string') S.bib=o.bib;
     if(o.atomWho&&typeof o.atomWho==='object') S.atomWho=o.atomWho;
@@ -7564,7 +7690,7 @@ var AIDX = [
   S.gearAdd=jget('rrr.gearadd',{}); S.gearRemoved=jget('rrr.gearrm',{}); S.gearOverride=jget('rrr.gearov',{});
   S.paceOv=jget('rrr.paceov',{}); S.fuelOv=jget('rrr.fuelov',{});
   S.notes=jget('rrr.notes',{}); S.splits=jget('rrr.splits',{}); S.aidOv=jget('rrr.aidov',{});
-  S.secOv=jget('rrr.secov',{});
+  S.secOv=jget('rrr.secov',{}); S.driveOv=jget('rrr.driveov',{});
   /* section notes used to be a single unlabelled box called "Your notes",
      written only by Will. Move them into the runner channel so there is one
      note model in the app; the originals stay put. */
@@ -7600,6 +7726,48 @@ var AIDX = [
     });
     if(moved){ ls('rrr.notes',JSON.stringify(S.notes)); ls('rrr.aidov',JSON.stringify(S.aidOv)); }
   })();
+  /* "Bring" was a third note channel: real content, shown like a note, and
+     editable by nobody. It is what the crew brings and does, which is the
+     crew note's job, so it moves there once and becomes editable. Seeded only
+     into an empty channel, and only once -- clearing a note must not bring
+     the old text back on the next load. */
+  if(!ls('rrr.bringmoved')){
+    var bmoved=false;
+    CREW.forEach(function(c){
+      if(c.mi==null || !c.what) return;
+      var i=idxOf(c.mi); if(i<0) return;
+      S.aidOv[i]=S.aidOv[i]||{};
+      if(typeof S.aidOv[i].crew!=='string' || !S.aidOv[i].crew.trim()){
+        S.aidOv[i].crew=c.what; bmoved=true;
+      }
+    });
+    ls('rrr.bringmoved','1');
+    if(bmoved) ls('rrr.aidov',JSON.stringify(S.aidOv));
+  }
+  /* Last build put the old "Bring" sentence into the crew note. Half of them
+     are comma lists -- "Warm layer, hot drink, real food, his night kit" --
+     which is a packing list written sideways. Split those into the gear list
+     and leave the prose ones where they are. Only touches a crew note that
+     is still word-for-word the shipped text, so an edited one is never lost. */
+  if(!ls('rrr.gearsplit')){
+    var gmoved=false;
+    CREW.forEach(function(c){
+      if(c.mi==null || !c.what || c.what.indexOf(',')<0) return;
+      var i=idxOf(c.mi); if(i<0) return;
+      var o=S.aidOv[i]; if(!o) return;
+      if(o.crew!==c.what) return;                 /* somebody has edited it */
+      if(typeof o.gear==='string' && o.gear.trim()) return;
+      o.gear = c.what.replace(/\.\s*$/,'').split(',')
+        .map(function(x){ return x.trim().replace(/^and\s+/i,''); })
+        .filter(Boolean)
+        .map(function(x){ return x.charAt(0).toUpperCase()+x.slice(1); })
+        .join('\n');
+      delete o.crew;
+      gmoved=true;
+    });
+    ls('rrr.gearsplit','1');
+    if(gmoved) ls('rrr.aidov',JSON.stringify(S.aidOv));
+  }
   S.bib=ls('rrr.bib')||''; MAPV.base=ls('rrr.base')||'satellite';
   if(!BASES[MAPV.base]) MAPV.base='satellite'; S.theme=ls('rrr.theme')||'light'; S.proj=ls('rrr.proj')||'pace'; S.gps=ls('rrr.gps')==='1'; S.atomWho=jget('rrr.atomwho',{});
   try{ GPS.last=JSON.parse(ls('rrr.gpslast')||'null'); }catch(e){}
